@@ -44,6 +44,43 @@ async function loadData(url){
   // $rdf.parse(data, store, null, 'application/n-quads');
 }
 
+async function loadData2(url){
+  const options = {
+    headers: {"Accept": ["application/ld+json", "application/rdf+xml", "application/n-triples", "text/turtle"]}
+  }
+
+  await fetch(url,options)
+    .then((response) => {
+      $rdf.parse(response.text(), store, url, 'application/rdf+xml');
+      nquads = $rdf.serialize(undefined, this.store, undefined, 'application/n-quads');
+      console.log(nquads)
+    })
+  // let globalJson = await httpGetJson(url)
+
+  // console.log(globalJson)
+
+  // for (let i = 50; i < 100; i++) {
+  //   console.log(globalJson.locals[i])
+  //   try{
+  //     await fetcher.load(globalJson.locals[i])
+  //   }
+  //   catch(error){
+  //     console.log(error)
+  //   }
+  // } 
+
+  // let i = 0
+  // globalJson.locals.forEach(element => {
+  //   console.log(element)
+  //   fetcher.load(element)
+  //   i += 1
+  //   // fetch(element).then((response) => console.log(response))
+  // });
+
+  // await fetcher.load(url)
+  
+}
+
 function showData(){
   var stmts = store.statementsMatching(undefined, undefined, undefined);
   for (var i=0; i<stmts.length;i++) {
@@ -54,7 +91,7 @@ function showData(){
     
     if(stmts[i].graph.termType=='NamedNode'){
       console.log(stmts[i]);
-      jsonldStr = $rdf.serialize(stmts[i].graph, this.store, null, 'text/turtle');
+      jsonldStr = $rdf.serialize(stmts[i].graph, this.store, null, 'application/n-quads');
       // console.log("JSONLD STRING");
       // console.log(jsonldStr);
 
@@ -75,7 +112,9 @@ function parseRDF(url){
 // parseRDF("http://de.dbpedia.org/data/West-Berlin.ntriples")
 
 async function loadAndShow(){
-  await loadData("https://global.dbpedia.org/same-thing/lookup/?uri=http://www.wikidata.org/entity/Q64");
+  // await loadData2("https://wiki.ontologi.es/parkhotel")
+  await loadData2("https://sws.geonames.org/2879139/about.rdf")
+  // await loadData("https://global.dbpedia.org/same-thing/lookup/?uri=http://www.wikidata.org/entity/Q64");
 
   console.log("FERTSCH")
   showData()
