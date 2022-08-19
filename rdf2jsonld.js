@@ -8,10 +8,12 @@ async function rdf2jsonld(rdfStr, contType) {
 
   // We convert the rdf to an N-Quads string.
   let quadStream = rdfParser.parse(require('streamify-string')(rdfStr), {contentType: contType, baseIRI: 'http://example.org'})
-  let textStream = rdfSerializer.serialize(quadStream, { contentType: 'application/n-quads' });
+  let textStream = rdfSerializer.serialize(quadStream, { contentType: 'application/ld+json' });
 
+  
   let nQuadsString = await streamToString(textStream);
 
+  console.log(nQuadsString)
   // We convert the RDF JSON-LD, which is JSON with semantics embedded.
   let doc = await jsonld.fromRDF(nQuadsString, {format: 'application/n-quads'});
 

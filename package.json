@@ -1,0 +1,16 @@
+{
+  "type": "module",
+  "dependencies": {
+    "@ldflex/comunica": "^5.0.1",
+    "@rdfjs/data-model": "^2.0.1",
+    "browser-resolve": "^2.0.0",
+    "jsonld": "^6.0.0",
+    "ldflex": "^2.15.0",
+    "rdf-parse": "^2.1.0",
+    "rdf-serialize": "^2.0.0",
+    "streamify-string": "^1.0.1"
+  },
+  "devDependencies": {
+    "esmify": "^2.1.1"
+  }
+}
