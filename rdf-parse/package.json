@@ -1,5 +1,4 @@
 {
-  "type": "module",
   "dependencies": {
     "@ldflex/comunica": "^5.0.1",
     "@rdfjs/data-model": "1.3.4",
@@ -18,6 +17,7 @@
     "@rollup/plugin-commonjs": "^22.0.2",
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^13.3.0",
+    "babel-preset-es2015": "^6.24.1",
     "esmify": "^2.1.1",
     "rollup-plugin-polyfill-node": "^0.10.2"
   }

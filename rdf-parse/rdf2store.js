@@ -1,31 +1,42 @@
-const jsonld = require("jsonld");
 const rdfParser = require("rdf-parse").default;
+const storeStream = require("rdf-store-stream").storeStream;
 const rdfSerializer = require("rdf-serialize").default;
+const { namedNode } = require('@rdfjs/data-model');
+
 // const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 // const $ = require( "jquery" );
 
-async function rdf2jsonld(rdfStr, contType) {
+async function rdf2jsonld(rdfStr, contType, baseURI) {
 
   // We convert the rdf to an N-Quads string.
-  let quadStream = rdfParser.parse(require('streamify-string')(rdfStr), {contentType: contType, baseIRI: 'http://example.org'})
-  let textStream = rdfSerializer.serialize(quadStream, { contentType: 'application/ld+json' });
+  let quadStream = rdfParser.parse(require('streamify-string')(rdfStr), {contentType: contType, baseIRI: baseURI})
 
-  
+  // Import the stream into a store
+  const store = await storeStream(quadStream);
+
+  await store.add(
+      namedNode('http://ex.org/Pluto'),
+      namedNode('http://ex.org/type'),
+      namedNode('http://ex.org/Dog')
+    );
+
+  // watch for quads
+  for (const quad of store.match(undefined, undefined, undefined, undefined))
+    console.log(quad);
+
+  // create LD+Json Stream  
+  let textStream = rdfSerializer.serialize(store.match(undefined, namedNode('http://ex.org/type'), undefined, undefined), { contentType: 'application/ld+json' });
+
+  // convert stream to string
   let nQuadsString = await streamToString(textStream);
 
   console.log(nQuadsString)
-  // We convert the RDF JSON-LD, which is JSON with semantics embedded.
-  let doc = await jsonld.fromRDF(nQuadsString, {format: 'application/n-quads'});
+  // // We convert the RDF JSON-LD, which is JSON with semantics embedded.
+  // let doc = await jsonld.fromRDF(nQuadsString, {format: 'application/n-quads'});
 
-  // We define how we want our JSON-LD to look like via a frame. For more info see https://w3c.github.io/json-ld-framing/
-  let frame = {
-    "@context": {"@vocab": "http://schema.org/"},
-    "@type": "Person"
-  };
-
-  // We use the frame and the JSON-LD generated earlier to generate a new JSON-LD document based on the frame.
-  let framed = await jsonld.frame(doc, frame);
-  console.log(framed);
+  // // We use the frame and the JSON-LD generated earlier to generate a new JSON-LD document based on the frame.
+  // let framed = await jsonld.flatten(doc);
+  // console.log(framed);
 }
 
 /**
@@ -35,12 +46,24 @@ async function rdf2jsonld(rdfStr, contType) {
  */
 function streamToString (stream) {
 
-  // console.log(new Response(stream).arrayBuffer())
-  // return new Response(stream).arrayBuffer()
-
   const chunks = [];
   return new Promise((resolve, reject) => {
     stream.on('data', (chunk) => chunks.push(Buffer.from(chunk)));
+    stream.on('error', (err) => reject(err));
+    stream.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')));
+  })
+}
+
+/**
+ * turns a stream into a string
+ * @param stream -  The stream that needs to be turned into a string.
+ * @returns {Promise<unknown>}
+ */
+ function printQuads (stream) {
+
+  const chunks = [];
+  return new Promise((resolve, reject) => {
+    stream.on('data', (chunk) => console.log(chunk));
     stream.on('error', (err) => reject(err));
     stream.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')));
   })
@@ -56,37 +79,6 @@ async function parseJsonLD(rdfStr) {
   }
 
 }
-
-
-// async function url2jsonld(url){
-
-//   const response = await fetch(url, { headers: {'Accept': ['application/ld+json','application/n-quads','application/n-triples', 'application/rdf+xml', 'text/turtle', 'text/html']} })
-//   let data = await response.text()
-
-//   // let body = data.substring(data.indexOf("<body>")+6,data.indexOf("</body>"));
-
-//   const $ = cheerio.load(data);
-//   let inputs = $.getElementsByTagName('input');
-
-//   for(var i = 0; i < inputs.length; i++) {
-//       if(inputs[i].type.toLowerCase() == 'text') {
-//           alert(inputs[i].value);
-//       }
-//   }
-//   // console.log($('<script type="application/ld+json">').text());
-
-
-//   // let contentType = response.headers.get("Content-Type")
-
-//   // console.log("RAWDATA")
-//   // console.log(data)
-//   // console.log(contentType)
-
-//   // let jsonldStr = await rdf2jsonld(data, contentType)
-//   // console.log(jsonldStr)
-// }
-
-
 
 function turtleTest(){
   let turtleStr= `@prefix schema: <http://schema.org/> .
@@ -110,11 +102,8 @@ function turtleTest(){
 
     console.log(turtleStr);
 
-    rdf2jsonld(turtleStr, 'text/turtle');
+    rdf2jsonld(turtleStr, 'text/turtle', "example.org");
 }
-
-
-
 
 async function fetchURL(){
     let url = document.getElementById('myUrl').value
@@ -136,9 +125,6 @@ async function fetchURL(){
         // for (let pair of response.headers.entries()) {
         //     console.log(pair[0]+ ': '+ pair[1]);
         //  }
-         
-        // console.log(response.headers.get("Access-Control-Expose-Headers"))
-    
     
         if (contentType.includes("text/html")){
             data = $($($.parseHTML( data )).filter("script")).filter('[type="application/ld+json"]');
@@ -153,7 +139,7 @@ async function fetchURL(){
             console.log("handle JSonLD")
             parseJsonLD(data)
           } else {
-            rdf2jsonld(data, contentType)
+            rdf2jsonld(data, contentType, url)
           }
         }
 
@@ -166,15 +152,3 @@ document.getElementById('turtleTestButton').addEventListener('click', turtleTest
 
 let button = document.getElementById('myButton'); // add id="my-button" into html
 button.addEventListener('click', fetchURL);
-
-// function serializeURL2JsonLD(){
-//   url2jsonld(document.getElementById('myUrl').value);
-// }
-
-// let button = document.getElementById('myButton'); // add id="my-button" into html
-// button.addEventListener('click', fetchURL);
-
-
-// url2jsonld("https://www.imdb.com/title/tt1751634/")
-// readData("http://dbpedia.org/resource/Berlin")
-

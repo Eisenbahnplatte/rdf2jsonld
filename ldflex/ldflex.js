@@ -1,12 +1,8 @@
-
-import namedNode from '@rdfjs/data-model'
-import LDFlex from 'ldflex'
-import ComunicaEngine from '@ldflex/comunica'
-
-console.log("LDFLEX", namedNode)
-console.log(ComunicaEngine.default)
-
+import { PathFactory } from 'ldflex'
+import { default as ComunicaEngine } from '@ldflex/comunica'
+import dataFactory from '@rdfjs/data-model'
 // The JSON-LD context for resolving properties
+
 const context = {
   "@context": {
     "@vocab": "http://xmlns.com/foaf/0.1/",
@@ -15,13 +11,14 @@ const context = {
     "rbn": "https://ruben.verborgh.org/profile/#"
   }
 };
+
 // The query engine and its source
 const queryEngine = new ComunicaEngine.default('https://ruben.verborgh.org/profile/');
+
 // The object that can create new paths
-const path = new LDFlex.PathFactory({ context, queryEngine });
+const path = new PathFactory({ context, queryEngine });
 
-
-const ruben = path.create({ subject: namedNode('https://ruben.verborgh.org/profile/#me') });
+const ruben = path.create({ subject: dataFactory.namedNode('https://ruben.verborgh.org/profile/#me') });
 showPerson(ruben);
 
 async function showPerson(person) {
@@ -35,3 +32,6 @@ async function showPerson(person) {
   for await (const name of person.friends.givenName)
     console.log(`- ${name}`);
 }
+
+console.log(path)
+

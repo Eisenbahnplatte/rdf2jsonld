@@ -6160,7 +6160,7 @@ Writable.prototype._destroy = function (err, cb) {
   cb(err);
 };
 }).call(this)}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../errors":27,"./_stream_duplex":28,"./internal/streams/destroy":35,"./internal/streams/state":39,"./internal/streams/stream":40,"_process":24,"buffer":4,"inherits":18,"util-deprecate":43}],33:[function(require,module,exports){
+},{"../errors":27,"./_stream_duplex":28,"./internal/streams/destroy":35,"./internal/streams/state":39,"./internal/streams/stream":40,"_process":24,"buffer":4,"inherits":18,"util-deprecate":42}],33:[function(require,module,exports){
 (function (process){(function (){
 'use strict';
 
@@ -7226,85 +7226,6 @@ function simpleEnd(buf) {
   return buf && buf.length ? this.write(buf) : '';
 }
 },{"safe-buffer":25}],42:[function(require,module,exports){
-(function (setImmediate,clearImmediate){(function (){
-var nextTick = require('process/browser.js').nextTick;
-var apply = Function.prototype.apply;
-var slice = Array.prototype.slice;
-var immediateIds = {};
-var nextImmediateId = 0;
-
-// DOM APIs, for completeness
-
-exports.setTimeout = function() {
-  return new Timeout(apply.call(setTimeout, window, arguments), clearTimeout);
-};
-exports.setInterval = function() {
-  return new Timeout(apply.call(setInterval, window, arguments), clearInterval);
-};
-exports.clearTimeout =
-exports.clearInterval = function(timeout) { timeout.close(); };
-
-function Timeout(id, clearFn) {
-  this._id = id;
-  this._clearFn = clearFn;
-}
-Timeout.prototype.unref = Timeout.prototype.ref = function() {};
-Timeout.prototype.close = function() {
-  this._clearFn.call(window, this._id);
-};
-
-// Does not start the time, just sets up the members needed.
-exports.enroll = function(item, msecs) {
-  clearTimeout(item._idleTimeoutId);
-  item._idleTimeout = msecs;
-};
-
-exports.unenroll = function(item) {
-  clearTimeout(item._idleTimeoutId);
-  item._idleTimeout = -1;
-};
-
-exports._unrefActive = exports.active = function(item) {
-  clearTimeout(item._idleTimeoutId);
-
-  var msecs = item._idleTimeout;
-  if (msecs >= 0) {
-    item._idleTimeoutId = setTimeout(function onTimeout() {
-      if (item._onTimeout)
-        item._onTimeout();
-    }, msecs);
-  }
-};
-
-// That's not how node.js implements it but the exposed api is the same.
-exports.setImmediate = typeof setImmediate === "function" ? setImmediate : function(fn) {
-  var id = nextImmediateId++;
-  var args = arguments.length < 2 ? false : slice.call(arguments, 1);
-
-  immediateIds[id] = true;
-
-  nextTick(function onNextTick() {
-    if (immediateIds[id]) {
-      // fn.call() is faster so we optimize for the common use-case
-      // @see http://jsperf.com/call-apply-segu
-      if (args) {
-        fn.apply(null, args);
-      } else {
-        fn.call(null);
-      }
-      // Prevent ids from leaking
-      exports.clearImmediate(id);
-    }
-  });
-
-  return id;
-};
-
-exports.clearImmediate = typeof clearImmediate === "function" ? clearImmediate : function(id) {
-  delete immediateIds[id];
-};
-}).call(this)}).call(this,require("timers").setImmediate,require("timers").clearImmediate)
-},{"process/browser.js":24,"timers":42}],43:[function(require,module,exports){
 (function (global){(function (){
 
 /**
@@ -7375,14 +7296,14 @@ function config (name) {
 }
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],44:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],45:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 // Currently in sync with Node.js lib/internal/util/types.js
 // https://github.com/nodejs/node/commit/112cc7c27551254aa2b17098fb774867f05ed0d9
 
@@ -7718,7 +7639,7 @@ exports.isAnyArrayBuffer = isAnyArrayBuffer;
   });
 });
 
-},{"is-arguments":19,"is-generator-function":22,"is-typed-array":23,"which-typed-array":47}],46:[function(require,module,exports){
+},{"is-arguments":19,"is-generator-function":22,"is-typed-array":23,"which-typed-array":46}],45:[function(require,module,exports){
 (function (process){(function (){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -8437,7 +8358,7 @@ function callbackify(original) {
 exports.callbackify = callbackify;
 
 }).call(this)}).call(this,require('_process'))
-},{"./support/isBuffer":44,"./support/types":45,"_process":24,"inherits":18}],47:[function(require,module,exports){
+},{"./support/isBuffer":43,"./support/types":44,"_process":24,"inherits":18}],46:[function(require,module,exports){
 (function (global){(function (){
 'use strict';
 
@@ -8496,7 +8417,7 @@ module.exports = function whichTypedArray(value) {
 };
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"available-typed-arrays":1,"call-bind/callBound":5,"es-abstract/helpers/getOwnPropertyDescriptor":7,"for-each":9,"has-tostringtag/shams":15,"is-typed-array":23}],48:[function(require,module,exports){
+},{"available-typed-arrays":1,"call-bind/callBound":5,"es-abstract/helpers/getOwnPropertyDescriptor":7,"for-each":9,"has-tostringtag/shams":15,"is-typed-array":23}],47:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ActorAbstractMediaTyped = void 0;
@@ -8545,7 +8466,7 @@ class ActorAbstractMediaTyped extends core_1.Actor {
 }
 exports.ActorAbstractMediaTyped = ActorAbstractMediaTyped;
 
-},{"@comunica/core":98}],49:[function(require,module,exports){
+},{"@comunica/core":97}],48:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ActorAbstractMediaTypedFixed = void 0;
@@ -8583,7 +8504,7 @@ class ActorAbstractMediaTypedFixed extends ActorAbstractMediaTyped_1.ActorAbstra
 }
 exports.ActorAbstractMediaTypedFixed = ActorAbstractMediaTypedFixed;
 
-},{"./ActorAbstractMediaTyped":48}],50:[function(require,module,exports){
+},{"./ActorAbstractMediaTyped":47}],49:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -8603,7 +8524,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./ActorAbstractMediaTyped"), exports);
 __exportStar(require("./ActorAbstractMediaTypedFixed"), exports);
 
-},{"./ActorAbstractMediaTyped":48,"./ActorAbstractMediaTypedFixed":49}],51:[function(require,module,exports){
+},{"./ActorAbstractMediaTyped":47,"./ActorAbstractMediaTypedFixed":48}],50:[function(require,module,exports){
 (function (process,global,Buffer){(function (){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
@@ -8711,7 +8632,7 @@ This error can be disabled by modifying the 'httpBodyTimeout' and/or 'httpTimeou
 exports.ActorHttpFetch = ActorHttpFetch;
 
 }).call(this)}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer)
-},{"./FetchInitPreprocessor":52,"@comunica/bus-http":80,"@comunica/context-entries":90,"_process":24,"buffer":4,"cross-fetch/polyfill":120}],52:[function(require,module,exports){
+},{"./FetchInitPreprocessor":51,"@comunica/bus-http":79,"@comunica/context-entries":89,"_process":24,"buffer":4,"cross-fetch/polyfill":128}],51:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.FetchInitPreprocessor = void 0;
@@ -8755,7 +8676,7 @@ class FetchInitPreprocessor {
 }
 exports.FetchInitPreprocessor = FetchInitPreprocessor;
 
-},{}],53:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -8774,7 +8695,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./ActorHttpFetch"), exports);
 
-},{"./ActorHttpFetch":51}],54:[function(require,module,exports){
+},{"./ActorHttpFetch":50}],53:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ActorHttpProxy = void 0;
@@ -8817,7 +8738,7 @@ class ActorHttpProxy extends bus_http_1.ActorHttp {
 }
 exports.ActorHttpProxy = ActorHttpProxy;
 
-},{"@comunica/bus-http":80,"@comunica/context-entries":90}],55:[function(require,module,exports){
+},{"@comunica/bus-http":79,"@comunica/context-entries":89}],54:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProxyHandlerStatic = void 0;
@@ -8843,7 +8764,7 @@ class ProxyHandlerStatic {
 }
 exports.ProxyHandlerStatic = ProxyHandlerStatic;
 
-},{}],56:[function(require,module,exports){
+},{}],55:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -8863,7 +8784,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./ActorHttpProxy"), exports);
 __exportStar(require("./ProxyHandlerStatic"), exports);
 
-},{"./ActorHttpProxy":54,"./ProxyHandlerStatic":55}],57:[function(require,module,exports){
+},{"./ActorHttpProxy":53,"./ProxyHandlerStatic":54}],56:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ActorRdfParseHtmlMicrodata = void 0;
@@ -8896,7 +8817,7 @@ class ActorRdfParseHtmlMicrodata extends bus_rdf_parse_html_1.ActorRdfParseHtml 
 }
 exports.ActorRdfParseHtmlMicrodata = ActorRdfParseHtmlMicrodata;
 
-},{"@comunica/bus-rdf-parse-html":82,"microdata-rdf-streaming-parser":211}],58:[function(require,module,exports){
+},{"@comunica/bus-rdf-parse-html":81,"microdata-rdf-streaming-parser":196}],57:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -8915,7 +8836,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./ActorRdfParseHtmlMicrodata"), exports);
 
-},{"./ActorRdfParseHtmlMicrodata":57}],59:[function(require,module,exports){
+},{"./ActorRdfParseHtmlMicrodata":56}],58:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ActorRdfParseHtmlRdfa = void 0;
@@ -8949,7 +8870,7 @@ class ActorRdfParseHtmlRdfa extends bus_rdf_parse_html_1.ActorRdfParseHtml {
 }
 exports.ActorRdfParseHtmlRdfa = ActorRdfParseHtmlRdfa;
 
-},{"@comunica/bus-rdf-parse-html":82,"rdfa-streaming-parser":268}],60:[function(require,module,exports){
+},{"@comunica/bus-rdf-parse-html":81,"rdfa-streaming-parser":259}],59:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -8968,7 +8889,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./ActorRdfParseHtmlRdfa"), exports);
 
-},{"./ActorRdfParseHtmlRdfa":59}],61:[function(require,module,exports){
+},{"./ActorRdfParseHtmlRdfa":58}],60:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ActorRdfParseHtmlScript = void 0;
@@ -8996,7 +8917,7 @@ class ActorRdfParseHtmlScript extends bus_rdf_parse_html_1.ActorRdfParseHtml {
 }
 exports.ActorRdfParseHtmlScript = ActorRdfParseHtmlScript;
 
-},{"./HtmlScriptListener":62,"@comunica/bus-rdf-parse-html":82}],62:[function(require,module,exports){
+},{"./HtmlScriptListener":61,"@comunica/bus-rdf-parse-html":81}],61:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.HtmlScriptListener = void 0;
@@ -9165,7 +9086,7 @@ class HtmlScriptListener {
 }
 exports.HtmlScriptListener = HtmlScriptListener;
 
-},{"@comunica/context-entries":90,"relative-to-absolute-iri":306,"stream":26}],63:[function(require,module,exports){
+},{"@comunica/context-entries":89,"relative-to-absolute-iri":297,"stream":26}],62:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -9184,7 +9105,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./ActorRdfParseHtmlScript"), exports);
 
-},{"./ActorRdfParseHtmlScript":61}],64:[function(require,module,exports){
+},{"./ActorRdfParseHtmlScript":60}],63:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ActorRdfParseHtml = void 0;
@@ -9305,7 +9226,7 @@ class ActorRdfParseHtml extends bus_rdf_parse_1.ActorRdfParseFixedMediaTypes {
 }
 exports.ActorRdfParseHtml = ActorRdfParseHtml;
 
-},{"@comunica/bus-rdf-parse":85,"htmlparser2/lib/WritableStream":148,"stream":26}],65:[function(require,module,exports){
+},{"@comunica/bus-rdf-parse":84,"htmlparser2/lib/WritableStream":156,"stream":26}],64:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -9324,7 +9245,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./ActorRdfParseHtml"), exports);
 
-},{"./ActorRdfParseHtml":64}],66:[function(require,module,exports){
+},{"./ActorRdfParseHtml":63}],65:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ActorRdfParseJsonLd = void 0;
@@ -9374,7 +9295,7 @@ class ActorRdfParseJsonLd extends bus_rdf_parse_1.ActorRdfParseFixedMediaTypes {
 }
 exports.ActorRdfParseJsonLd = ActorRdfParseJsonLd;
 
-},{"./DocumentLoaderMediated":67,"@comunica/bus-rdf-parse":85,"@comunica/context-entries":90,"jsonld-streaming-parser":161}],67:[function(require,module,exports){
+},{"./DocumentLoaderMediated":66,"@comunica/bus-rdf-parse":84,"@comunica/context-entries":89,"jsonld-streaming-parser":169}],66:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DocumentLoaderMediated = void 0;
@@ -9400,7 +9321,7 @@ class DocumentLoaderMediated extends jsonld_context_parser_1.FetchDocumentLoader
 }
 exports.DocumentLoaderMediated = DocumentLoaderMediated;
 
-},{"@comunica/bus-http":80,"jsonld-context-parser":153,"stream-to-string":311}],68:[function(require,module,exports){
+},{"@comunica/bus-http":79,"jsonld-context-parser":161,"stream-to-string":301}],67:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -9420,7 +9341,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./ActorRdfParseJsonLd"), exports);
 __exportStar(require("./DocumentLoaderMediated"), exports);
 
-},{"./ActorRdfParseJsonLd":66,"./DocumentLoaderMediated":67}],69:[function(require,module,exports){
+},{"./ActorRdfParseJsonLd":65,"./DocumentLoaderMediated":66}],68:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ActorRdfParseN3 = void 0;
@@ -9467,7 +9388,7 @@ class ActorRdfParseN3 extends bus_rdf_parse_1.ActorRdfParseFixedMediaTypes {
 }
 exports.ActorRdfParseN3 = ActorRdfParseN3;
 
-},{"@comunica/bus-rdf-parse":85,"n3":241}],70:[function(require,module,exports){
+},{"@comunica/bus-rdf-parse":84,"n3":226}],69:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -9486,7 +9407,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./ActorRdfParseN3"), exports);
 
-},{"./ActorRdfParseN3":69}],71:[function(require,module,exports){
+},{"./ActorRdfParseN3":68}],70:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ActorRdfParseRdfXml = void 0;
@@ -9519,7 +9440,7 @@ class ActorRdfParseRdfXml extends bus_rdf_parse_1.ActorRdfParseFixedMediaTypes {
 }
 exports.ActorRdfParseRdfXml = ActorRdfParseRdfXml;
 
-},{"@comunica/bus-rdf-parse":85,"rdfxml-streaming-parser":286}],72:[function(require,module,exports){
+},{"@comunica/bus-rdf-parse":84,"rdfxml-streaming-parser":277}],71:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -9538,7 +9459,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./ActorRdfParseRdfXml"), exports);
 
-},{"./ActorRdfParseRdfXml":71}],73:[function(require,module,exports){
+},{"./ActorRdfParseRdfXml":70}],72:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ActorRdfParseXmlRdfa = void 0;
@@ -9573,7 +9494,7 @@ class ActorRdfParseXmlRdfa extends bus_rdf_parse_1.ActorRdfParseFixedMediaTypes 
 }
 exports.ActorRdfParseXmlRdfa = ActorRdfParseXmlRdfa;
 
-},{"@comunica/bus-rdf-parse":85,"rdfa-streaming-parser":268}],74:[function(require,module,exports){
+},{"@comunica/bus-rdf-parse":84,"rdfa-streaming-parser":259}],73:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -9592,7 +9513,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./ActorRdfParseXmlRdfa"), exports);
 
-},{"./ActorRdfParseXmlRdfa":73}],75:[function(require,module,exports){
+},{"./ActorRdfParseXmlRdfa":72}],74:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ActorRdfSerializeJsonLd = void 0;
@@ -9621,7 +9542,7 @@ class ActorRdfSerializeJsonLd extends bus_rdf_serialize_1.ActorRdfSerializeFixed
 }
 exports.ActorRdfSerializeJsonLd = ActorRdfSerializeJsonLd;
 
-},{"@comunica/bus-rdf-serialize":88,"jsonld-streaming-serializer":183}],76:[function(require,module,exports){
+},{"@comunica/bus-rdf-serialize":87,"jsonld-streaming-serializer":191}],75:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -9640,7 +9561,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./ActorRdfSerializeJsonLd"), exports);
 
-},{"./ActorRdfSerializeJsonLd":75}],77:[function(require,module,exports){
+},{"./ActorRdfSerializeJsonLd":74}],76:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ActorRdfSerializeN3 = void 0;
@@ -9680,7 +9601,7 @@ class ActorRdfSerializeN3 extends bus_rdf_serialize_1.ActorRdfSerializeFixedMedi
 }
 exports.ActorRdfSerializeN3 = ActorRdfSerializeN3;
 
-},{"@comunica/bus-rdf-serialize":88,"n3":241}],78:[function(require,module,exports){
+},{"@comunica/bus-rdf-serialize":87,"n3":226}],77:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -9699,7 +9620,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./ActorRdfSerializeN3"), exports);
 
-},{"./ActorRdfSerializeN3":77}],79:[function(require,module,exports){
+},{"./ActorRdfSerializeN3":76}],78:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ActorHttp = void 0;
@@ -9759,7 +9680,7 @@ class ActorHttp extends core_1.Actor {
 }
 exports.ActorHttp = ActorHttp;
 
-},{"@comunica/core":98,"is-stream":152,"readable-web-to-node-stream":305,"web-streams-node":315}],80:[function(require,module,exports){
+},{"@comunica/core":97,"is-stream":160,"readable-web-to-node-stream":281,"web-streams-node":305}],79:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -9778,7 +9699,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./ActorHttp"), exports);
 
-},{"./ActorHttp":79}],81:[function(require,module,exports){
+},{"./ActorHttp":78}],80:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ActorRdfParseHtml = void 0;
@@ -9804,9 +9725,9 @@ class ActorRdfParseHtml extends core_1.Actor {
 }
 exports.ActorRdfParseHtml = ActorRdfParseHtml;
 
-},{"@comunica/core":98}],82:[function(require,module,exports){
-arguments[4][65][0].apply(exports,arguments)
-},{"./ActorRdfParseHtml":81,"dup":65}],83:[function(require,module,exports){
+},{"@comunica/core":97}],81:[function(require,module,exports){
+arguments[4][64][0].apply(exports,arguments)
+},{"./ActorRdfParseHtml":80,"dup":64}],82:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ActorRdfParse = void 0;
@@ -9831,7 +9752,7 @@ class ActorRdfParse extends actor_abstract_mediatyped_1.ActorAbstractMediaTyped 
 }
 exports.ActorRdfParse = ActorRdfParse;
 
-},{"@comunica/actor-abstract-mediatyped":50}],84:[function(require,module,exports){
+},{"@comunica/actor-abstract-mediatyped":49}],83:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ActorRdfParseFixedMediaTypes = void 0;
@@ -9862,7 +9783,7 @@ class ActorRdfParseFixedMediaTypes extends actor_abstract_mediatyped_1.ActorAbst
 }
 exports.ActorRdfParseFixedMediaTypes = ActorRdfParseFixedMediaTypes;
 
-},{"@comunica/actor-abstract-mediatyped":50}],85:[function(require,module,exports){
+},{"@comunica/actor-abstract-mediatyped":49}],84:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -9882,7 +9803,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./ActorRdfParse"), exports);
 __exportStar(require("./ActorRdfParseFixedMediaTypes"), exports);
 
-},{"./ActorRdfParse":83,"./ActorRdfParseFixedMediaTypes":84}],86:[function(require,module,exports){
+},{"./ActorRdfParse":82,"./ActorRdfParseFixedMediaTypes":83}],85:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ActorRdfSerialize = void 0;
@@ -9908,7 +9829,7 @@ class ActorRdfSerialize extends actor_abstract_mediatyped_1.ActorAbstractMediaTy
 }
 exports.ActorRdfSerialize = ActorRdfSerialize;
 
-},{"@comunica/actor-abstract-mediatyped":50}],87:[function(require,module,exports){
+},{"@comunica/actor-abstract-mediatyped":49}],86:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ActorRdfSerializeFixedMediaTypes = void 0;
@@ -9939,7 +9860,7 @@ class ActorRdfSerializeFixedMediaTypes extends actor_abstract_mediatyped_1.Actor
 }
 exports.ActorRdfSerializeFixedMediaTypes = ActorRdfSerializeFixedMediaTypes;
 
-},{"@comunica/actor-abstract-mediatyped":50}],88:[function(require,module,exports){
+},{"@comunica/actor-abstract-mediatyped":49}],87:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -9959,7 +9880,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./ActorRdfSerialize"), exports);
 __exportStar(require("./ActorRdfSerializeFixedMediaTypes"), exports);
 
-},{"./ActorRdfSerialize":86,"./ActorRdfSerializeFixedMediaTypes":87}],89:[function(require,module,exports){
+},{"./ActorRdfSerialize":85,"./ActorRdfSerializeFixedMediaTypes":86}],88:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.KeysRdfUpdateQuads = exports.KeysRdfResolveQuadPattern = exports.KeysRdfParseHtmlScript = exports.KeysRdfParseJsonLd = exports.KeysQueryOperation = exports.KeysInitQuery = exports.KeysHttpProxy = exports.KeysHttpMemento = exports.KeysHttp = exports.KeysCore = void 0;
@@ -10163,7 +10084,7 @@ exports.KeysRdfUpdateQuads = {
     destination: new core_1.ActionContextKey('@comunica/bus-rdf-update-quads:destination'),
 };
 
-},{"@comunica/core":98}],90:[function(require,module,exports){
+},{"@comunica/core":97}],89:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -10182,7 +10103,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./Keys"), exports);
 
-},{"./Keys":89}],91:[function(require,module,exports){
+},{"./Keys":88}],90:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ActionContextKey = exports.ActionContext = void 0;
@@ -10273,7 +10194,7 @@ class ActionContextKey {
 }
 exports.ActionContextKey = ActionContextKey;
 
-},{"immutable":150}],92:[function(require,module,exports){
+},{"immutable":158}],91:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ActionObserver = void 0;
@@ -10304,7 +10225,7 @@ class ActionObserver {
 }
 exports.ActionObserver = ActionObserver;
 
-},{}],93:[function(require,module,exports){
+},{}],92:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Actor = void 0;
@@ -10430,7 +10351,7 @@ class Actor {
 }
 exports.Actor = Actor;
 
-},{"./ContextEntries":96}],94:[function(require,module,exports){
+},{"./ContextEntries":95}],93:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Bus = void 0;
@@ -10609,7 +10530,7 @@ class Bus {
 }
 exports.Bus = Bus;
 
-},{}],95:[function(require,module,exports){
+},{}],94:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BusIndexed = void 0;
@@ -10682,14 +10603,14 @@ class BusIndexed extends Bus_1.Bus {
 }
 exports.BusIndexed = BusIndexed;
 
-},{"./Bus":94}],96:[function(require,module,exports){
+},{"./Bus":93}],95:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CONTEXT_KEY_LOGGER = void 0;
 const ActionContext_1 = require("./ActionContext");
 exports.CONTEXT_KEY_LOGGER = new ActionContext_1.ActionContextKey('@comunica/core:log');
 
-},{"./ActionContext":91}],97:[function(require,module,exports){
+},{"./ActionContext":90}],96:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Mediator = void 0;
@@ -10773,7 +10694,7 @@ class Mediator {
 }
 exports.Mediator = Mediator;
 
-},{}],98:[function(require,module,exports){
+},{}],97:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -10807,7 +10728,7 @@ __exportStar(require("./ActionObserver"), exports);
 __exportStar(require("./Actor"), exports);
 __exportStar(require("./Mediator"), exports);
 
-},{"./ActionContext":91,"./ActionObserver":92,"./Actor":93,"./Bus":94,"./BusIndexed":95,"./ContextEntries":96,"./Mediator":97,"@comunica/types":118}],99:[function(require,module,exports){
+},{"./ActionContext":90,"./ActionObserver":91,"./Actor":92,"./Bus":93,"./BusIndexed":94,"./ContextEntries":95,"./Mediator":96,"@comunica/types":117}],98:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MediatorCombineUnion = void 0;
@@ -10855,7 +10776,7 @@ class MediatorCombineUnion extends core_1.Mediator {
 }
 exports.MediatorCombineUnion = MediatorCombineUnion;
 
-},{"@comunica/core":98}],100:[function(require,module,exports){
+},{"@comunica/core":97}],99:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -10874,7 +10795,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./MediatorCombineUnion"), exports);
 
-},{"./MediatorCombineUnion":99}],101:[function(require,module,exports){
+},{"./MediatorCombineUnion":98}],100:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MediatorNumber = void 0;
@@ -10935,7 +10856,7 @@ class MediatorNumber extends core_1.Mediator {
 }
 exports.MediatorNumber = MediatorNumber;
 
-},{"@comunica/core":98}],102:[function(require,module,exports){
+},{"@comunica/core":97}],101:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -10954,7 +10875,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./MediatorNumber"), exports);
 
-},{"./MediatorNumber":101}],103:[function(require,module,exports){
+},{"./MediatorNumber":100}],102:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MediatorRace = void 0;
@@ -10985,7 +10906,7 @@ class MediatorRace extends core_1.Mediator {
 }
 exports.MediatorRace = MediatorRace;
 
-},{"@comunica/core":98}],104:[function(require,module,exports){
+},{"@comunica/core":97}],103:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -11004,7 +10925,11 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./MediatorRace"), exports);
 
-},{"./MediatorRace":103}],105:[function(require,module,exports){
+},{"./MediatorRace":102}],104:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+
+},{}],105:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 
@@ -11051,10 +10976,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 },{}],116:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-
-},{}],117:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.Logger = void 0;
 /**
  * A logger accepts messages from different levels
@@ -11084,7 +11005,7 @@ Logger.LEVELS = {
     fatal: 5,
 };
 
-},{}],118:[function(require,module,exports){
+},{}],117:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -11115,7 +11036,238 @@ __exportStar(require("./IQueryEngine"), exports);
 __exportStar(require("./IQueryOperationResult"), exports);
 __exportStar(require("./Logger"), exports);
 
-},{"./Bindings":105,"./IActionContext":106,"./ICliArgsHandler":107,"./IDataDestination":108,"./IDataSource":109,"./IJoinEntry":110,"./IMetadata":111,"./IPhysicalQueryPlanLogger":112,"./IProxyHandler":113,"./IQueryContext":114,"./IQueryEngine":115,"./IQueryOperationResult":116,"./Logger":117}],119:[function(require,module,exports){
+},{"./Bindings":104,"./IActionContext":105,"./ICliArgsHandler":106,"./IDataDestination":107,"./IDataSource":108,"./IJoinEntry":109,"./IMetadata":110,"./IPhysicalQueryPlanLogger":111,"./IProxyHandler":112,"./IQueryContext":113,"./IQueryEngine":114,"./IQueryOperationResult":115,"./Logger":116}],118:[function(require,module,exports){
+const DataFactory = require('./lib/DataFactory.js')
+
+module.exports = DataFactory
+
+},{"./lib/DataFactory.js":120}],119:[function(require,module,exports){
+class BlankNode {
+  constructor (id) {
+    this.value = id || ('b' + (++BlankNode.nextId))
+  }
+
+  equals (other) {
+    return !!other && other.termType === this.termType && other.value === this.value
+  }
+}
+
+BlankNode.prototype.termType = 'BlankNode'
+
+BlankNode.nextId = 0
+
+module.exports = BlankNode
+
+},{}],120:[function(require,module,exports){
+const BlankNode = require('./BlankNode.js')
+const DefaultGraph = require('./DefaultGraph.js')
+const fromTermRaw = require('./fromTerm.js')
+const Literal = require('./Literal.js')
+const NamedNode = require('./NamedNode.js')
+const Quad = require('./Quad.js')
+const Variable = require('./Variable.js')
+
+function namedNode (value) {
+  return new NamedNode(value)
+}
+
+function blankNode (value) {
+  return new BlankNode(value)
+}
+
+function literal (value, languageOrDatatype) {
+  if (typeof languageOrDatatype === 'string') {
+    if (languageOrDatatype.indexOf(':') === -1) {
+      return new Literal(value, languageOrDatatype)
+    }
+
+    return new Literal(value, null, DataFactory.namedNode(languageOrDatatype))
+  }
+
+  return new Literal(value, null, languageOrDatatype)
+}
+
+function variable (value) {
+  return new Variable(value)
+}
+
+function defaultGraph () {
+  return DataFactory.defaultGraphInstance
+}
+
+function triple (subject, predicate, object) {
+  return DataFactory.quad(subject, predicate, object)
+}
+
+function quad (subject, predicate, object, graph) {
+  return new Quad(subject, predicate, object, graph || DataFactory.defaultGraphInstance)
+}
+
+function fromTerm (original) {
+  return fromTermRaw.call(DataFactory, original)
+}
+
+function fromQuad (original) {
+  return fromTermRaw.call(DataFactory, original)
+}
+
+const DataFactory = {
+  namedNode,
+  blankNode,
+  literal,
+  variable,
+  defaultGraph,
+  triple,
+  quad,
+  fromTerm,
+  fromQuad,
+  defaultGraphInstance: new DefaultGraph()
+}
+
+module.exports = DataFactory
+
+},{"./BlankNode.js":119,"./DefaultGraph.js":121,"./Literal.js":122,"./NamedNode.js":123,"./Quad.js":124,"./Variable.js":125,"./fromTerm.js":126}],121:[function(require,module,exports){
+class DefaultGraph {
+  equals (other) {
+    return !!other && other.termType === this.termType
+  }
+}
+
+DefaultGraph.prototype.termType = 'DefaultGraph'
+DefaultGraph.prototype.value = ''
+
+module.exports = DefaultGraph
+
+},{}],122:[function(require,module,exports){
+const NamedNode = require('./NamedNode.js')
+
+class Literal {
+  constructor (value, language, datatype) {
+    this.value = value
+    this.datatype = Literal.stringDatatype
+    this.language = ''
+
+    if (language) {
+      this.language = language
+      this.datatype = Literal.langStringDatatype
+    } else if (datatype) {
+      this.datatype = datatype
+    }
+  }
+
+  equals (other) {
+    return !!other && other.termType === this.termType && other.value === this.value &&
+      other.language === this.language && other.datatype.equals(this.datatype)
+  }
+}
+
+Literal.prototype.termType = 'Literal'
+
+Literal.langStringDatatype = new NamedNode('http://www.w3.org/1999/02/22-rdf-syntax-ns#langString')
+Literal.stringDatatype = new NamedNode('http://www.w3.org/2001/XMLSchema#string')
+
+module.exports = Literal
+
+},{"./NamedNode.js":123}],123:[function(require,module,exports){
+class NamedNode {
+  constructor (iri) {
+    this.value = iri
+  }
+
+  equals (other) {
+    return !!other && other.termType === this.termType && other.value === this.value
+  }
+}
+
+NamedNode.prototype.termType = 'NamedNode'
+
+module.exports = NamedNode
+
+},{}],124:[function(require,module,exports){
+const DefaultGraph = require('./DefaultGraph.js')
+
+class Quad {
+  constructor (subject, predicate, object, graph) {
+    this.subject = subject
+    this.predicate = predicate
+    this.object = object
+
+    if (graph) {
+      this.graph = graph
+    } else {
+      this.graph = new DefaultGraph()
+    }
+  }
+
+  equals (other) {
+    // `|| !other.termType` is for backwards-compatibility with old factories without RDF* support.
+    return !!other && (other.termType === 'Quad' || !other.termType) &&
+      other.subject.equals(this.subject) && other.predicate.equals(this.predicate) &&
+      other.object.equals(this.object) && other.graph.equals(this.graph)
+  }
+}
+
+Quad.prototype.termType = 'Quad'
+Quad.prototype.value = ''
+
+module.exports = Quad
+
+},{"./DefaultGraph.js":121}],125:[function(require,module,exports){
+class Variable {
+  constructor (name) {
+    this.value = name
+  }
+
+  equals (other) {
+    return !!other && other.termType === this.termType && other.value === this.value
+  }
+}
+
+Variable.prototype.termType = 'Variable'
+
+module.exports = Variable
+
+},{}],126:[function(require,module,exports){
+function fromTerm (original) {
+  if (!original) {
+    return null
+  }
+
+  if (original.termType === 'BlankNode') {
+    return this.blankNode(original.value)
+  }
+
+  if (original.termType === 'DefaultGraph') {
+    return this.defaultGraph()
+  }
+
+  if (original.termType === 'Literal') {
+    return this.literal(original.value, original.language || this.namedNode(original.datatype.value))
+  }
+
+  if (original.termType === 'NamedNode') {
+    return this.namedNode(original.value)
+  }
+
+  if (original.termType === 'Quad') {
+    const subject = this.fromTerm(original.subject)
+    const predicate = this.fromTerm(original.predicate)
+    const object = this.fromTerm(original.object)
+    const graph = this.fromTerm(original.graph)
+
+    return this.quad(subject, predicate, object, graph)
+  }
+
+  if (original.termType === 'Variable') {
+    return this.variable(original.value)
+  }
+
+  throw new Error(`unknown termType ${original.termType}`)
+}
+
+module.exports = fromTerm
+
+},{}],127:[function(require,module,exports){
 /* jshint esversion: 6 */
 /* jslint node: true */
 'use strict';
@@ -11143,7 +11295,7 @@ module.exports = function serialize (object) {
   }, '') + '}';
 };
 
-},{}],120:[function(require,module,exports){
+},{}],128:[function(require,module,exports){
 (function(self) {
 
 var irrelevant = (function (exports) {
@@ -11677,7 +11829,7 @@ var irrelevant = (function (exports) {
 })({});
 })(typeof self !== 'undefined' ? self : this);
 
-},{}],121:[function(require,module,exports){
+},{}],129:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.attributeNames = exports.elementNames = void 0;
@@ -11782,7 +11934,7 @@ exports.attributeNames = new Map([
     ["zoomandpan", "zoomAndPan"],
 ]);
 
-},{}],122:[function(require,module,exports){
+},{}],130:[function(require,module,exports){
 "use strict";
 var __assign = (this && this.__assign) || function () {
     __assign = Object.assign || function(t) {
@@ -11995,7 +12147,7 @@ function renderComment(elem) {
     return "<!--" + elem.data + "-->";
 }
 
-},{"./foreignNames":121,"domelementtype":131,"entities":126}],123:[function(require,module,exports){
+},{"./foreignNames":129,"domelementtype":139,"entities":134}],131:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -12050,7 +12202,7 @@ function getReplacer(map) {
     };
 }
 
-},{"./decode_codepoint":124,"./maps/entities.json":128,"./maps/legacy.json":129,"./maps/xml.json":130}],124:[function(require,module,exports){
+},{"./decode_codepoint":132,"./maps/entities.json":136,"./maps/legacy.json":137,"./maps/xml.json":138}],132:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -12082,7 +12234,7 @@ function decodeCodePoint(codePoint) {
 }
 exports.default = decodeCodePoint;
 
-},{"./maps/decode.json":127}],125:[function(require,module,exports){
+},{"./maps/decode.json":135}],133:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -12220,7 +12372,7 @@ function getASCIIEncoder(obj) {
     };
 }
 
-},{"./maps/entities.json":128,"./maps/xml.json":130}],126:[function(require,module,exports){
+},{"./maps/entities.json":136,"./maps/xml.json":138}],134:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.decodeXMLStrict = exports.decodeHTML5Strict = exports.decodeHTML4Strict = exports.decodeHTML5 = exports.decodeHTML4 = exports.decodeHTMLStrict = exports.decodeHTML = exports.decodeXML = exports.encodeHTML5 = exports.encodeHTML4 = exports.escapeUTF8 = exports.escape = exports.encodeNonAsciiHTML = exports.encodeHTML = exports.encodeXML = exports.encode = exports.decodeStrict = exports.decode = void 0;
@@ -12279,19 +12431,19 @@ Object.defineProperty(exports, "decodeHTML4Strict", { enumerable: true, get: fun
 Object.defineProperty(exports, "decodeHTML5Strict", { enumerable: true, get: function () { return decode_2.decodeHTMLStrict; } });
 Object.defineProperty(exports, "decodeXMLStrict", { enumerable: true, get: function () { return decode_2.decodeXML; } });
 
-},{"./decode":123,"./encode":125}],127:[function(require,module,exports){
+},{"./decode":131,"./encode":133}],135:[function(require,module,exports){
 module.exports={"0":65533,"128":8364,"130":8218,"131":402,"132":8222,"133":8230,"134":8224,"135":8225,"136":710,"137":8240,"138":352,"139":8249,"140":338,"142":381,"145":8216,"146":8217,"147":8220,"148":8221,"149":8226,"150":8211,"151":8212,"152":732,"153":8482,"154":353,"155":8250,"156":339,"158":382,"159":376}
 
-},{}],128:[function(require,module,exports){
+},{}],136:[function(require,module,exports){
 module.exports={"Aacute":"Á","aacute":"á","Abreve":"Ă","abreve":"ă","ac":"∾","acd":"∿","acE":"∾̳","Acirc":"Â","acirc":"â","acute":"´","Acy":"А","acy":"а","AElig":"Æ","aelig":"æ","af":"⁡","Afr":"𝔄","afr":"𝔞","Agrave":"À","agrave":"à","alefsym":"ℵ","aleph":"ℵ","Alpha":"Α","alpha":"α","Amacr":"Ā","amacr":"ā","amalg":"⨿","amp":"&","AMP":"&","andand":"⩕","And":"⩓","and":"∧","andd":"⩜","andslope":"⩘","andv":"⩚","ang":"∠","ange":"⦤","angle":"∠","angmsdaa":"⦨","angmsdab":"⦩","angmsdac":"⦪","angmsdad":"⦫","angmsdae":"⦬","angmsdaf":"⦭","angmsdag":"⦮","angmsdah":"⦯","angmsd":"∡","angrt":"∟","angrtvb":"⊾","angrtvbd":"⦝","angsph":"∢","angst":"Å","angzarr":"⍼","Aogon":"Ą","aogon":"ą","Aopf":"𝔸","aopf":"𝕒","apacir":"⩯","ap":"≈","apE":"⩰","ape":"≊","apid":"≋","apos":"'","ApplyFunction":"⁡","approx":"≈","approxeq":"≊","Aring":"Å","aring":"å","Ascr":"𝒜","ascr":"𝒶","Assign":"≔","ast":"*","asymp":"≈","asympeq":"≍","Atilde":"Ã","atilde":"ã","Auml":"Ä","auml":"ä","awconint":"∳","awint":"⨑","backcong":"≌","backepsilon":"϶","backprime":"‵","backsim":"∽","backsimeq":"⋍","Backslash":"∖","Barv":"⫧","barvee":"⊽","barwed":"⌅","Barwed":"⌆","barwedge":"⌅","bbrk":"⎵","bbrktbrk":"⎶","bcong":"≌","Bcy":"Б","bcy":"б","bdquo":"„","becaus":"∵","because":"∵","Because":"∵","bemptyv":"⦰","bepsi":"϶","bernou":"ℬ","Bernoullis":"ℬ","Beta":"Β","beta":"β","beth":"ℶ","between":"≬","Bfr":"𝔅","bfr":"𝔟","bigcap":"⋂","bigcirc":"◯","bigcup":"⋃","bigodot":"⨀","bigoplus":"⨁","bigotimes":"⨂","bigsqcup":"⨆","bigstar":"★","bigtriangledown":"▽","bigtriangleup":"△","biguplus":"⨄","bigvee":"⋁","bigwedge":"⋀","bkarow":"⤍","blacklozenge":"⧫","blacksquare":"▪","blacktriangle":"▴","blacktriangledown":"▾","blacktriangleleft":"◂","blacktriangleright":"▸","blank":"␣","blk12":"▒","blk14":"░","blk34":"▓","block":"█","bne":"=⃥","bnequiv":"≡⃥","bNot":"⫭","bnot":"⌐","Bopf":"𝔹","bopf":"𝕓","bot":"⊥","bottom":"⊥","bowtie":"⋈","boxbox":"⧉","boxdl":"┐","boxdL":"╕","boxDl":"╖","boxDL":"╗","boxdr":"┌","boxdR":"╒","boxDr":"╓","boxDR":"╔","boxh":"─","boxH":"═","boxhd":"┬","boxHd":"╤","boxhD":"╥","boxHD":"╦","boxhu":"┴","boxHu":"╧","boxhU":"╨","boxHU":"╩","boxminus":"⊟","boxplus":"⊞","boxtimes":"⊠","boxul":"┘","boxuL":"╛","boxUl":"╜","boxUL":"╝","boxur":"└","boxuR":"╘","boxUr":"╙","boxUR":"╚","boxv":"│","boxV":"║","boxvh":"┼","boxvH":"╪","boxVh":"╫","boxVH":"╬","boxvl":"┤","boxvL":"╡","boxVl":"╢","boxVL":"╣","boxvr":"├","boxvR":"╞","boxVr":"╟","boxVR":"╠","bprime":"‵","breve":"˘","Breve":"˘","brvbar":"¦","bscr":"𝒷","Bscr":"ℬ","bsemi":"⁏","bsim":"∽","bsime":"⋍","bsolb":"⧅","bsol":"\\","bsolhsub":"⟈","bull":"•","bullet":"•","bump":"≎","bumpE":"⪮","bumpe":"≏","Bumpeq":"≎","bumpeq":"≏","Cacute":"Ć","cacute":"ć","capand":"⩄","capbrcup":"⩉","capcap":"⩋","cap":"∩","Cap":"⋒","capcup":"⩇","capdot":"⩀","CapitalDifferentialD":"ⅅ","caps":"∩︀","caret":"⁁","caron":"ˇ","Cayleys":"ℭ","ccaps":"⩍","Ccaron":"Č","ccaron":"č","Ccedil":"Ç","ccedil":"ç","Ccirc":"Ĉ","ccirc":"ĉ","Cconint":"∰","ccups":"⩌","ccupssm":"⩐","Cdot":"Ċ","cdot":"ċ","cedil":"¸","Cedilla":"¸","cemptyv":"⦲","cent":"¢","centerdot":"·","CenterDot":"·","cfr":"𝔠","Cfr":"ℭ","CHcy":"Ч","chcy":"ч","check":"✓","checkmark":"✓","Chi":"Χ","chi":"χ","circ":"ˆ","circeq":"≗","circlearrowleft":"↺","circlearrowright":"↻","circledast":"⊛","circledcirc":"⊚","circleddash":"⊝","CircleDot":"⊙","circledR":"®","circledS":"Ⓢ","CircleMinus":"⊖","CirclePlus":"⊕","CircleTimes":"⊗","cir":"○","cirE":"⧃","cire":"≗","cirfnint":"⨐","cirmid":"⫯","cirscir":"⧂","ClockwiseContourIntegral":"∲","CloseCurlyDoubleQuote":"”","CloseCurlyQuote":"’","clubs":"♣","clubsuit":"♣","colon":":","Colon":"∷","Colone":"⩴","colone":"≔","coloneq":"≔","comma":",","commat":"@","comp":"∁","compfn":"∘","complement":"∁","complexes":"ℂ","cong":"≅","congdot":"⩭","Congruent":"≡","conint":"∮","Conint":"∯","ContourIntegral":"∮","copf":"𝕔","Copf":"ℂ","coprod":"∐","Coproduct":"∐","copy":"©","COPY":"©","copysr":"℗","CounterClockwiseContourIntegral":"∳","crarr":"↵","cross":"✗","Cross":"⨯","Cscr":"𝒞","cscr":"𝒸","csub":"⫏","csube":"⫑","csup":"⫐","csupe":"⫒","ctdot":"⋯","cudarrl":"⤸","cudarrr":"⤵","cuepr":"⋞","cuesc":"⋟","cularr":"↶","cularrp":"⤽","cupbrcap":"⩈","cupcap":"⩆","CupCap":"≍","cup":"∪","Cup":"⋓","cupcup":"⩊","cupdot":"⊍","cupor":"⩅","cups":"∪︀","curarr":"↷","curarrm":"⤼","curlyeqprec":"⋞","curlyeqsucc":"⋟","curlyvee":"⋎","curlywedge":"⋏","curren":"¤","curvearrowleft":"↶","curvearrowright":"↷","cuvee":"⋎","cuwed":"⋏","cwconint":"∲","cwint":"∱","cylcty":"⌭","dagger":"†","Dagger":"‡","daleth":"ℸ","darr":"↓","Darr":"↡","dArr":"⇓","dash":"‐","Dashv":"⫤","dashv":"⊣","dbkarow":"⤏","dblac":"˝","Dcaron":"Ď","dcaron":"ď","Dcy":"Д","dcy":"д","ddagger":"‡","ddarr":"⇊","DD":"ⅅ","dd":"ⅆ","DDotrahd":"⤑","ddotseq":"⩷","deg":"°","Del":"∇","Delta":"Δ","delta":"δ","demptyv":"⦱","dfisht":"⥿","Dfr":"𝔇","dfr":"𝔡","dHar":"⥥","dharl":"⇃","dharr":"⇂","DiacriticalAcute":"´","DiacriticalDot":"˙","DiacriticalDoubleAcute":"˝","DiacriticalGrave":"`","DiacriticalTilde":"˜","diam":"⋄","diamond":"⋄","Diamond":"⋄","diamondsuit":"♦","diams":"♦","die":"¨","DifferentialD":"ⅆ","digamma":"ϝ","disin":"⋲","div":"÷","divide":"÷","divideontimes":"⋇","divonx":"⋇","DJcy":"Ђ","djcy":"ђ","dlcorn":"⌞","dlcrop":"⌍","dollar":"$","Dopf":"𝔻","dopf":"𝕕","Dot":"¨","dot":"˙","DotDot":"⃜","doteq":"≐","doteqdot":"≑","DotEqual":"≐","dotminus":"∸","dotplus":"∔","dotsquare":"⊡","doublebarwedge":"⌆","DoubleContourIntegral":"∯","DoubleDot":"¨","DoubleDownArrow":"⇓","DoubleLeftArrow":"⇐","DoubleLeftRightArrow":"⇔","DoubleLeftTee":"⫤","DoubleLongLeftArrow":"⟸","DoubleLongLeftRightArrow":"⟺","DoubleLongRightArrow":"⟹","DoubleRightArrow":"⇒","DoubleRightTee":"⊨","DoubleUpArrow":"⇑","DoubleUpDownArrow":"⇕","DoubleVerticalBar":"∥","DownArrowBar":"⤓","downarrow":"↓","DownArrow":"↓","Downarrow":"⇓","DownArrowUpArrow":"⇵","DownBreve":"̑","downdownarrows":"⇊","downharpoonleft":"⇃","downharpoonright":"⇂","DownLeftRightVector":"⥐","DownLeftTeeVector":"⥞","DownLeftVectorBar":"⥖","DownLeftVector":"↽","DownRightTeeVector":"⥟","DownRightVectorBar":"⥗","DownRightVector":"⇁","DownTeeArrow":"↧","DownTee":"⊤","drbkarow":"⤐","drcorn":"⌟","drcrop":"⌌","Dscr":"𝒟","dscr":"𝒹","DScy":"Ѕ","dscy":"ѕ","dsol":"⧶","Dstrok":"Đ","dstrok":"đ","dtdot":"⋱","dtri":"▿","dtrif":"▾","duarr":"⇵","duhar":"⥯","dwangle":"⦦","DZcy":"Џ","dzcy":"џ","dzigrarr":"⟿","Eacute":"É","eacute":"é","easter":"⩮","Ecaron":"Ě","ecaron":"ě","Ecirc":"Ê","ecirc":"ê","ecir":"≖","ecolon":"≕","Ecy":"Э","ecy":"э","eDDot":"⩷","Edot":"Ė","edot":"ė","eDot":"≑","ee":"ⅇ","efDot":"≒","Efr":"𝔈","efr":"𝔢","eg":"⪚","Egrave":"È","egrave":"è","egs":"⪖","egsdot":"⪘","el":"⪙","Element":"∈","elinters":"⏧","ell":"ℓ","els":"⪕","elsdot":"⪗","Emacr":"Ē","emacr":"ē","empty":"∅","emptyset":"∅","EmptySmallSquare":"◻","emptyv":"∅","EmptyVerySmallSquare":"▫","emsp13":" ","emsp14":" ","emsp":" ","ENG":"Ŋ","eng":"ŋ","ensp":" ","Eogon":"Ę","eogon":"ę","Eopf":"𝔼","eopf":"𝕖","epar":"⋕","eparsl":"⧣","eplus":"⩱","epsi":"ε","Epsilon":"Ε","epsilon":"ε","epsiv":"ϵ","eqcirc":"≖","eqcolon":"≕","eqsim":"≂","eqslantgtr":"⪖","eqslantless":"⪕","Equal":"⩵","equals":"=","EqualTilde":"≂","equest":"≟","Equilibrium":"⇌","equiv":"≡","equivDD":"⩸","eqvparsl":"⧥","erarr":"⥱","erDot":"≓","escr":"ℯ","Escr":"ℰ","esdot":"≐","Esim":"⩳","esim":"≂","Eta":"Η","eta":"η","ETH":"Ð","eth":"ð","Euml":"Ë","euml":"ë","euro":"€","excl":"!","exist":"∃","Exists":"∃","expectation":"ℰ","exponentiale":"ⅇ","ExponentialE":"ⅇ","fallingdotseq":"≒","Fcy":"Ф","fcy":"ф","female":"♀","ffilig":"ﬃ","fflig":"ﬀ","ffllig":"ﬄ","Ffr":"𝔉","ffr":"𝔣","filig":"ﬁ","FilledSmallSquare":"◼","FilledVerySmallSquare":"▪","fjlig":"fj","flat":"♭","fllig":"ﬂ","fltns":"▱","fnof":"ƒ","Fopf":"𝔽","fopf":"𝕗","forall":"∀","ForAll":"∀","fork":"⋔","forkv":"⫙","Fouriertrf":"ℱ","fpartint":"⨍","frac12":"½","frac13":"⅓","frac14":"¼","frac15":"⅕","frac16":"⅙","frac18":"⅛","frac23":"⅔","frac25":"⅖","frac34":"¾","frac35":"⅗","frac38":"⅜","frac45":"⅘","frac56":"⅚","frac58":"⅝","frac78":"⅞","frasl":"⁄","frown":"⌢","fscr":"𝒻","Fscr":"ℱ","gacute":"ǵ","Gamma":"Γ","gamma":"γ","Gammad":"Ϝ","gammad":"ϝ","gap":"⪆","Gbreve":"Ğ","gbreve":"ğ","Gcedil":"Ģ","Gcirc":"Ĝ","gcirc":"ĝ","Gcy":"Г","gcy":"г","Gdot":"Ġ","gdot":"ġ","ge":"≥","gE":"≧","gEl":"⪌","gel":"⋛","geq":"≥","geqq":"≧","geqslant":"⩾","gescc":"⪩","ges":"⩾","gesdot":"⪀","gesdoto":"⪂","gesdotol":"⪄","gesl":"⋛︀","gesles":"⪔","Gfr":"𝔊","gfr":"𝔤","gg":"≫","Gg":"⋙","ggg":"⋙","gimel":"ℷ","GJcy":"Ѓ","gjcy":"ѓ","gla":"⪥","gl":"≷","glE":"⪒","glj":"⪤","gnap":"⪊","gnapprox":"⪊","gne":"⪈","gnE":"≩","gneq":"⪈","gneqq":"≩","gnsim":"⋧","Gopf":"𝔾","gopf":"𝕘","grave":"`","GreaterEqual":"≥","GreaterEqualLess":"⋛","GreaterFullEqual":"≧","GreaterGreater":"⪢","GreaterLess":"≷","GreaterSlantEqual":"⩾","GreaterTilde":"≳","Gscr":"𝒢","gscr":"ℊ","gsim":"≳","gsime":"⪎","gsiml":"⪐","gtcc":"⪧","gtcir":"⩺","gt":">","GT":">","Gt":"≫","gtdot":"⋗","gtlPar":"⦕","gtquest":"⩼","gtrapprox":"⪆","gtrarr":"⥸","gtrdot":"⋗","gtreqless":"⋛","gtreqqless":"⪌","gtrless":"≷","gtrsim":"≳","gvertneqq":"≩︀","gvnE":"≩︀","Hacek":"ˇ","hairsp":" ","half":"½","hamilt":"ℋ","HARDcy":"Ъ","hardcy":"ъ","harrcir":"⥈","harr":"↔","hArr":"⇔","harrw":"↭","Hat":"^","hbar":"ℏ","Hcirc":"Ĥ","hcirc":"ĥ","hearts":"♥","heartsuit":"♥","hellip":"…","hercon":"⊹","hfr":"𝔥","Hfr":"ℌ","HilbertSpace":"ℋ","hksearow":"⤥","hkswarow":"⤦","hoarr":"⇿","homtht":"∻","hookleftarrow":"↩","hookrightarrow":"↪","hopf":"𝕙","Hopf":"ℍ","horbar":"―","HorizontalLine":"─","hscr":"𝒽","Hscr":"ℋ","hslash":"ℏ","Hstrok":"Ħ","hstrok":"ħ","HumpDownHump":"≎","HumpEqual":"≏","hybull":"⁃","hyphen":"‐","Iacute":"Í","iacute":"í","ic":"⁣","Icirc":"Î","icirc":"î","Icy":"И","icy":"и","Idot":"İ","IEcy":"Е","iecy":"е","iexcl":"¡","iff":"⇔","ifr":"𝔦","Ifr":"ℑ","Igrave":"Ì","igrave":"ì","ii":"ⅈ","iiiint":"⨌","iiint":"∭","iinfin":"⧜","iiota":"℩","IJlig":"Ĳ","ijlig":"ĳ","Imacr":"Ī","imacr":"ī","image":"ℑ","ImaginaryI":"ⅈ","imagline":"ℐ","imagpart":"ℑ","imath":"ı","Im":"ℑ","imof":"⊷","imped":"Ƶ","Implies":"⇒","incare":"℅","in":"∈","infin":"∞","infintie":"⧝","inodot":"ı","intcal":"⊺","int":"∫","Int":"∬","integers":"ℤ","Integral":"∫","intercal":"⊺","Intersection":"⋂","intlarhk":"⨗","intprod":"⨼","InvisibleComma":"⁣","InvisibleTimes":"⁢","IOcy":"Ё","iocy":"ё","Iogon":"Į","iogon":"į","Iopf":"𝕀","iopf":"𝕚","Iota":"Ι","iota":"ι","iprod":"⨼","iquest":"¿","iscr":"𝒾","Iscr":"ℐ","isin":"∈","isindot":"⋵","isinE":"⋹","isins":"⋴","isinsv":"⋳","isinv":"∈","it":"⁢","Itilde":"Ĩ","itilde":"ĩ","Iukcy":"І","iukcy":"і","Iuml":"Ï","iuml":"ï","Jcirc":"Ĵ","jcirc":"ĵ","Jcy":"Й","jcy":"й","Jfr":"𝔍","jfr":"𝔧","jmath":"ȷ","Jopf":"𝕁","jopf":"𝕛","Jscr":"𝒥","jscr":"𝒿","Jsercy":"Ј","jsercy":"ј","Jukcy":"Є","jukcy":"є","Kappa":"Κ","kappa":"κ","kappav":"ϰ","Kcedil":"Ķ","kcedil":"ķ","Kcy":"К","kcy":"к","Kfr":"𝔎","kfr":"𝔨","kgreen":"ĸ","KHcy":"Х","khcy":"х","KJcy":"Ќ","kjcy":"ќ","Kopf":"𝕂","kopf":"𝕜","Kscr":"𝒦","kscr":"𝓀","lAarr":"⇚","Lacute":"Ĺ","lacute":"ĺ","laemptyv":"⦴","lagran":"ℒ","Lambda":"Λ","lambda":"λ","lang":"⟨","Lang":"⟪","langd":"⦑","langle":"⟨","lap":"⪅","Laplacetrf":"ℒ","laquo":"«","larrb":"⇤","larrbfs":"⤟","larr":"←","Larr":"↞","lArr":"⇐","larrfs":"⤝","larrhk":"↩","larrlp":"↫","larrpl":"⤹","larrsim":"⥳","larrtl":"↢","latail":"⤙","lAtail":"⤛","lat":"⪫","late":"⪭","lates":"⪭︀","lbarr":"⤌","lBarr":"⤎","lbbrk":"❲","lbrace":"{","lbrack":"[","lbrke":"⦋","lbrksld":"⦏","lbrkslu":"⦍","Lcaron":"Ľ","lcaron":"ľ","Lcedil":"Ļ","lcedil":"ļ","lceil":"⌈","lcub":"{","Lcy":"Л","lcy":"л","ldca":"⤶","ldquo":"“","ldquor":"„","ldrdhar":"⥧","ldrushar":"⥋","ldsh":"↲","le":"≤","lE":"≦","LeftAngleBracket":"⟨","LeftArrowBar":"⇤","leftarrow":"←","LeftArrow":"←","Leftarrow":"⇐","LeftArrowRightArrow":"⇆","leftarrowtail":"↢","LeftCeiling":"⌈","LeftDoubleBracket":"⟦","LeftDownTeeVector":"⥡","LeftDownVectorBar":"⥙","LeftDownVector":"⇃","LeftFloor":"⌊","leftharpoondown":"↽","leftharpoonup":"↼","leftleftarrows":"⇇","leftrightarrow":"↔","LeftRightArrow":"↔","Leftrightarrow":"⇔","leftrightarrows":"⇆","leftrightharpoons":"⇋","leftrightsquigarrow":"↭","LeftRightVector":"⥎","LeftTeeArrow":"↤","LeftTee":"⊣","LeftTeeVector":"⥚","leftthreetimes":"⋋","LeftTriangleBar":"⧏","LeftTriangle":"⊲","LeftTriangleEqual":"⊴","LeftUpDownVector":"⥑","LeftUpTeeVector":"⥠","LeftUpVectorBar":"⥘","LeftUpVector":"↿","LeftVectorBar":"⥒","LeftVector":"↼","lEg":"⪋","leg":"⋚","leq":"≤","leqq":"≦","leqslant":"⩽","lescc":"⪨","les":"⩽","lesdot":"⩿","lesdoto":"⪁","lesdotor":"⪃","lesg":"⋚︀","lesges":"⪓","lessapprox":"⪅","lessdot":"⋖","lesseqgtr":"⋚","lesseqqgtr":"⪋","LessEqualGreater":"⋚","LessFullEqual":"≦","LessGreater":"≶","lessgtr":"≶","LessLess":"⪡","lesssim":"≲","LessSlantEqual":"⩽","LessTilde":"≲","lfisht":"⥼","lfloor":"⌊","Lfr":"𝔏","lfr":"𝔩","lg":"≶","lgE":"⪑","lHar":"⥢","lhard":"↽","lharu":"↼","lharul":"⥪","lhblk":"▄","LJcy":"Љ","ljcy":"љ","llarr":"⇇","ll":"≪","Ll":"⋘","llcorner":"⌞","Lleftarrow":"⇚","llhard":"⥫","lltri":"◺","Lmidot":"Ŀ","lmidot":"ŀ","lmoustache":"⎰","lmoust":"⎰","lnap":"⪉","lnapprox":"⪉","lne":"⪇","lnE":"≨","lneq":"⪇","lneqq":"≨","lnsim":"⋦","loang":"⟬","loarr":"⇽","lobrk":"⟦","longleftarrow":"⟵","LongLeftArrow":"⟵","Longleftarrow":"⟸","longleftrightarrow":"⟷","LongLeftRightArrow":"⟷","Longleftrightarrow":"⟺","longmapsto":"⟼","longrightarrow":"⟶","LongRightArrow":"⟶","Longrightarrow":"⟹","looparrowleft":"↫","looparrowright":"↬","lopar":"⦅","Lopf":"𝕃","lopf":"𝕝","loplus":"⨭","lotimes":"⨴","lowast":"∗","lowbar":"_","LowerLeftArrow":"↙","LowerRightArrow":"↘","loz":"◊","lozenge":"◊","lozf":"⧫","lpar":"(","lparlt":"⦓","lrarr":"⇆","lrcorner":"⌟","lrhar":"⇋","lrhard":"⥭","lrm":"‎","lrtri":"⊿","lsaquo":"‹","lscr":"𝓁","Lscr":"ℒ","lsh":"↰","Lsh":"↰","lsim":"≲","lsime":"⪍","lsimg":"⪏","lsqb":"[","lsquo":"‘","lsquor":"‚","Lstrok":"Ł","lstrok":"ł","ltcc":"⪦","ltcir":"⩹","lt":"<","LT":"<","Lt":"≪","ltdot":"⋖","lthree":"⋋","ltimes":"⋉","ltlarr":"⥶","ltquest":"⩻","ltri":"◃","ltrie":"⊴","ltrif":"◂","ltrPar":"⦖","lurdshar":"⥊","luruhar":"⥦","lvertneqq":"≨︀","lvnE":"≨︀","macr":"¯","male":"♂","malt":"✠","maltese":"✠","Map":"⤅","map":"↦","mapsto":"↦","mapstodown":"↧","mapstoleft":"↤","mapstoup":"↥","marker":"▮","mcomma":"⨩","Mcy":"М","mcy":"м","mdash":"—","mDDot":"∺","measuredangle":"∡","MediumSpace":" ","Mellintrf":"ℳ","Mfr":"𝔐","mfr":"𝔪","mho":"℧","micro":"µ","midast":"*","midcir":"⫰","mid":"∣","middot":"·","minusb":"⊟","minus":"−","minusd":"∸","minusdu":"⨪","MinusPlus":"∓","mlcp":"⫛","mldr":"…","mnplus":"∓","models":"⊧","Mopf":"𝕄","mopf":"𝕞","mp":"∓","mscr":"𝓂","Mscr":"ℳ","mstpos":"∾","Mu":"Μ","mu":"μ","multimap":"⊸","mumap":"⊸","nabla":"∇","Nacute":"Ń","nacute":"ń","nang":"∠⃒","nap":"≉","napE":"⩰̸","napid":"≋̸","napos":"ŉ","napprox":"≉","natural":"♮","naturals":"ℕ","natur":"♮","nbsp":" ","nbump":"≎̸","nbumpe":"≏̸","ncap":"⩃","Ncaron":"Ň","ncaron":"ň","Ncedil":"Ņ","ncedil":"ņ","ncong":"≇","ncongdot":"⩭̸","ncup":"⩂","Ncy":"Н","ncy":"н","ndash":"–","nearhk":"⤤","nearr":"↗","neArr":"⇗","nearrow":"↗","ne":"≠","nedot":"≐̸","NegativeMediumSpace":"​","NegativeThickSpace":"​","NegativeThinSpace":"​","NegativeVeryThinSpace":"​","nequiv":"≢","nesear":"⤨","nesim":"≂̸","NestedGreaterGreater":"≫","NestedLessLess":"≪","NewLine":"\n","nexist":"∄","nexists":"∄","Nfr":"𝔑","nfr":"𝔫","ngE":"≧̸","nge":"≱","ngeq":"≱","ngeqq":"≧̸","ngeqslant":"⩾̸","nges":"⩾̸","nGg":"⋙̸","ngsim":"≵","nGt":"≫⃒","ngt":"≯","ngtr":"≯","nGtv":"≫̸","nharr":"↮","nhArr":"⇎","nhpar":"⫲","ni":"∋","nis":"⋼","nisd":"⋺","niv":"∋","NJcy":"Њ","njcy":"њ","nlarr":"↚","nlArr":"⇍","nldr":"‥","nlE":"≦̸","nle":"≰","nleftarrow":"↚","nLeftarrow":"⇍","nleftrightarrow":"↮","nLeftrightarrow":"⇎","nleq":"≰","nleqq":"≦̸","nleqslant":"⩽̸","nles":"⩽̸","nless":"≮","nLl":"⋘̸","nlsim":"≴","nLt":"≪⃒","nlt":"≮","nltri":"⋪","nltrie":"⋬","nLtv":"≪̸","nmid":"∤","NoBreak":"⁠","NonBreakingSpace":" ","nopf":"𝕟","Nopf":"ℕ","Not":"⫬","not":"¬","NotCongruent":"≢","NotCupCap":"≭","NotDoubleVerticalBar":"∦","NotElement":"∉","NotEqual":"≠","NotEqualTilde":"≂̸","NotExists":"∄","NotGreater":"≯","NotGreaterEqual":"≱","NotGreaterFullEqual":"≧̸","NotGreaterGreater":"≫̸","NotGreaterLess":"≹","NotGreaterSlantEqual":"⩾̸","NotGreaterTilde":"≵","NotHumpDownHump":"≎̸","NotHumpEqual":"≏̸","notin":"∉","notindot":"⋵̸","notinE":"⋹̸","notinva":"∉","notinvb":"⋷","notinvc":"⋶","NotLeftTriangleBar":"⧏̸","NotLeftTriangle":"⋪","NotLeftTriangleEqual":"⋬","NotLess":"≮","NotLessEqual":"≰","NotLessGreater":"≸","NotLessLess":"≪̸","NotLessSlantEqual":"⩽̸","NotLessTilde":"≴","NotNestedGreaterGreater":"⪢̸","NotNestedLessLess":"⪡̸","notni":"∌","notniva":"∌","notnivb":"⋾","notnivc":"⋽","NotPrecedes":"⊀","NotPrecedesEqual":"⪯̸","NotPrecedesSlantEqual":"⋠","NotReverseElement":"∌","NotRightTriangleBar":"⧐̸","NotRightTriangle":"⋫","NotRightTriangleEqual":"⋭","NotSquareSubset":"⊏̸","NotSquareSubsetEqual":"⋢","NotSquareSuperset":"⊐̸","NotSquareSupersetEqual":"⋣","NotSubset":"⊂⃒","NotSubsetEqual":"⊈","NotSucceeds":"⊁","NotSucceedsEqual":"⪰̸","NotSucceedsSlantEqual":"⋡","NotSucceedsTilde":"≿̸","NotSuperset":"⊃⃒","NotSupersetEqual":"⊉","NotTilde":"≁","NotTildeEqual":"≄","NotTildeFullEqual":"≇","NotTildeTilde":"≉","NotVerticalBar":"∤","nparallel":"∦","npar":"∦","nparsl":"⫽⃥","npart":"∂̸","npolint":"⨔","npr":"⊀","nprcue":"⋠","nprec":"⊀","npreceq":"⪯̸","npre":"⪯̸","nrarrc":"⤳̸","nrarr":"↛","nrArr":"⇏","nrarrw":"↝̸","nrightarrow":"↛","nRightarrow":"⇏","nrtri":"⋫","nrtrie":"⋭","nsc":"⊁","nsccue":"⋡","nsce":"⪰̸","Nscr":"𝒩","nscr":"𝓃","nshortmid":"∤","nshortparallel":"∦","nsim":"≁","nsime":"≄","nsimeq":"≄","nsmid":"∤","nspar":"∦","nsqsube":"⋢","nsqsupe":"⋣","nsub":"⊄","nsubE":"⫅̸","nsube":"⊈","nsubset":"⊂⃒","nsubseteq":"⊈","nsubseteqq":"⫅̸","nsucc":"⊁","nsucceq":"⪰̸","nsup":"⊅","nsupE":"⫆̸","nsupe":"⊉","nsupset":"⊃⃒","nsupseteq":"⊉","nsupseteqq":"⫆̸","ntgl":"≹","Ntilde":"Ñ","ntilde":"ñ","ntlg":"≸","ntriangleleft":"⋪","ntrianglelefteq":"⋬","ntriangleright":"⋫","ntrianglerighteq":"⋭","Nu":"Ν","nu":"ν","num":"#","numero":"№","numsp":" ","nvap":"≍⃒","nvdash":"⊬","nvDash":"⊭","nVdash":"⊮","nVDash":"⊯","nvge":"≥⃒","nvgt":">⃒","nvHarr":"⤄","nvinfin":"⧞","nvlArr":"⤂","nvle":"≤⃒","nvlt":"<⃒","nvltrie":"⊴⃒","nvrArr":"⤃","nvrtrie":"⊵⃒","nvsim":"∼⃒","nwarhk":"⤣","nwarr":"↖","nwArr":"⇖","nwarrow":"↖","nwnear":"⤧","Oacute":"Ó","oacute":"ó","oast":"⊛","Ocirc":"Ô","ocirc":"ô","ocir":"⊚","Ocy":"О","ocy":"о","odash":"⊝","Odblac":"Ő","odblac":"ő","odiv":"⨸","odot":"⊙","odsold":"⦼","OElig":"Œ","oelig":"œ","ofcir":"⦿","Ofr":"𝔒","ofr":"𝔬","ogon":"˛","Ograve":"Ò","ograve":"ò","ogt":"⧁","ohbar":"⦵","ohm":"Ω","oint":"∮","olarr":"↺","olcir":"⦾","olcross":"⦻","oline":"‾","olt":"⧀","Omacr":"Ō","omacr":"ō","Omega":"Ω","omega":"ω","Omicron":"Ο","omicron":"ο","omid":"⦶","ominus":"⊖","Oopf":"𝕆","oopf":"𝕠","opar":"⦷","OpenCurlyDoubleQuote":"“","OpenCurlyQuote":"‘","operp":"⦹","oplus":"⊕","orarr":"↻","Or":"⩔","or":"∨","ord":"⩝","order":"ℴ","orderof":"ℴ","ordf":"ª","ordm":"º","origof":"⊶","oror":"⩖","orslope":"⩗","orv":"⩛","oS":"Ⓢ","Oscr":"𝒪","oscr":"ℴ","Oslash":"Ø","oslash":"ø","osol":"⊘","Otilde":"Õ","otilde":"õ","otimesas":"⨶","Otimes":"⨷","otimes":"⊗","Ouml":"Ö","ouml":"ö","ovbar":"⌽","OverBar":"‾","OverBrace":"⏞","OverBracket":"⎴","OverParenthesis":"⏜","para":"¶","parallel":"∥","par":"∥","parsim":"⫳","parsl":"⫽","part":"∂","PartialD":"∂","Pcy":"П","pcy":"п","percnt":"%","period":".","permil":"‰","perp":"⊥","pertenk":"‱","Pfr":"𝔓","pfr":"𝔭","Phi":"Φ","phi":"φ","phiv":"ϕ","phmmat":"ℳ","phone":"☎","Pi":"Π","pi":"π","pitchfork":"⋔","piv":"ϖ","planck":"ℏ","planckh":"ℎ","plankv":"ℏ","plusacir":"⨣","plusb":"⊞","pluscir":"⨢","plus":"+","plusdo":"∔","plusdu":"⨥","pluse":"⩲","PlusMinus":"±","plusmn":"±","plussim":"⨦","plustwo":"⨧","pm":"±","Poincareplane":"ℌ","pointint":"⨕","popf":"𝕡","Popf":"ℙ","pound":"£","prap":"⪷","Pr":"⪻","pr":"≺","prcue":"≼","precapprox":"⪷","prec":"≺","preccurlyeq":"≼","Precedes":"≺","PrecedesEqual":"⪯","PrecedesSlantEqual":"≼","PrecedesTilde":"≾","preceq":"⪯","precnapprox":"⪹","precneqq":"⪵","precnsim":"⋨","pre":"⪯","prE":"⪳","precsim":"≾","prime":"′","Prime":"″","primes":"ℙ","prnap":"⪹","prnE":"⪵","prnsim":"⋨","prod":"∏","Product":"∏","profalar":"⌮","profline":"⌒","profsurf":"⌓","prop":"∝","Proportional":"∝","Proportion":"∷","propto":"∝","prsim":"≾","prurel":"⊰","Pscr":"𝒫","pscr":"𝓅","Psi":"Ψ","psi":"ψ","puncsp":" ","Qfr":"𝔔","qfr":"𝔮","qint":"⨌","qopf":"𝕢","Qopf":"ℚ","qprime":"⁗","Qscr":"𝒬","qscr":"𝓆","quaternions":"ℍ","quatint":"⨖","quest":"?","questeq":"≟","quot":"\"","QUOT":"\"","rAarr":"⇛","race":"∽̱","Racute":"Ŕ","racute":"ŕ","radic":"√","raemptyv":"⦳","rang":"⟩","Rang":"⟫","rangd":"⦒","range":"⦥","rangle":"⟩","raquo":"»","rarrap":"⥵","rarrb":"⇥","rarrbfs":"⤠","rarrc":"⤳","rarr":"→","Rarr":"↠","rArr":"⇒","rarrfs":"⤞","rarrhk":"↪","rarrlp":"↬","rarrpl":"⥅","rarrsim":"⥴","Rarrtl":"⤖","rarrtl":"↣","rarrw":"↝","ratail":"⤚","rAtail":"⤜","ratio":"∶","rationals":"ℚ","rbarr":"⤍","rBarr":"⤏","RBarr":"⤐","rbbrk":"❳","rbrace":"}","rbrack":"]","rbrke":"⦌","rbrksld":"⦎","rbrkslu":"⦐","Rcaron":"Ř","rcaron":"ř","Rcedil":"Ŗ","rcedil":"ŗ","rceil":"⌉","rcub":"}","Rcy":"Р","rcy":"р","rdca":"⤷","rdldhar":"⥩","rdquo":"”","rdquor":"”","rdsh":"↳","real":"ℜ","realine":"ℛ","realpart":"ℜ","reals":"ℝ","Re":"ℜ","rect":"▭","reg":"®","REG":"®","ReverseElement":"∋","ReverseEquilibrium":"⇋","ReverseUpEquilibrium":"⥯","rfisht":"⥽","rfloor":"⌋","rfr":"𝔯","Rfr":"ℜ","rHar":"⥤","rhard":"⇁","rharu":"⇀","rharul":"⥬","Rho":"Ρ","rho":"ρ","rhov":"ϱ","RightAngleBracket":"⟩","RightArrowBar":"⇥","rightarrow":"→","RightArrow":"→","Rightarrow":"⇒","RightArrowLeftArrow":"⇄","rightarrowtail":"↣","RightCeiling":"⌉","RightDoubleBracket":"⟧","RightDownTeeVector":"⥝","RightDownVectorBar":"⥕","RightDownVector":"⇂","RightFloor":"⌋","rightharpoondown":"⇁","rightharpoonup":"⇀","rightleftarrows":"⇄","rightleftharpoons":"⇌","rightrightarrows":"⇉","rightsquigarrow":"↝","RightTeeArrow":"↦","RightTee":"⊢","RightTeeVector":"⥛","rightthreetimes":"⋌","RightTriangleBar":"⧐","RightTriangle":"⊳","RightTriangleEqual":"⊵","RightUpDownVector":"⥏","RightUpTeeVector":"⥜","RightUpVectorBar":"⥔","RightUpVector":"↾","RightVectorBar":"⥓","RightVector":"⇀","ring":"˚","risingdotseq":"≓","rlarr":"⇄","rlhar":"⇌","rlm":"‏","rmoustache":"⎱","rmoust":"⎱","rnmid":"⫮","roang":"⟭","roarr":"⇾","robrk":"⟧","ropar":"⦆","ropf":"𝕣","Ropf":"ℝ","roplus":"⨮","rotimes":"⨵","RoundImplies":"⥰","rpar":")","rpargt":"⦔","rppolint":"⨒","rrarr":"⇉","Rrightarrow":"⇛","rsaquo":"›","rscr":"𝓇","Rscr":"ℛ","rsh":"↱","Rsh":"↱","rsqb":"]","rsquo":"’","rsquor":"’","rthree":"⋌","rtimes":"⋊","rtri":"▹","rtrie":"⊵","rtrif":"▸","rtriltri":"⧎","RuleDelayed":"⧴","ruluhar":"⥨","rx":"℞","Sacute":"Ś","sacute":"ś","sbquo":"‚","scap":"⪸","Scaron":"Š","scaron":"š","Sc":"⪼","sc":"≻","sccue":"≽","sce":"⪰","scE":"⪴","Scedil":"Ş","scedil":"ş","Scirc":"Ŝ","scirc":"ŝ","scnap":"⪺","scnE":"⪶","scnsim":"⋩","scpolint":"⨓","scsim":"≿","Scy":"С","scy":"с","sdotb":"⊡","sdot":"⋅","sdote":"⩦","searhk":"⤥","searr":"↘","seArr":"⇘","searrow":"↘","sect":"§","semi":";","seswar":"⤩","setminus":"∖","setmn":"∖","sext":"✶","Sfr":"𝔖","sfr":"𝔰","sfrown":"⌢","sharp":"♯","SHCHcy":"Щ","shchcy":"щ","SHcy":"Ш","shcy":"ш","ShortDownArrow":"↓","ShortLeftArrow":"←","shortmid":"∣","shortparallel":"∥","ShortRightArrow":"→","ShortUpArrow":"↑","shy":"­","Sigma":"Σ","sigma":"σ","sigmaf":"ς","sigmav":"ς","sim":"∼","simdot":"⩪","sime":"≃","simeq":"≃","simg":"⪞","simgE":"⪠","siml":"⪝","simlE":"⪟","simne":"≆","simplus":"⨤","simrarr":"⥲","slarr":"←","SmallCircle":"∘","smallsetminus":"∖","smashp":"⨳","smeparsl":"⧤","smid":"∣","smile":"⌣","smt":"⪪","smte":"⪬","smtes":"⪬︀","SOFTcy":"Ь","softcy":"ь","solbar":"⌿","solb":"⧄","sol":"/","Sopf":"𝕊","sopf":"𝕤","spades":"♠","spadesuit":"♠","spar":"∥","sqcap":"⊓","sqcaps":"⊓︀","sqcup":"⊔","sqcups":"⊔︀","Sqrt":"√","sqsub":"⊏","sqsube":"⊑","sqsubset":"⊏","sqsubseteq":"⊑","sqsup":"⊐","sqsupe":"⊒","sqsupset":"⊐","sqsupseteq":"⊒","square":"□","Square":"□","SquareIntersection":"⊓","SquareSubset":"⊏","SquareSubsetEqual":"⊑","SquareSuperset":"⊐","SquareSupersetEqual":"⊒","SquareUnion":"⊔","squarf":"▪","squ":"□","squf":"▪","srarr":"→","Sscr":"𝒮","sscr":"𝓈","ssetmn":"∖","ssmile":"⌣","sstarf":"⋆","Star":"⋆","star":"☆","starf":"★","straightepsilon":"ϵ","straightphi":"ϕ","strns":"¯","sub":"⊂","Sub":"⋐","subdot":"⪽","subE":"⫅","sube":"⊆","subedot":"⫃","submult":"⫁","subnE":"⫋","subne":"⊊","subplus":"⪿","subrarr":"⥹","subset":"⊂","Subset":"⋐","subseteq":"⊆","subseteqq":"⫅","SubsetEqual":"⊆","subsetneq":"⊊","subsetneqq":"⫋","subsim":"⫇","subsub":"⫕","subsup":"⫓","succapprox":"⪸","succ":"≻","succcurlyeq":"≽","Succeeds":"≻","SucceedsEqual":"⪰","SucceedsSlantEqual":"≽","SucceedsTilde":"≿","succeq":"⪰","succnapprox":"⪺","succneqq":"⪶","succnsim":"⋩","succsim":"≿","SuchThat":"∋","sum":"∑","Sum":"∑","sung":"♪","sup1":"¹","sup2":"²","sup3":"³","sup":"⊃","Sup":"⋑","supdot":"⪾","supdsub":"⫘","supE":"⫆","supe":"⊇","supedot":"⫄","Superset":"⊃","SupersetEqual":"⊇","suphsol":"⟉","suphsub":"⫗","suplarr":"⥻","supmult":"⫂","supnE":"⫌","supne":"⊋","supplus":"⫀","supset":"⊃","Supset":"⋑","supseteq":"⊇","supseteqq":"⫆","supsetneq":"⊋","supsetneqq":"⫌","supsim":"⫈","supsub":"⫔","supsup":"⫖","swarhk":"⤦","swarr":"↙","swArr":"⇙","swarrow":"↙","swnwar":"⤪","szlig":"ß","Tab":"\t","target":"⌖","Tau":"Τ","tau":"τ","tbrk":"⎴","Tcaron":"Ť","tcaron":"ť","Tcedil":"Ţ","tcedil":"ţ","Tcy":"Т","tcy":"т","tdot":"⃛","telrec":"⌕","Tfr":"𝔗","tfr":"𝔱","there4":"∴","therefore":"∴","Therefore":"∴","Theta":"Θ","theta":"θ","thetasym":"ϑ","thetav":"ϑ","thickapprox":"≈","thicksim":"∼","ThickSpace":"  ","ThinSpace":" ","thinsp":" ","thkap":"≈","thksim":"∼","THORN":"Þ","thorn":"þ","tilde":"˜","Tilde":"∼","TildeEqual":"≃","TildeFullEqual":"≅","TildeTilde":"≈","timesbar":"⨱","timesb":"⊠","times":"×","timesd":"⨰","tint":"∭","toea":"⤨","topbot":"⌶","topcir":"⫱","top":"⊤","Topf":"𝕋","topf":"𝕥","topfork":"⫚","tosa":"⤩","tprime":"‴","trade":"™","TRADE":"™","triangle":"▵","triangledown":"▿","triangleleft":"◃","trianglelefteq":"⊴","triangleq":"≜","triangleright":"▹","trianglerighteq":"⊵","tridot":"◬","trie":"≜","triminus":"⨺","TripleDot":"⃛","triplus":"⨹","trisb":"⧍","tritime":"⨻","trpezium":"⏢","Tscr":"𝒯","tscr":"𝓉","TScy":"Ц","tscy":"ц","TSHcy":"Ћ","tshcy":"ћ","Tstrok":"Ŧ","tstrok":"ŧ","twixt":"≬","twoheadleftarrow":"↞","twoheadrightarrow":"↠","Uacute":"Ú","uacute":"ú","uarr":"↑","Uarr":"↟","uArr":"⇑","Uarrocir":"⥉","Ubrcy":"Ў","ubrcy":"ў","Ubreve":"Ŭ","ubreve":"ŭ","Ucirc":"Û","ucirc":"û","Ucy":"У","ucy":"у","udarr":"⇅","Udblac":"Ű","udblac":"ű","udhar":"⥮","ufisht":"⥾","Ufr":"𝔘","ufr":"𝔲","Ugrave":"Ù","ugrave":"ù","uHar":"⥣","uharl":"↿","uharr":"↾","uhblk":"▀","ulcorn":"⌜","ulcorner":"⌜","ulcrop":"⌏","ultri":"◸","Umacr":"Ū","umacr":"ū","uml":"¨","UnderBar":"_","UnderBrace":"⏟","UnderBracket":"⎵","UnderParenthesis":"⏝","Union":"⋃","UnionPlus":"⊎","Uogon":"Ų","uogon":"ų","Uopf":"𝕌","uopf":"𝕦","UpArrowBar":"⤒","uparrow":"↑","UpArrow":"↑","Uparrow":"⇑","UpArrowDownArrow":"⇅","updownarrow":"↕","UpDownArrow":"↕","Updownarrow":"⇕","UpEquilibrium":"⥮","upharpoonleft":"↿","upharpoonright":"↾","uplus":"⊎","UpperLeftArrow":"↖","UpperRightArrow":"↗","upsi":"υ","Upsi":"ϒ","upsih":"ϒ","Upsilon":"Υ","upsilon":"υ","UpTeeArrow":"↥","UpTee":"⊥","upuparrows":"⇈","urcorn":"⌝","urcorner":"⌝","urcrop":"⌎","Uring":"Ů","uring":"ů","urtri":"◹","Uscr":"𝒰","uscr":"𝓊","utdot":"⋰","Utilde":"Ũ","utilde":"ũ","utri":"▵","utrif":"▴","uuarr":"⇈","Uuml":"Ü","uuml":"ü","uwangle":"⦧","vangrt":"⦜","varepsilon":"ϵ","varkappa":"ϰ","varnothing":"∅","varphi":"ϕ","varpi":"ϖ","varpropto":"∝","varr":"↕","vArr":"⇕","varrho":"ϱ","varsigma":"ς","varsubsetneq":"⊊︀","varsubsetneqq":"⫋︀","varsupsetneq":"⊋︀","varsupsetneqq":"⫌︀","vartheta":"ϑ","vartriangleleft":"⊲","vartriangleright":"⊳","vBar":"⫨","Vbar":"⫫","vBarv":"⫩","Vcy":"В","vcy":"в","vdash":"⊢","vDash":"⊨","Vdash":"⊩","VDash":"⊫","Vdashl":"⫦","veebar":"⊻","vee":"∨","Vee":"⋁","veeeq":"≚","vellip":"⋮","verbar":"|","Verbar":"‖","vert":"|","Vert":"‖","VerticalBar":"∣","VerticalLine":"|","VerticalSeparator":"❘","VerticalTilde":"≀","VeryThinSpace":" ","Vfr":"𝔙","vfr":"𝔳","vltri":"⊲","vnsub":"⊂⃒","vnsup":"⊃⃒","Vopf":"𝕍","vopf":"𝕧","vprop":"∝","vrtri":"⊳","Vscr":"𝒱","vscr":"𝓋","vsubnE":"⫋︀","vsubne":"⊊︀","vsupnE":"⫌︀","vsupne":"⊋︀","Vvdash":"⊪","vzigzag":"⦚","Wcirc":"Ŵ","wcirc":"ŵ","wedbar":"⩟","wedge":"∧","Wedge":"⋀","wedgeq":"≙","weierp":"℘","Wfr":"𝔚","wfr":"𝔴","Wopf":"𝕎","wopf":"𝕨","wp":"℘","wr":"≀","wreath":"≀","Wscr":"𝒲","wscr":"𝓌","xcap":"⋂","xcirc":"◯","xcup":"⋃","xdtri":"▽","Xfr":"𝔛","xfr":"𝔵","xharr":"⟷","xhArr":"⟺","Xi":"Ξ","xi":"ξ","xlarr":"⟵","xlArr":"⟸","xmap":"⟼","xnis":"⋻","xodot":"⨀","Xopf":"𝕏","xopf":"𝕩","xoplus":"⨁","xotime":"⨂","xrarr":"⟶","xrArr":"⟹","Xscr":"𝒳","xscr":"𝓍","xsqcup":"⨆","xuplus":"⨄","xutri":"△","xvee":"⋁","xwedge":"⋀","Yacute":"Ý","yacute":"ý","YAcy":"Я","yacy":"я","Ycirc":"Ŷ","ycirc":"ŷ","Ycy":"Ы","ycy":"ы","yen":"¥","Yfr":"𝔜","yfr":"𝔶","YIcy":"Ї","yicy":"ї","Yopf":"𝕐","yopf":"𝕪","Yscr":"𝒴","yscr":"𝓎","YUcy":"Ю","yucy":"ю","yuml":"ÿ","Yuml":"Ÿ","Zacute":"Ź","zacute":"ź","Zcaron":"Ž","zcaron":"ž","Zcy":"З","zcy":"з","Zdot":"Ż","zdot":"ż","zeetrf":"ℨ","ZeroWidthSpace":"​","Zeta":"Ζ","zeta":"ζ","zfr":"𝔷","Zfr":"ℨ","ZHcy":"Ж","zhcy":"ж","zigrarr":"⇝","zopf":"𝕫","Zopf":"ℤ","Zscr":"𝒵","zscr":"𝓏","zwj":"‍","zwnj":"‌"}
 
-},{}],129:[function(require,module,exports){
+},{}],137:[function(require,module,exports){
 module.exports={"Aacute":"Á","aacute":"á","Acirc":"Â","acirc":"â","acute":"´","AElig":"Æ","aelig":"æ","Agrave":"À","agrave":"à","amp":"&","AMP":"&","Aring":"Å","aring":"å","Atilde":"Ã","atilde":"ã","Auml":"Ä","auml":"ä","brvbar":"¦","Ccedil":"Ç","ccedil":"ç","cedil":"¸","cent":"¢","copy":"©","COPY":"©","curren":"¤","deg":"°","divide":"÷","Eacute":"É","eacute":"é","Ecirc":"Ê","ecirc":"ê","Egrave":"È","egrave":"è","ETH":"Ð","eth":"ð","Euml":"Ë","euml":"ë","frac12":"½","frac14":"¼","frac34":"¾","gt":">","GT":">","Iacute":"Í","iacute":"í","Icirc":"Î","icirc":"î","iexcl":"¡","Igrave":"Ì","igrave":"ì","iquest":"¿","Iuml":"Ï","iuml":"ï","laquo":"«","lt":"<","LT":"<","macr":"¯","micro":"µ","middot":"·","nbsp":" ","not":"¬","Ntilde":"Ñ","ntilde":"ñ","Oacute":"Ó","oacute":"ó","Ocirc":"Ô","ocirc":"ô","Ograve":"Ò","ograve":"ò","ordf":"ª","ordm":"º","Oslash":"Ø","oslash":"ø","Otilde":"Õ","otilde":"õ","Ouml":"Ö","ouml":"ö","para":"¶","plusmn":"±","pound":"£","quot":"\"","QUOT":"\"","raquo":"»","reg":"®","REG":"®","sect":"§","shy":"­","sup1":"¹","sup2":"²","sup3":"³","szlig":"ß","THORN":"Þ","thorn":"þ","times":"×","Uacute":"Ú","uacute":"ú","Ucirc":"Û","ucirc":"û","Ugrave":"Ù","ugrave":"ù","uml":"¨","Uuml":"Ü","uuml":"ü","Yacute":"Ý","yacute":"ý","yen":"¥","yuml":"ÿ"}
 
-},{}],130:[function(require,module,exports){
+},{}],138:[function(require,module,exports){
 module.exports={"amp":"&","apos":"'","gt":">","lt":"<","quot":"\""}
 
-},{}],131:[function(require,module,exports){
+},{}],139:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Doctype = exports.CDATA = exports.Tag = exports.Style = exports.Script = exports.Comment = exports.Directive = exports.Text = exports.Root = exports.isTag = exports.ElementType = void 0;
@@ -12348,7 +12500,7 @@ exports.CDATA = ElementType.CDATA;
 /** Type for <!doctype ...> */
 exports.Doctype = ElementType.Doctype;
 
-},{}],132:[function(require,module,exports){
+},{}],140:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -12526,7 +12678,7 @@ var DomHandler = /** @class */ (function () {
 exports.DomHandler = DomHandler;
 exports.default = DomHandler;
 
-},{"./node":133,"domelementtype":131}],133:[function(require,module,exports){
+},{"./node":141,"domelementtype":139}],141:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -12972,7 +13124,7 @@ function cloneChildren(childs) {
     return children;
 }
 
-},{"domelementtype":131}],134:[function(require,module,exports){
+},{"domelementtype":139}],142:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getFeed = void 0;
@@ -13164,7 +13316,7 @@ function isValidFeed(value) {
     return value === "rss" || value === "feed" || value === "rdf:RDF";
 }
 
-},{"./legacy":137,"./stringify":140}],135:[function(require,module,exports){
+},{"./legacy":145,"./stringify":148}],143:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.uniqueSort = exports.compareDocumentPosition = exports.removeSubsets = void 0;
@@ -13291,7 +13443,7 @@ function uniqueSort(nodes) {
 }
 exports.uniqueSort = uniqueSort;
 
-},{"domhandler":132}],136:[function(require,module,exports){
+},{"domhandler":140}],144:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -13321,7 +13473,7 @@ Object.defineProperty(exports, "isComment", { enumerable: true, get: function ()
 Object.defineProperty(exports, "isDocument", { enumerable: true, get: function () { return domhandler_1.isDocument; } });
 Object.defineProperty(exports, "hasChildren", { enumerable: true, get: function () { return domhandler_1.hasChildren; } });
 
-},{"./feeds":134,"./helpers":135,"./legacy":137,"./manipulation":138,"./querying":139,"./stringify":140,"./traversal":141,"domhandler":132}],137:[function(require,module,exports){
+},{"./feeds":142,"./helpers":143,"./legacy":145,"./manipulation":146,"./querying":147,"./stringify":148,"./traversal":149,"domhandler":140}],145:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getElementsByTagType = exports.getElementsByTagName = exports.getElementById = exports.getElements = exports.testElement = void 0;
@@ -13447,7 +13599,7 @@ function getElementsByTagType(type, nodes, recurse, limit) {
 }
 exports.getElementsByTagType = getElementsByTagType;
 
-},{"./querying":139,"domhandler":132}],138:[function(require,module,exports){
+},{"./querying":147,"domhandler":140}],146:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.prepend = exports.prependChild = exports.append = exports.appendChild = exports.replaceElement = exports.removeElement = void 0;
@@ -13578,7 +13730,7 @@ function prepend(elem, prev) {
 }
 exports.prepend = prepend;
 
-},{}],139:[function(require,module,exports){
+},{}],147:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.findAll = exports.existsOne = exports.findOne = exports.findOneChild = exports.find = exports.filter = void 0;
@@ -13706,7 +13858,7 @@ function findAll(test, nodes) {
 }
 exports.findAll = findAll;
 
-},{"domhandler":132}],140:[function(require,module,exports){
+},{"domhandler":140}],148:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -13794,7 +13946,7 @@ function innerText(node) {
 }
 exports.innerText = innerText;
 
-},{"dom-serializer":122,"domelementtype":131,"domhandler":132}],141:[function(require,module,exports){
+},{"dom-serializer":130,"domelementtype":139,"domhandler":140}],149:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.prevElementSibling = exports.nextElementSibling = exports.getName = exports.hasAttrib = exports.getAttributeValue = exports.getSiblings = exports.getParent = exports.getChildren = void 0;
@@ -13913,7 +14065,7 @@ function prevElementSibling(elem) {
 }
 exports.prevElementSibling = prevElementSibling;
 
-},{"domhandler":132}],142:[function(require,module,exports){
+},{"domhandler":140}],150:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -14060,7 +14212,7 @@ function decodeXML(str) {
 }
 exports.decodeXML = decodeXML;
 
-},{"./decode_codepoint":143,"./generated/decode-data-html":144,"./generated/decode-data-xml":145}],143:[function(require,module,exports){
+},{"./decode_codepoint":151,"./generated/decode-data-html":152,"./generated/decode-data-xml":153}],151:[function(require,module,exports){
 "use strict";
 // Adapted from https://github.com/mathiasbynens/he/blob/36afe179392226cf1b6ccdb16ebbb7a5a844d93a/src/he.js#L106-L134
 Object.defineProperty(exports, "__esModule", { value: true });
@@ -14116,21 +14268,21 @@ function decodeCodePoint(codePoint) {
 }
 exports.default = decodeCodePoint;
 
-},{}],144:[function(require,module,exports){
+},{}],152:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 // Generated using scripts/write-decode-map.ts
 // prettier-ignore
 exports.default = new Uint16Array([14866, 60, 237, 340, 721, 1312, 1562, 1654, 1838, 1957, 2183, 2239, 2301, 2958, 3037, 3893, 4123, 4298, 4330, 4801, 5191, 5395, 5752, 5903, 5943, 5972, 6050, 0, 0, 0, 0, 0, 0, 6135, 6565, 7422, 8183, 8738, 9242, 9503, 9938, 10189, 10573, 10637, 10715, 11950, 12246, 13539, 13950, 14445, 14533, 15364, 16514, 16980, 17390, 17763, 17849, 18036, 18125, 4096, 69, 77, 97, 98, 99, 102, 103, 108, 109, 110, 111, 112, 114, 115, 116, 117, 92, 100, 106, 115, 122, 137, 142, 151, 157, 163, 167, 182, 196, 204, 220, 229, 108, 105, 103, 33024, 198, 59, 32768, 198, 80, 33024, 38, 59, 32768, 38, 99, 117, 116, 101, 33024, 193, 59, 32768, 193, 114, 101, 118, 101, 59, 32768, 258, 512, 105, 121, 127, 134, 114, 99, 33024, 194, 59, 32768, 194, 59, 32768, 1040, 114, 59, 32896, 55349, 56580, 114, 97, 118, 101, 33024, 192, 59, 32768, 192, 112, 104, 97, 59, 32768, 913, 97, 99, 114, 59, 32768, 256, 100, 59, 32768, 10835, 512, 103, 112, 172, 177, 111, 110, 59, 32768, 260, 102, 59, 32896, 55349, 56632, 112, 108, 121, 70, 117, 110, 99, 116, 105, 111, 110, 59, 32768, 8289, 105, 110, 103, 33024, 197, 59, 32768, 197, 512, 99, 115, 209, 214, 114, 59, 32896, 55349, 56476, 105, 103, 110, 59, 32768, 8788, 105, 108, 100, 101, 33024, 195, 59, 32768, 195, 109, 108, 33024, 196, 59, 32768, 196, 2048, 97, 99, 101, 102, 111, 114, 115, 117, 253, 278, 282, 310, 315, 321, 327, 332, 512, 99, 114, 258, 267, 107, 115, 108, 97, 115, 104, 59, 32768, 8726, 583, 271, 274, 59, 32768, 10983, 101, 100, 59, 32768, 8966, 121, 59, 32768, 1041, 768, 99, 114, 116, 289, 296, 306, 97, 117, 115, 101, 59, 32768, 8757, 110, 111, 117, 108, 108, 105, 115, 59, 32768, 8492, 97, 59, 32768, 914, 114, 59, 32896, 55349, 56581, 112, 102, 59, 32896, 55349, 56633, 101, 118, 101, 59, 32768, 728, 99, 114, 59, 32768, 8492, 109, 112, 101, 113, 59, 32768, 8782, 3584, 72, 79, 97, 99, 100, 101, 102, 104, 105, 108, 111, 114, 115, 117, 368, 373, 380, 426, 461, 466, 487, 491, 495, 533, 593, 695, 701, 707, 99, 121, 59, 32768, 1063, 80, 89, 33024, 169, 59, 32768, 169, 768, 99, 112, 121, 387, 393, 419, 117, 116, 101, 59, 32768, 262, 512, 59, 105, 398, 400, 32768, 8914, 116, 97, 108, 68, 105, 102, 102, 101, 114, 101, 110, 116, 105, 97, 108, 68, 59, 32768, 8517, 108, 101, 121, 115, 59, 32768, 8493, 1024, 97, 101, 105, 111, 435, 441, 449, 454, 114, 111, 110, 59, 32768, 268, 100, 105, 108, 33024, 199, 59, 32768, 199, 114, 99, 59, 32768, 264, 110, 105, 110, 116, 59, 32768, 8752, 111, 116, 59, 32768, 266, 512, 100, 110, 471, 478, 105, 108, 108, 97, 59, 32768, 184, 116, 101, 114, 68, 111, 116, 59, 32768, 183, 114, 59, 32768, 8493, 105, 59, 32768, 935, 114, 99, 108, 101, 1024, 68, 77, 80, 84, 508, 513, 520, 526, 111, 116, 59, 32768, 8857, 105, 110, 117, 115, 59, 32768, 8854, 108, 117, 115, 59, 32768, 8853, 105, 109, 101, 115, 59, 32768, 8855, 111, 512, 99, 115, 539, 562, 107, 119, 105, 115, 101, 67, 111, 110, 116, 111, 117, 114, 73, 110, 116, 101, 103, 114, 97, 108, 59, 32768, 8754, 101, 67, 117, 114, 108, 121, 512, 68, 81, 573, 586, 111, 117, 98, 108, 101, 81, 117, 111, 116, 101, 59, 32768, 8221, 117, 111, 116, 101, 59, 32768, 8217, 1024, 108, 110, 112, 117, 602, 614, 648, 664, 111, 110, 512, 59, 101, 609, 611, 32768, 8759, 59, 32768, 10868, 768, 103, 105, 116, 621, 629, 634, 114, 117, 101, 110, 116, 59, 32768, 8801, 110, 116, 59, 32768, 8751, 111, 117, 114, 73, 110, 116, 101, 103, 114, 97, 108, 59, 32768, 8750, 512, 102, 114, 653, 656, 59, 32768, 8450, 111, 100, 117, 99, 116, 59, 32768, 8720, 110, 116, 101, 114, 67, 108, 111, 99, 107, 119, 105, 115, 101, 67, 111, 110, 116, 111, 117, 114, 73, 110, 116, 101, 103, 114, 97, 108, 59, 32768, 8755, 111, 115, 115, 59, 32768, 10799, 99, 114, 59, 32896, 55349, 56478, 112, 512, 59, 67, 713, 715, 32768, 8915, 97, 112, 59, 32768, 8781, 2816, 68, 74, 83, 90, 97, 99, 101, 102, 105, 111, 115, 743, 758, 763, 768, 773, 795, 809, 821, 826, 910, 1295, 512, 59, 111, 748, 750, 32768, 8517, 116, 114, 97, 104, 100, 59, 32768, 10513, 99, 121, 59, 32768, 1026, 99, 121, 59, 32768, 1029, 99, 121, 59, 32768, 1039, 768, 103, 114, 115, 780, 786, 790, 103, 101, 114, 59, 32768, 8225, 114, 59, 32768, 8609, 104, 118, 59, 32768, 10980, 512, 97, 121, 800, 806, 114, 111, 110, 59, 32768, 270, 59, 32768, 1044, 108, 512, 59, 116, 815, 817, 32768, 8711, 97, 59, 32768, 916, 114, 59, 32896, 55349, 56583, 512, 97, 102, 831, 897, 512, 99, 109, 836, 891, 114, 105, 116, 105, 99, 97, 108, 1024, 65, 68, 71, 84, 852, 859, 877, 884, 99, 117, 116, 101, 59, 32768, 180, 111, 581, 864, 867, 59, 32768, 729, 98, 108, 101, 65, 99, 117, 116, 101, 59, 32768, 733, 114, 97, 118, 101, 59, 32768, 96, 105, 108, 100, 101, 59, 32768, 732, 111, 110, 100, 59, 32768, 8900, 102, 101, 114, 101, 110, 116, 105, 97, 108, 68, 59, 32768, 8518, 2113, 920, 0, 0, 0, 925, 946, 0, 1139, 102, 59, 32896, 55349, 56635, 768, 59, 68, 69, 931, 933, 938, 32768, 168, 111, 116, 59, 32768, 8412, 113, 117, 97, 108, 59, 32768, 8784, 98, 108, 101, 1536, 67, 68, 76, 82, 85, 86, 961, 978, 996, 1080, 1101, 1125, 111, 110, 116, 111, 117, 114, 73, 110, 116, 101, 103, 114, 97, 108, 59, 32768, 8751, 111, 1093, 985, 0, 0, 988, 59, 32768, 168, 110, 65, 114, 114, 111, 119, 59, 32768, 8659, 512, 101, 111, 1001, 1034, 102, 116, 768, 65, 82, 84, 1010, 1017, 1029, 114, 114, 111, 119, 59, 32768, 8656, 105, 103, 104, 116, 65, 114, 114, 111, 119, 59, 32768, 8660, 101, 101, 59, 32768, 10980, 110, 103, 512, 76, 82, 1041, 1068, 101, 102, 116, 512, 65, 82, 1049, 1056, 114, 114, 111, 119, 59, 32768, 10232, 105, 103, 104, 116, 65, 114, 114, 111, 119, 59, 32768, 10234, 105, 103, 104, 116, 65, 114, 114, 111, 119, 59, 32768, 10233, 105, 103, 104, 116, 512, 65, 84, 1089, 1096, 114, 114, 111, 119, 59, 32768, 8658, 101, 101, 59, 32768, 8872, 112, 1042, 1108, 0, 0, 1115, 114, 114, 111, 119, 59, 32768, 8657, 111, 119, 110, 65, 114, 114, 111, 119, 59, 32768, 8661, 101, 114, 116, 105, 99, 97, 108, 66, 97, 114, 59, 32768, 8741, 110, 1536, 65, 66, 76, 82, 84, 97, 1152, 1179, 1186, 1236, 1272, 1288, 114, 114, 111, 119, 768, 59, 66, 85, 1163, 1165, 1170, 32768, 8595, 97, 114, 59, 32768, 10515, 112, 65, 114, 114, 111, 119, 59, 32768, 8693, 114, 101, 118, 101, 59, 32768, 785, 101, 102, 116, 1315, 1196, 0, 1209, 0, 1220, 105, 103, 104, 116, 86, 101, 99, 116, 111, 114, 59, 32768, 10576, 101, 101, 86, 101, 99, 116, 111, 114, 59, 32768, 10590, 101, 99, 116, 111, 114, 512, 59, 66, 1229, 1231, 32768, 8637, 97, 114, 59, 32768, 10582, 105, 103, 104, 116, 805, 1245, 0, 1256, 101, 101, 86, 101, 99, 116, 111, 114, 59, 32768, 10591, 101, 99, 116, 111, 114, 512, 59, 66, 1265, 1267, 32768, 8641, 97, 114, 59, 32768, 10583, 101, 101, 512, 59, 65, 1279, 1281, 32768, 8868, 114, 114, 111, 119, 59, 32768, 8615, 114, 114, 111, 119, 59, 32768, 8659, 512, 99, 116, 1300, 1305, 114, 59, 32896, 55349, 56479, 114, 111, 107, 59, 32768, 272, 4096, 78, 84, 97, 99, 100, 102, 103, 108, 109, 111, 112, 113, 115, 116, 117, 120, 1344, 1348, 1354, 1363, 1386, 1391, 1396, 1405, 1413, 1460, 1475, 1483, 1514, 1527, 1531, 1538, 71, 59, 32768, 330, 72, 33024, 208, 59, 32768, 208, 99, 117, 116, 101, 33024, 201, 59, 32768, 201, 768, 97, 105, 121, 1370, 1376, 1383, 114, 111, 110, 59, 32768, 282, 114, 99, 33024, 202, 59, 32768, 202, 59, 32768, 1069, 111, 116, 59, 32768, 278, 114, 59, 32896, 55349, 56584, 114, 97, 118, 101, 33024, 200, 59, 32768, 200, 101, 109, 101, 110, 116, 59, 32768, 8712, 512, 97, 112, 1418, 1423, 99, 114, 59, 32768, 274, 116, 121, 1060, 1431, 0, 0, 1444, 109, 97, 108, 108, 83, 113, 117, 97, 114, 101, 59, 32768, 9723, 101, 114, 121, 83, 109, 97, 108, 108, 83, 113, 117, 97, 114, 101, 59, 32768, 9643, 512, 103, 112, 1465, 1470, 111, 110, 59, 32768, 280, 102, 59, 32896, 55349, 56636, 115, 105, 108, 111, 110, 59, 32768, 917, 117, 512, 97, 105, 1489, 1504, 108, 512, 59, 84, 1495, 1497, 32768, 10869, 105, 108, 100, 101, 59, 32768, 8770, 108, 105, 98, 114, 105, 117, 109, 59, 32768, 8652, 512, 99, 105, 1519, 1523, 114, 59, 32768, 8496, 109, 59, 32768, 10867, 97, 59, 32768, 919, 109, 108, 33024, 203, 59, 32768, 203, 512, 105, 112, 1543, 1549, 115, 116, 115, 59, 32768, 8707, 111, 110, 101, 110, 116, 105, 97, 108, 69, 59, 32768, 8519, 1280, 99, 102, 105, 111, 115, 1572, 1576, 1581, 1620, 1648, 121, 59, 32768, 1060, 114, 59, 32896, 55349, 56585, 108, 108, 101, 100, 1060, 1591, 0, 0, 1604, 109, 97, 108, 108, 83, 113, 117, 97, 114, 101, 59, 32768, 9724, 101, 114, 121, 83, 109, 97, 108, 108, 83, 113, 117, 97, 114, 101, 59, 32768, 9642, 1601, 1628, 0, 1633, 0, 0, 1639, 102, 59, 32896, 55349, 56637, 65, 108, 108, 59, 32768, 8704, 114, 105, 101, 114, 116, 114, 102, 59, 32768, 8497, 99, 114, 59, 32768, 8497, 3072, 74, 84, 97, 98, 99, 100, 102, 103, 111, 114, 115, 116, 1678, 1683, 1688, 1701, 1708, 1729, 1734, 1739, 1742, 1748, 1828, 1834, 99, 121, 59, 32768, 1027, 33024, 62, 59, 32768, 62, 109, 109, 97, 512, 59, 100, 1696, 1698, 32768, 915, 59, 32768, 988, 114, 101, 118, 101, 59, 32768, 286, 768, 101, 105, 121, 1715, 1721, 1726, 100, 105, 108, 59, 32768, 290, 114, 99, 59, 32768, 284, 59, 32768, 1043, 111, 116, 59, 32768, 288, 114, 59, 32896, 55349, 56586, 59, 32768, 8921, 112, 102, 59, 32896, 55349, 56638, 101, 97, 116, 101, 114, 1536, 69, 70, 71, 76, 83, 84, 1766, 1783, 1794, 1803, 1809, 1821, 113, 117, 97, 108, 512, 59, 76, 1775, 1777, 32768, 8805, 101, 115, 115, 59, 32768, 8923, 117, 108, 108, 69, 113, 117, 97, 108, 59, 32768, 8807, 114, 101, 97, 116, 101, 114, 59, 32768, 10914, 101, 115, 115, 59, 32768, 8823, 108, 97, 110, 116, 69, 113, 117, 97, 108, 59, 32768, 10878, 105, 108, 100, 101, 59, 32768, 8819, 99, 114, 59, 32896, 55349, 56482, 59, 32768, 8811, 2048, 65, 97, 99, 102, 105, 111, 115, 117, 1854, 1861, 1874, 1880, 1884, 1897, 1919, 1934, 82, 68, 99, 121, 59, 32768, 1066, 512, 99, 116, 1866, 1871, 101, 107, 59, 32768, 711, 59, 32768, 94, 105, 114, 99, 59, 32768, 292, 114, 59, 32768, 8460, 108, 98, 101, 114, 116, 83, 112, 97, 99, 101, 59, 32768, 8459, 833, 1902, 0, 1906, 102, 59, 32768, 8461, 105, 122, 111, 110, 116, 97, 108, 76, 105, 110, 101, 59, 32768, 9472, 512, 99, 116, 1924, 1928, 114, 59, 32768, 8459, 114, 111, 107, 59, 32768, 294, 109, 112, 533, 1940, 1950, 111, 119, 110, 72, 117, 109, 112, 59, 32768, 8782, 113, 117, 97, 108, 59, 32768, 8783, 3584, 69, 74, 79, 97, 99, 100, 102, 103, 109, 110, 111, 115, 116, 117, 1985, 1990, 1996, 2001, 2010, 2025, 2030, 2034, 2043, 2077, 2134, 2155, 2160, 2167, 99, 121, 59, 32768, 1045, 108, 105, 103, 59, 32768, 306, 99, 121, 59, 32768, 1025, 99, 117, 116, 101, 33024, 205, 59, 32768, 205, 512, 105, 121, 2015, 2022, 114, 99, 33024, 206, 59, 32768, 206, 59, 32768, 1048, 111, 116, 59, 32768, 304, 114, 59, 32768, 8465, 114, 97, 118, 101, 33024, 204, 59, 32768, 204, 768, 59, 97, 112, 2050, 2052, 2070, 32768, 8465, 512, 99, 103, 2057, 2061, 114, 59, 32768, 298, 105, 110, 97, 114, 121, 73, 59, 32768, 8520, 108, 105, 101, 115, 59, 32768, 8658, 837, 2082, 0, 2110, 512, 59, 101, 2086, 2088, 32768, 8748, 512, 103, 114, 2093, 2099, 114, 97, 108, 59, 32768, 8747, 115, 101, 99, 116, 105, 111, 110, 59, 32768, 8898, 105, 115, 105, 98, 108, 101, 512, 67, 84, 2120, 2127, 111, 109, 109, 97, 59, 32768, 8291, 105, 109, 101, 115, 59, 32768, 8290, 768, 103, 112, 116, 2141, 2146, 2151, 111, 110, 59, 32768, 302, 102, 59, 32896, 55349, 56640, 97, 59, 32768, 921, 99, 114, 59, 32768, 8464, 105, 108, 100, 101, 59, 32768, 296, 828, 2172, 0, 2177, 99, 121, 59, 32768, 1030, 108, 33024, 207, 59, 32768, 207, 1280, 99, 102, 111, 115, 117, 2193, 2206, 2211, 2217, 2232, 512, 105, 121, 2198, 2203, 114, 99, 59, 32768, 308, 59, 32768, 1049, 114, 59, 32896, 55349, 56589, 112, 102, 59, 32896, 55349, 56641, 820, 2222, 0, 2227, 114, 59, 32896, 55349, 56485, 114, 99, 121, 59, 32768, 1032, 107, 99, 121, 59, 32768, 1028, 1792, 72, 74, 97, 99, 102, 111, 115, 2253, 2258, 2263, 2269, 2283, 2288, 2294, 99, 121, 59, 32768, 1061, 99, 121, 59, 32768, 1036, 112, 112, 97, 59, 32768, 922, 512, 101, 121, 2274, 2280, 100, 105, 108, 59, 32768, 310, 59, 32768, 1050, 114, 59, 32896, 55349, 56590, 112, 102, 59, 32896, 55349, 56642, 99, 114, 59, 32896, 55349, 56486, 2816, 74, 84, 97, 99, 101, 102, 108, 109, 111, 115, 116, 2323, 2328, 2333, 2374, 2396, 2775, 2780, 2797, 2804, 2934, 2954, 99, 121, 59, 32768, 1033, 33024, 60, 59, 32768, 60, 1280, 99, 109, 110, 112, 114, 2344, 2350, 2356, 2360, 2370, 117, 116, 101, 59, 32768, 313, 98, 100, 97, 59, 32768, 923, 103, 59, 32768, 10218, 108, 97, 99, 101, 116, 114, 102, 59, 32768, 8466, 114, 59, 32768, 8606, 768, 97, 101, 121, 2381, 2387, 2393, 114, 111, 110, 59, 32768, 317, 100, 105, 108, 59, 32768, 315, 59, 32768, 1051, 512, 102, 115, 2401, 2702, 116, 2560, 65, 67, 68, 70, 82, 84, 85, 86, 97, 114, 2423, 2470, 2479, 2530, 2537, 2561, 2618, 2666, 2683, 2690, 512, 110, 114, 2428, 2441, 103, 108, 101, 66, 114, 97, 99, 107, 101, 116, 59, 32768, 10216, 114, 111, 119, 768, 59, 66, 82, 2451, 2453, 2458, 32768, 8592, 97, 114, 59, 32768, 8676, 105, 103, 104, 116, 65, 114, 114, 111, 119, 59, 32768, 8646, 101, 105, 108, 105, 110, 103, 59, 32768, 8968, 111, 838, 2485, 0, 2498, 98, 108, 101, 66, 114, 97, 99, 107, 101, 116, 59, 32768, 10214, 110, 805, 2503, 0, 2514, 101, 101, 86, 101, 99, 116, 111, 114, 59, 32768, 10593, 101, 99, 116, 111, 114, 512, 59, 66, 2523, 2525, 32768, 8643, 97, 114, 59, 32768, 10585, 108, 111, 111, 114, 59, 32768, 8970, 105, 103, 104, 116, 512, 65, 86, 2546, 2553, 114, 114, 111, 119, 59, 32768, 8596, 101, 99, 116, 111, 114, 59, 32768, 10574, 512, 101, 114, 2566, 2591, 101, 768, 59, 65, 86, 2574, 2576, 2583, 32768, 8867, 114, 114, 111, 119, 59, 32768, 8612, 101, 99, 116, 111, 114, 59, 32768, 10586, 105, 97, 110, 103, 108, 101, 768, 59, 66, 69, 2604, 2606, 2611, 32768, 8882, 97, 114, 59, 32768, 10703, 113, 117, 97, 108, 59, 32768, 8884, 112, 768, 68, 84, 86, 2626, 2638, 2649, 111, 119, 110, 86, 101, 99, 116, 111, 114, 59, 32768, 10577, 101, 101, 86, 101, 99, 116, 111, 114, 59, 32768, 10592, 101, 99, 116, 111, 114, 512, 59, 66, 2659, 2661, 32768, 8639, 97, 114, 59, 32768, 10584, 101, 99, 116, 111, 114, 512, 59, 66, 2676, 2678, 32768, 8636, 97, 114, 59, 32768, 10578, 114, 114, 111, 119, 59, 32768, 8656, 105, 103, 104, 116, 97, 114, 114, 111, 119, 59, 32768, 8660, 115, 1536, 69, 70, 71, 76, 83, 84, 2716, 2730, 2741, 2750, 2756, 2768, 113, 117, 97, 108, 71, 114, 101, 97, 116, 101, 114, 59, 32768, 8922, 117, 108, 108, 69, 113, 117, 97, 108, 59, 32768, 8806, 114, 101, 97, 116, 101, 114, 59, 32768, 8822, 101, 115, 115, 59, 32768, 10913, 108, 97, 110, 116, 69, 113, 117, 97, 108, 59, 32768, 10877, 105, 108, 100, 101, 59, 32768, 8818, 114, 59, 32896, 55349, 56591, 512, 59, 101, 2785, 2787, 32768, 8920, 102, 116, 97, 114, 114, 111, 119, 59, 32768, 8666, 105, 100, 111, 116, 59, 32768, 319, 768, 110, 112, 119, 2811, 2899, 2904, 103, 1024, 76, 82, 108, 114, 2821, 2848, 2860, 2887, 101, 102, 116, 512, 65, 82, 2829, 2836, 114, 114, 111, 119, 59, 32768, 10229, 105, 103, 104, 116, 65, 114, 114, 111, 119, 59, 32768, 10231, 105, 103, 104, 116, 65, 114, 114, 111, 119, 59, 32768, 10230, 101, 102, 116, 512, 97, 114, 2868, 2875, 114, 114, 111, 119, 59, 32768, 10232, 105, 103, 104, 116, 97, 114, 114, 111, 119, 59, 32768, 10234, 105, 103, 104, 116, 97, 114, 114, 111, 119, 59, 32768, 10233, 102, 59, 32896, 55349, 56643, 101, 114, 512, 76, 82, 2911, 2922, 101, 102, 116, 65, 114, 114, 111, 119, 59, 32768, 8601, 105, 103, 104, 116, 65, 114, 114, 111, 119, 59, 32768, 8600, 768, 99, 104, 116, 2941, 2945, 2948, 114, 59, 32768, 8466, 59, 32768, 8624, 114, 111, 107, 59, 32768, 321, 59, 32768, 8810, 2048, 97, 99, 101, 102, 105, 111, 115, 117, 2974, 2978, 2982, 3007, 3012, 3022, 3028, 3033, 112, 59, 32768, 10501, 121, 59, 32768, 1052, 512, 100, 108, 2987, 2998, 105, 117, 109, 83, 112, 97, 99, 101, 59, 32768, 8287, 108, 105, 110, 116, 114, 102, 59, 32768, 8499, 114, 59, 32896, 55349, 56592, 110, 117, 115, 80, 108, 117, 115, 59, 32768, 8723, 112, 102, 59, 32896, 55349, 56644, 99, 114, 59, 32768, 8499, 59, 32768, 924, 2304, 74, 97, 99, 101, 102, 111, 115, 116, 117, 3055, 3060, 3067, 3089, 3201, 3206, 3874, 3880, 3889, 99, 121, 59, 32768, 1034, 99, 117, 116, 101, 59, 32768, 323, 768, 97, 101, 121, 3074, 3080, 3086, 114, 111, 110, 59, 32768, 327, 100, 105, 108, 59, 32768, 325, 59, 32768, 1053, 768, 103, 115, 119, 3096, 3160, 3194, 97, 116, 105, 118, 101, 768, 77, 84, 86, 3108, 3121, 3145, 101, 100, 105, 117, 109, 83, 112, 97, 99, 101, 59, 32768, 8203, 104, 105, 512, 99, 110, 3128, 3137, 107, 83, 112, 97, 99, 101, 59, 32768, 8203, 83, 112, 97, 99, 101, 59, 32768, 8203, 101, 114, 121, 84, 104, 105, 110, 83, 112, 97, 99, 101, 59, 32768, 8203, 116, 101, 100, 512, 71, 76, 3168, 3184, 114, 101, 97, 116, 101, 114, 71, 114, 101, 97, 116, 101, 114, 59, 32768, 8811, 101, 115, 115, 76, 101, 115, 115, 59, 32768, 8810, 76, 105, 110, 101, 59, 32768, 10, 114, 59, 32896, 55349, 56593, 1024, 66, 110, 112, 116, 3215, 3222, 3238, 3242, 114, 101, 97, 107, 59, 32768, 8288, 66, 114, 101, 97, 107, 105, 110, 103, 83, 112, 97, 99, 101, 59, 32768, 160, 102, 59, 32768, 8469, 3328, 59, 67, 68, 69, 71, 72, 76, 78, 80, 82, 83, 84, 86, 3269, 3271, 3293, 3312, 3352, 3430, 3455, 3551, 3589, 3625, 3678, 3821, 3861, 32768, 10988, 512, 111, 117, 3276, 3286, 110, 103, 114, 117, 101, 110, 116, 59, 32768, 8802, 112, 67, 97, 112, 59, 32768, 8813, 111, 117, 98, 108, 101, 86, 101, 114, 116, 105, 99, 97, 108, 66, 97, 114, 59, 32768, 8742, 768, 108, 113, 120, 3319, 3327, 3345, 101, 109, 101, 110, 116, 59, 32768, 8713, 117, 97, 108, 512, 59, 84, 3335, 3337, 32768, 8800, 105, 108, 100, 101, 59, 32896, 8770, 824, 105, 115, 116, 115, 59, 32768, 8708, 114, 101, 97, 116, 101, 114, 1792, 59, 69, 70, 71, 76, 83, 84, 3373, 3375, 3382, 3394, 3404, 3410, 3423, 32768, 8815, 113, 117, 97, 108, 59, 32768, 8817, 117, 108, 108, 69, 113, 117, 97, 108, 59, 32896, 8807, 824, 114, 101, 97, 116, 101, 114, 59, 32896, 8811, 824, 101, 115, 115, 59, 32768, 8825, 108, 97, 110, 116, 69, 113, 117, 97, 108, 59, 32896, 10878, 824, 105, 108, 100, 101, 59, 32768, 8821, 117, 109, 112, 533, 3437, 3448, 111, 119, 110, 72, 117, 109, 112, 59, 32896, 8782, 824, 113, 117, 97, 108, 59, 32896, 8783, 824, 101, 512, 102, 115, 3461, 3492, 116, 84, 114, 105, 97, 110, 103, 108, 101, 768, 59, 66, 69, 3477, 3479, 3485, 32768, 8938, 97, 114, 59, 32896, 10703, 824, 113, 117, 97, 108, 59, 32768, 8940, 115, 1536, 59, 69, 71, 76, 83, 84, 3506, 3508, 3515, 3524, 3531, 3544, 32768, 8814, 113, 117, 97, 108, 59, 32768, 8816, 114, 101, 97, 116, 101, 114, 59, 32768, 8824, 101, 115, 115, 59, 32896, 8810, 824, 108, 97, 110, 116, 69, 113, 117, 97, 108, 59, 32896, 10877, 824, 105, 108, 100, 101, 59, 32768, 8820, 101, 115, 116, 101, 100, 512, 71, 76, 3561, 3578, 114, 101, 97, 116, 101, 114, 71, 114, 101, 97, 116, 101, 114, 59, 32896, 10914, 824, 101, 115, 115, 76, 101, 115, 115, 59, 32896, 10913, 824, 114, 101, 99, 101, 100, 101, 115, 768, 59, 69, 83, 3603, 3605, 3613, 32768, 8832, 113, 117, 97, 108, 59, 32896, 10927, 824, 108, 97, 110, 116, 69, 113, 117, 97, 108, 59, 32768, 8928, 512, 101, 105, 3630, 3645, 118, 101, 114, 115, 101, 69, 108, 101, 109, 101, 110, 116, 59, 32768, 8716, 103, 104, 116, 84, 114, 105, 97, 110, 103, 108, 101, 768, 59, 66, 69, 3663, 3665, 3671, 32768, 8939, 97, 114, 59, 32896, 10704, 824, 113, 117, 97, 108, 59, 32768, 8941, 512, 113, 117, 3683, 3732, 117, 97, 114, 101, 83, 117, 512, 98, 112, 3694, 3712, 115, 101, 116, 512, 59, 69, 3702, 3705, 32896, 8847, 824, 113, 117, 97, 108, 59, 32768, 8930, 101, 114, 115, 101, 116, 512, 59, 69, 3722, 3725, 32896, 8848, 824, 113, 117, 97, 108, 59, 32768, 8931, 768, 98, 99, 112, 3739, 3757, 3801, 115, 101, 116, 512, 59, 69, 3747, 3750, 32896, 8834, 8402, 113, 117, 97, 108, 59, 32768, 8840, 99, 101, 101, 100, 115, 1024, 59, 69, 83, 84, 3771, 3773, 3781, 3793, 32768, 8833, 113, 117, 97, 108, 59, 32896, 10928, 824, 108, 97, 110, 116, 69, 113, 117, 97, 108, 59, 32768, 8929, 105, 108, 100, 101, 59, 32896, 8831, 824, 101, 114, 115, 101, 116, 512, 59, 69, 3811, 3814, 32896, 8835, 8402, 113, 117, 97, 108, 59, 32768, 8841, 105, 108, 100, 101, 1024, 59, 69, 70, 84, 3834, 3836, 3843, 3854, 32768, 8769, 113, 117, 97, 108, 59, 32768, 8772, 117, 108, 108, 69, 113, 117, 97, 108, 59, 32768, 8775, 105, 108, 100, 101, 59, 32768, 8777, 101, 114, 116, 105, 99, 97, 108, 66, 97, 114, 59, 32768, 8740, 99, 114, 59, 32896, 55349, 56489, 105, 108, 100, 101, 33024, 209, 59, 32768, 209, 59, 32768, 925, 3584, 69, 97, 99, 100, 102, 103, 109, 111, 112, 114, 115, 116, 117, 118, 3921, 3927, 3936, 3951, 3958, 3963, 3972, 3996, 4002, 4034, 4037, 4055, 4071, 4078, 108, 105, 103, 59, 32768, 338, 99, 117, 116, 101, 33024, 211, 59, 32768, 211, 512, 105, 121, 3941, 3948, 114, 99, 33024, 212, 59, 32768, 212, 59, 32768, 1054, 98, 108, 97, 99, 59, 32768, 336, 114, 59, 32896, 55349, 56594, 114, 97, 118, 101, 33024, 210, 59, 32768, 210, 768, 97, 101, 105, 3979, 3984, 3989, 99, 114, 59, 32768, 332, 103, 97, 59, 32768, 937, 99, 114, 111, 110, 59, 32768, 927, 112, 102, 59, 32896, 55349, 56646, 101, 110, 67, 117, 114, 108, 121, 512, 68, 81, 4014, 4027, 111, 117, 98, 108, 101, 81, 117, 111, 116, 101, 59, 32768, 8220, 117, 111, 116, 101, 59, 32768, 8216, 59, 32768, 10836, 512, 99, 108, 4042, 4047, 114, 59, 32896, 55349, 56490, 97, 115, 104, 33024, 216, 59, 32768, 216, 105, 573, 4060, 4067, 100, 101, 33024, 213, 59, 32768, 213, 101, 115, 59, 32768, 10807, 109, 108, 33024, 214, 59, 32768, 214, 101, 114, 512, 66, 80, 4085, 4109, 512, 97, 114, 4090, 4094, 114, 59, 32768, 8254, 97, 99, 512, 101, 107, 4101, 4104, 59, 32768, 9182, 101, 116, 59, 32768, 9140, 97, 114, 101, 110, 116, 104, 101, 115, 105, 115, 59, 32768, 9180, 2304, 97, 99, 102, 104, 105, 108, 111, 114, 115, 4141, 4150, 4154, 4159, 4163, 4166, 4176, 4198, 4284, 114, 116, 105, 97, 108, 68, 59, 32768, 8706, 121, 59, 32768, 1055, 114, 59, 32896, 55349, 56595, 105, 59, 32768, 934, 59, 32768, 928, 117, 115, 77, 105, 110, 117, 115, 59, 32768, 177, 512, 105, 112, 4181, 4194, 110, 99, 97, 114, 101, 112, 108, 97, 110, 101, 59, 32768, 8460, 102, 59, 32768, 8473, 1024, 59, 101, 105, 111, 4207, 4209, 4251, 4256, 32768, 10939, 99, 101, 100, 101, 115, 1024, 59, 69, 83, 84, 4223, 4225, 4232, 4244, 32768, 8826, 113, 117, 97, 108, 59, 32768, 10927, 108, 97, 110, 116, 69, 113, 117, 97, 108, 59, 32768, 8828, 105, 108, 100, 101, 59, 32768, 8830, 109, 101, 59, 32768, 8243, 512, 100, 112, 4261, 4267, 117, 99, 116, 59, 32768, 8719, 111, 114, 116, 105, 111, 110, 512, 59, 97, 4278, 4280, 32768, 8759, 108, 59, 32768, 8733, 512, 99, 105, 4289, 4294, 114, 59, 32896, 55349, 56491, 59, 32768, 936, 1024, 85, 102, 111, 115, 4306, 4313, 4318, 4323, 79, 84, 33024, 34, 59, 32768, 34, 114, 59, 32896, 55349, 56596, 112, 102, 59, 32768, 8474, 99, 114, 59, 32896, 55349, 56492, 3072, 66, 69, 97, 99, 101, 102, 104, 105, 111, 114, 115, 117, 4354, 4360, 4366, 4395, 4417, 4473, 4477, 4481, 4743, 4764, 4776, 4788, 97, 114, 114, 59, 32768, 10512, 71, 33024, 174, 59, 32768, 174, 768, 99, 110, 114, 4373, 4379, 4383, 117, 116, 101, 59, 32768, 340, 103, 59, 32768, 10219, 114, 512, 59, 116, 4389, 4391, 32768, 8608, 108, 59, 32768, 10518, 768, 97, 101, 121, 4402, 4408, 4414, 114, 111, 110, 59, 32768, 344, 100, 105, 108, 59, 32768, 342, 59, 32768, 1056, 512, 59, 118, 4422, 4424, 32768, 8476, 101, 114, 115, 101, 512, 69, 85, 4433, 4458, 512, 108, 113, 4438, 4446, 101, 109, 101, 110, 116, 59, 32768, 8715, 117, 105, 108, 105, 98, 114, 105, 117, 109, 59, 32768, 8651, 112, 69, 113, 117, 105, 108, 105, 98, 114, 105, 117, 109, 59, 32768, 10607, 114, 59, 32768, 8476, 111, 59, 32768, 929, 103, 104, 116, 2048, 65, 67, 68, 70, 84, 85, 86, 97, 4501, 4547, 4556, 4607, 4614, 4671, 4719, 4736, 512, 110, 114, 4506, 4519, 103, 108, 101, 66, 114, 97, 99, 107, 101, 116, 59, 32768, 10217, 114, 111, 119, 768, 59, 66, 76, 4529, 4531, 4536, 32768, 8594, 97, 114, 59, 32768, 8677, 101, 102, 116, 65, 114, 114, 111, 119, 59, 32768, 8644, 101, 105, 108, 105, 110, 103, 59, 32768, 8969, 111, 838, 4562, 0, 4575, 98, 108, 101, 66, 114, 97, 99, 107, 101, 116, 59, 32768, 10215, 110, 805, 4580, 0, 4591, 101, 101, 86, 101, 99, 116, 111, 114, 59, 32768, 10589, 101, 99, 116, 111, 114, 512, 59, 66, 4600, 4602, 32768, 8642, 97, 114, 59, 32768, 10581, 108, 111, 111, 114, 59, 32768, 8971, 512, 101, 114, 4619, 4644, 101, 768, 59, 65, 86, 4627, 4629, 4636, 32768, 8866, 114, 114, 111, 119, 59, 32768, 8614, 101, 99, 116, 111, 114, 59, 32768, 10587, 105, 97, 110, 103, 108, 101, 768, 59, 66, 69, 4657, 4659, 4664, 32768, 8883, 97, 114, 59, 32768, 10704, 113, 117, 97, 108, 59, 32768, 8885, 112, 768, 68, 84, 86, 4679, 4691, 4702, 111, 119, 110, 86, 101, 99, 116, 111, 114, 59, 32768, 10575, 101, 101, 86, 101, 99, 116, 111, 114, 59, 32768, 10588, 101, 99, 116, 111, 114, 512, 59, 66, 4712, 4714, 32768, 8638, 97, 114, 59, 32768, 10580, 101, 99, 116, 111, 114, 512, 59, 66, 4729, 4731, 32768, 8640, 97, 114, 59, 32768, 10579, 114, 114, 111, 119, 59, 32768, 8658, 512, 112, 117, 4748, 4752, 102, 59, 32768, 8477, 110, 100, 73, 109, 112, 108, 105, 101, 115, 59, 32768, 10608, 105, 103, 104, 116, 97, 114, 114, 111, 119, 59, 32768, 8667, 512, 99, 104, 4781, 4785, 114, 59, 32768, 8475, 59, 32768, 8625, 108, 101, 68, 101, 108, 97, 121, 101, 100, 59, 32768, 10740, 3328, 72, 79, 97, 99, 102, 104, 105, 109, 111, 113, 115, 116, 117, 4827, 4842, 4849, 4856, 4889, 4894, 4949, 4955, 4967, 4973, 5059, 5065, 5070, 512, 67, 99, 4832, 4838, 72, 99, 121, 59, 32768, 1065, 121, 59, 32768, 1064, 70, 84, 99, 121, 59, 32768, 1068, 99, 117, 116, 101, 59, 32768, 346, 1280, 59, 97, 101, 105, 121, 4867, 4869, 4875, 4881, 4886, 32768, 10940, 114, 111, 110, 59, 32768, 352, 100, 105, 108, 59, 32768, 350, 114, 99, 59, 32768, 348, 59, 32768, 1057, 114, 59, 32896, 55349, 56598, 111, 114, 116, 1024, 68, 76, 82, 85, 4906, 4917, 4928, 4940, 111, 119, 110, 65, 114, 114, 111, 119, 59, 32768, 8595, 101, 102, 116, 65, 114, 114, 111, 119, 59, 32768, 8592, 105, 103, 104, 116, 65, 114, 114, 111, 119, 59, 32768, 8594, 112, 65, 114, 114, 111, 119, 59, 32768, 8593, 103, 109, 97, 59, 32768, 931, 97, 108, 108, 67, 105, 114, 99, 108, 101, 59, 32768, 8728, 112, 102, 59, 32896, 55349, 56650, 1091, 4979, 0, 0, 4983, 116, 59, 32768, 8730, 97, 114, 101, 1024, 59, 73, 83, 85, 4994, 4996, 5010, 5052, 32768, 9633, 110, 116, 101, 114, 115, 101, 99, 116, 105, 111, 110, 59, 32768, 8851, 117, 512, 98, 112, 5016, 5033, 115, 101, 116, 512, 59, 69, 5024, 5026, 32768, 8847, 113, 117, 97, 108, 59, 32768, 8849, 101, 114, 115, 101, 116, 512, 59, 69, 5043, 5045, 32768, 8848, 113, 117, 97, 108, 59, 32768, 8850, 110, 105, 111, 110, 59, 32768, 8852, 99, 114, 59, 32896, 55349, 56494, 97, 114, 59, 32768, 8902, 1024, 98, 99, 109, 112, 5079, 5102, 5155, 5158, 512, 59, 115, 5084, 5086, 32768, 8912, 101, 116, 512, 59, 69, 5093, 5095, 32768, 8912, 113, 117, 97, 108, 59, 32768, 8838, 512, 99, 104, 5107, 5148, 101, 101, 100, 115, 1024, 59, 69, 83, 84, 5120, 5122, 5129, 5141, 32768, 8827, 113, 117, 97, 108, 59, 32768, 10928, 108, 97, 110, 116, 69, 113, 117, 97, 108, 59, 32768, 8829, 105, 108, 100, 101, 59, 32768, 8831, 84, 104, 97, 116, 59, 32768, 8715, 59, 32768, 8721, 768, 59, 101, 115, 5165, 5167, 5185, 32768, 8913, 114, 115, 101, 116, 512, 59, 69, 5176, 5178, 32768, 8835, 113, 117, 97, 108, 59, 32768, 8839, 101, 116, 59, 32768, 8913, 2816, 72, 82, 83, 97, 99, 102, 104, 105, 111, 114, 115, 5213, 5221, 5227, 5241, 5252, 5274, 5279, 5323, 5362, 5368, 5378, 79, 82, 78, 33024, 222, 59, 32768, 222, 65, 68, 69, 59, 32768, 8482, 512, 72, 99, 5232, 5237, 99, 121, 59, 32768, 1035, 121, 59, 32768, 1062, 512, 98, 117, 5246, 5249, 59, 32768, 9, 59, 32768, 932, 768, 97, 101, 121, 5259, 5265, 5271, 114, 111, 110, 59, 32768, 356, 100, 105, 108, 59, 32768, 354, 59, 32768, 1058, 114, 59, 32896, 55349, 56599, 512, 101, 105, 5284, 5300, 835, 5289, 0, 5297, 101, 102, 111, 114, 101, 59, 32768, 8756, 97, 59, 32768, 920, 512, 99, 110, 5305, 5315, 107, 83, 112, 97, 99, 101, 59, 32896, 8287, 8202, 83, 112, 97, 99, 101, 59, 32768, 8201, 108, 100, 101, 1024, 59, 69, 70, 84, 5335, 5337, 5344, 5355, 32768, 8764, 113, 117, 97, 108, 59, 32768, 8771, 117, 108, 108, 69, 113, 117, 97, 108, 59, 32768, 8773, 105, 108, 100, 101, 59, 32768, 8776, 112, 102, 59, 32896, 55349, 56651, 105, 112, 108, 101, 68, 111, 116, 59, 32768, 8411, 512, 99, 116, 5383, 5388, 114, 59, 32896, 55349, 56495, 114, 111, 107, 59, 32768, 358, 5426, 5417, 5444, 5458, 5473, 0, 5480, 5485, 0, 0, 0, 0, 0, 5494, 5500, 5564, 5579, 0, 5726, 5732, 5738, 5745, 512, 99, 114, 5421, 5429, 117, 116, 101, 33024, 218, 59, 32768, 218, 114, 512, 59, 111, 5435, 5437, 32768, 8607, 99, 105, 114, 59, 32768, 10569, 114, 820, 5449, 0, 5453, 121, 59, 32768, 1038, 118, 101, 59, 32768, 364, 512, 105, 121, 5462, 5469, 114, 99, 33024, 219, 59, 32768, 219, 59, 32768, 1059, 98, 108, 97, 99, 59, 32768, 368, 114, 59, 32896, 55349, 56600, 114, 97, 118, 101, 33024, 217, 59, 32768, 217, 97, 99, 114, 59, 32768, 362, 512, 100, 105, 5504, 5548, 101, 114, 512, 66, 80, 5511, 5535, 512, 97, 114, 5516, 5520, 114, 59, 32768, 95, 97, 99, 512, 101, 107, 5527, 5530, 59, 32768, 9183, 101, 116, 59, 32768, 9141, 97, 114, 101, 110, 116, 104, 101, 115, 105, 115, 59, 32768, 9181, 111, 110, 512, 59, 80, 5555, 5557, 32768, 8899, 108, 117, 115, 59, 32768, 8846, 512, 103, 112, 5568, 5573, 111, 110, 59, 32768, 370, 102, 59, 32896, 55349, 56652, 2048, 65, 68, 69, 84, 97, 100, 112, 115, 5595, 5624, 5635, 5648, 5664, 5671, 5682, 5712, 114, 114, 111, 119, 768, 59, 66, 68, 5606, 5608, 5613, 32768, 8593, 97, 114, 59, 32768, 10514, 111, 119, 110, 65, 114, 114, 111, 119, 59, 32768, 8645, 111, 119, 110, 65, 114, 114, 111, 119, 59, 32768, 8597, 113, 117, 105, 108, 105, 98, 114, 105, 117, 109, 59, 32768, 10606, 101, 101, 512, 59, 65, 5655, 5657, 32768, 8869, 114, 114, 111, 119, 59, 32768, 8613, 114, 114, 111, 119, 59, 32768, 8657, 111, 119, 110, 97, 114, 114, 111, 119, 59, 32768, 8661, 101, 114, 512, 76, 82, 5689, 5700, 101, 102, 116, 65, 114, 114, 111, 119, 59, 32768, 8598, 105, 103, 104, 116, 65, 114, 114, 111, 119, 59, 32768, 8599, 105, 512, 59, 108, 5718, 5720, 32768, 978, 111, 110, 59, 32768, 933, 105, 110, 103, 59, 32768, 366, 99, 114, 59, 32896, 55349, 56496, 105, 108, 100, 101, 59, 32768, 360, 109, 108, 33024, 220, 59, 32768, 220, 2304, 68, 98, 99, 100, 101, 102, 111, 115, 118, 5770, 5776, 5781, 5785, 5798, 5878, 5883, 5889, 5895, 97, 115, 104, 59, 32768, 8875, 97, 114, 59, 32768, 10987, 121, 59, 32768, 1042, 97, 115, 104, 512, 59, 108, 5793, 5795, 32768, 8873, 59, 32768, 10982, 512, 101, 114, 5803, 5806, 59, 32768, 8897, 768, 98, 116, 121, 5813, 5818, 5866, 97, 114, 59, 32768, 8214, 512, 59, 105, 5823, 5825, 32768, 8214, 99, 97, 108, 1024, 66, 76, 83, 84, 5837, 5842, 5848, 5859, 97, 114, 59, 32768, 8739, 105, 110, 101, 59, 32768, 124, 101, 112, 97, 114, 97, 116, 111, 114, 59, 32768, 10072, 105, 108, 100, 101, 59, 32768, 8768, 84, 104, 105, 110, 83, 112, 97, 99, 101, 59, 32768, 8202, 114, 59, 32896, 55349, 56601, 112, 102, 59, 32896, 55349, 56653, 99, 114, 59, 32896, 55349, 56497, 100, 97, 115, 104, 59, 32768, 8874, 1280, 99, 101, 102, 111, 115, 5913, 5919, 5925, 5930, 5936, 105, 114, 99, 59, 32768, 372, 100, 103, 101, 59, 32768, 8896, 114, 59, 32896, 55349, 56602, 112, 102, 59, 32896, 55349, 56654, 99, 114, 59, 32896, 55349, 56498, 1024, 102, 105, 111, 115, 5951, 5956, 5959, 5965, 114, 59, 32896, 55349, 56603, 59, 32768, 926, 112, 102, 59, 32896, 55349, 56655, 99, 114, 59, 32896, 55349, 56499, 2304, 65, 73, 85, 97, 99, 102, 111, 115, 117, 5990, 5995, 6000, 6005, 6014, 6027, 6032, 6038, 6044, 99, 121, 59, 32768, 1071, 99, 121, 59, 32768, 1031, 99, 121, 59, 32768, 1070, 99, 117, 116, 101, 33024, 221, 59, 32768, 221, 512, 105, 121, 6019, 6024, 114, 99, 59, 32768, 374, 59, 32768, 1067, 114, 59, 32896, 55349, 56604, 112, 102, 59, 32896, 55349, 56656, 99, 114, 59, 32896, 55349, 56500, 109, 108, 59, 32768, 376, 2048, 72, 97, 99, 100, 101, 102, 111, 115, 6066, 6071, 6078, 6092, 6097, 6119, 6123, 6128, 99, 121, 59, 32768, 1046, 99, 117, 116, 101, 59, 32768, 377, 512, 97, 121, 6083, 6089, 114, 111, 110, 59, 32768, 381, 59, 32768, 1047, 111, 116, 59, 32768, 379, 835, 6102, 0, 6116, 111, 87, 105, 100, 116, 104, 83, 112, 97, 99, 101, 59, 32768, 8203, 97, 59, 32768, 918, 114, 59, 32768, 8488, 112, 102, 59, 32768, 8484, 99, 114, 59, 32896, 55349, 56501, 5938, 6159, 6168, 6175, 0, 6214, 6222, 6233, 0, 0, 0, 0, 6242, 6267, 6290, 6429, 6444, 0, 6495, 6503, 6531, 6540, 0, 6547, 99, 117, 116, 101, 33024, 225, 59, 32768, 225, 114, 101, 118, 101, 59, 32768, 259, 1536, 59, 69, 100, 105, 117, 121, 6187, 6189, 6193, 6196, 6203, 6210, 32768, 8766, 59, 32896, 8766, 819, 59, 32768, 8767, 114, 99, 33024, 226, 59, 32768, 226, 116, 101, 33024, 180, 59, 32768, 180, 59, 32768, 1072, 108, 105, 103, 33024, 230, 59, 32768, 230, 512, 59, 114, 6226, 6228, 32768, 8289, 59, 32896, 55349, 56606, 114, 97, 118, 101, 33024, 224, 59, 32768, 224, 512, 101, 112, 6246, 6261, 512, 102, 112, 6251, 6257, 115, 121, 109, 59, 32768, 8501, 104, 59, 32768, 8501, 104, 97, 59, 32768, 945, 512, 97, 112, 6271, 6284, 512, 99, 108, 6276, 6280, 114, 59, 32768, 257, 103, 59, 32768, 10815, 33024, 38, 59, 32768, 38, 1077, 6295, 0, 0, 6326, 1280, 59, 97, 100, 115, 118, 6305, 6307, 6312, 6315, 6322, 32768, 8743, 110, 100, 59, 32768, 10837, 59, 32768, 10844, 108, 111, 112, 101, 59, 32768, 10840, 59, 32768, 10842, 1792, 59, 101, 108, 109, 114, 115, 122, 6340, 6342, 6345, 6349, 6391, 6410, 6422, 32768, 8736, 59, 32768, 10660, 101, 59, 32768, 8736, 115, 100, 512, 59, 97, 6356, 6358, 32768, 8737, 2098, 6368, 6371, 6374, 6377, 6380, 6383, 6386, 6389, 59, 32768, 10664, 59, 32768, 10665, 59, 32768, 10666, 59, 32768, 10667, 59, 32768, 10668, 59, 32768, 10669, 59, 32768, 10670, 59, 32768, 10671, 116, 512, 59, 118, 6397, 6399, 32768, 8735, 98, 512, 59, 100, 6405, 6407, 32768, 8894, 59, 32768, 10653, 512, 112, 116, 6415, 6419, 104, 59, 32768, 8738, 59, 32768, 197, 97, 114, 114, 59, 32768, 9084, 512, 103, 112, 6433, 6438, 111, 110, 59, 32768, 261, 102, 59, 32896, 55349, 56658, 1792, 59, 69, 97, 101, 105, 111, 112, 6458, 6460, 6463, 6469, 6472, 6476, 6480, 32768, 8776, 59, 32768, 10864, 99, 105, 114, 59, 32768, 10863, 59, 32768, 8778, 100, 59, 32768, 8779, 115, 59, 32768, 39, 114, 111, 120, 512, 59, 101, 6488, 6490, 32768, 8776, 113, 59, 32768, 8778, 105, 110, 103, 33024, 229, 59, 32768, 229, 768, 99, 116, 121, 6509, 6514, 6517, 114, 59, 32896, 55349, 56502, 59, 32768, 42, 109, 112, 512, 59, 101, 6524, 6526, 32768, 8776, 113, 59, 32768, 8781, 105, 108, 100, 101, 33024, 227, 59, 32768, 227, 109, 108, 33024, 228, 59, 32768, 228, 512, 99, 105, 6551, 6559, 111, 110, 105, 110, 116, 59, 32768, 8755, 110, 116, 59, 32768, 10769, 4096, 78, 97, 98, 99, 100, 101, 102, 105, 107, 108, 110, 111, 112, 114, 115, 117, 6597, 6602, 6673, 6688, 6701, 6707, 6768, 6773, 6891, 6898, 6999, 7023, 7309, 7316, 7334, 7383, 111, 116, 59, 32768, 10989, 512, 99, 114, 6607, 6652, 107, 1024, 99, 101, 112, 115, 6617, 6623, 6632, 6639, 111, 110, 103, 59, 32768, 8780, 112, 115, 105, 108, 111, 110, 59, 32768, 1014, 114, 105, 109, 101, 59, 32768, 8245, 105, 109, 512, 59, 101, 6646, 6648, 32768, 8765, 113, 59, 32768, 8909, 583, 6656, 6661, 101, 101, 59, 32768, 8893, 101, 100, 512, 59, 103, 6667, 6669, 32768, 8965, 101, 59, 32768, 8965, 114, 107, 512, 59, 116, 6680, 6682, 32768, 9141, 98, 114, 107, 59, 32768, 9142, 512, 111, 121, 6693, 6698, 110, 103, 59, 32768, 8780, 59, 32768, 1073, 113, 117, 111, 59, 32768, 8222, 1280, 99, 109, 112, 114, 116, 6718, 6731, 6738, 6743, 6749, 97, 117, 115, 512, 59, 101, 6726, 6728, 32768, 8757, 59, 32768, 8757, 112, 116, 121, 118, 59, 32768, 10672, 115, 105, 59, 32768, 1014, 110, 111, 117, 59, 32768, 8492, 768, 97, 104, 119, 6756, 6759, 6762, 59, 32768, 946, 59, 32768, 8502, 101, 101, 110, 59, 32768, 8812, 114, 59, 32896, 55349, 56607, 103, 1792, 99, 111, 115, 116, 117, 118, 119, 6789, 6809, 6834, 6850, 6872, 6879, 6884, 768, 97, 105, 117, 6796, 6800, 6805, 112, 59, 32768, 8898, 114, 99, 59, 32768, 9711, 112, 59, 32768, 8899, 768, 100, 112, 116, 6816, 6821, 6827, 111, 116, 59, 32768, 10752, 108, 117, 115, 59, 32768, 10753, 105, 109, 101, 115, 59, 32768, 10754, 1090, 6840, 0, 0, 6846, 99, 117, 112, 59, 32768, 10758, 97, 114, 59, 32768, 9733, 114, 105, 97, 110, 103, 108, 101, 512, 100, 117, 6862, 6868, 111, 119, 110, 59, 32768, 9661, 112, 59, 32768, 9651, 112, 108, 117, 115, 59, 32768, 10756, 101, 101, 59, 32768, 8897, 101, 100, 103, 101, 59, 32768, 8896, 97, 114, 111, 119, 59, 32768, 10509, 768, 97, 107, 111, 6905, 6976, 6994, 512, 99, 110, 6910, 6972, 107, 768, 108, 115, 116, 6918, 6927, 6935, 111, 122, 101, 110, 103, 101, 59, 32768, 10731, 113, 117, 97, 114, 101, 59, 32768, 9642, 114, 105, 97, 110, 103, 108, 101, 1024, 59, 100, 108, 114, 6951, 6953, 6959, 6965, 32768, 9652, 111, 119, 110, 59, 32768, 9662, 101, 102, 116, 59, 32768, 9666, 105, 103, 104, 116, 59, 32768, 9656, 107, 59, 32768, 9251, 770, 6981, 0, 6991, 771, 6985, 0, 6988, 59, 32768, 9618, 59, 32768, 9617, 52, 59, 32768, 9619, 99, 107, 59, 32768, 9608, 512, 101, 111, 7004, 7019, 512, 59, 113, 7009, 7012, 32896, 61, 8421, 117, 105, 118, 59, 32896, 8801, 8421, 116, 59, 32768, 8976, 1024, 112, 116, 119, 120, 7032, 7037, 7049, 7055, 102, 59, 32896, 55349, 56659, 512, 59, 116, 7042, 7044, 32768, 8869, 111, 109, 59, 32768, 8869, 116, 105, 101, 59, 32768, 8904, 3072, 68, 72, 85, 86, 98, 100, 104, 109, 112, 116, 117, 118, 7080, 7101, 7126, 7147, 7182, 7187, 7208, 7233, 7240, 7246, 7253, 7274, 1024, 76, 82, 108, 114, 7089, 7092, 7095, 7098, 59, 32768, 9559, 59, 32768, 9556, 59, 32768, 9558, 59, 32768, 9555, 1280, 59, 68, 85, 100, 117, 7112, 7114, 7117, 7120, 7123, 32768, 9552, 59, 32768, 9574, 59, 32768, 9577, 59, 32768, 9572, 59, 32768, 9575, 1024, 76, 82, 108, 114, 7135, 7138, 7141, 7144, 59, 32768, 9565, 59, 32768, 9562, 59, 32768, 9564, 59, 32768, 9561, 1792, 59, 72, 76, 82, 104, 108, 114, 7162, 7164, 7167, 7170, 7173, 7176, 7179, 32768, 9553, 59, 32768, 9580, 59, 32768, 9571, 59, 32768, 9568, 59, 32768, 9579, 59, 32768, 9570, 59, 32768, 9567, 111, 120, 59, 32768, 10697, 1024, 76, 82, 108, 114, 7196, 7199, 7202, 7205, 59, 32768, 9557, 59, 32768, 9554, 59, 32768, 9488, 59, 32768, 9484, 1280, 59, 68, 85, 100, 117, 7219, 7221, 7224, 7227, 7230, 32768, 9472, 59, 32768, 9573, 59, 32768, 9576, 59, 32768, 9516, 59, 32768, 9524, 105, 110, 117, 115, 59, 32768, 8863, 108, 117, 115, 59, 32768, 8862, 105, 109, 101, 115, 59, 32768, 8864, 1024, 76, 82, 108, 114, 7262, 7265, 7268, 7271, 59, 32768, 9563, 59, 32768, 9560, 59, 32768, 9496, 59, 32768, 9492, 1792, 59, 72, 76, 82, 104, 108, 114, 7289, 7291, 7294, 7297, 7300, 7303, 7306, 32768, 9474, 59, 32768, 9578, 59, 32768, 9569, 59, 32768, 9566, 59, 32768, 9532, 59, 32768, 9508, 59, 32768, 9500, 114, 105, 109, 101, 59, 32768, 8245, 512, 101, 118, 7321, 7326, 118, 101, 59, 32768, 728, 98, 97, 114, 33024, 166, 59, 32768, 166, 1024, 99, 101, 105, 111, 7343, 7348, 7353, 7364, 114, 59, 32896, 55349, 56503, 109, 105, 59, 32768, 8271, 109, 512, 59, 101, 7359, 7361, 32768, 8765, 59, 32768, 8909, 108, 768, 59, 98, 104, 7372, 7374, 7377, 32768, 92, 59, 32768, 10693, 115, 117, 98, 59, 32768, 10184, 573, 7387, 7399, 108, 512, 59, 101, 7392, 7394, 32768, 8226, 116, 59, 32768, 8226, 112, 768, 59, 69, 101, 7406, 7408, 7411, 32768, 8782, 59, 32768, 10926, 512, 59, 113, 7416, 7418, 32768, 8783, 59, 32768, 8783, 6450, 7448, 0, 7523, 7571, 7576, 7613, 0, 7618, 7647, 0, 0, 7764, 0, 0, 7779, 0, 0, 7899, 7914, 7949, 7955, 0, 8158, 0, 8176, 768, 99, 112, 114, 7454, 7460, 7509, 117, 116, 101, 59, 32768, 263, 1536, 59, 97, 98, 99, 100, 115, 7473, 7475, 7480, 7487, 7500, 7505, 32768, 8745, 110, 100, 59, 32768, 10820, 114, 99, 117, 112, 59, 32768, 10825, 512, 97, 117, 7492, 7496, 112, 59, 32768, 10827, 112, 59, 32768, 10823, 111, 116, 59, 32768, 10816, 59, 32896, 8745, 65024, 512, 101, 111, 7514, 7518, 116, 59, 32768, 8257, 110, 59, 32768, 711, 1024, 97, 101, 105, 117, 7531, 7544, 7552, 7557, 833, 7536, 0, 7540, 115, 59, 32768, 10829, 111, 110, 59, 32768, 269, 100, 105, 108, 33024, 231, 59, 32768, 231, 114, 99, 59, 32768, 265, 112, 115, 512, 59, 115, 7564, 7566, 32768, 10828, 109, 59, 32768, 10832, 111, 116, 59, 32768, 267, 768, 100, 109, 110, 7582, 7589, 7596, 105, 108, 33024, 184, 59, 32768, 184, 112, 116, 121, 118, 59, 32768, 10674, 116, 33280, 162, 59, 101, 7603, 7605, 32768, 162, 114, 100, 111, 116, 59, 32768, 183, 114, 59, 32896, 55349, 56608, 768, 99, 101, 105, 7624, 7628, 7643, 121, 59, 32768, 1095, 99, 107, 512, 59, 109, 7635, 7637, 32768, 10003, 97, 114, 107, 59, 32768, 10003, 59, 32768, 967, 114, 1792, 59, 69, 99, 101, 102, 109, 115, 7662, 7664, 7667, 7742, 7745, 7752, 7757, 32768, 9675, 59, 32768, 10691, 768, 59, 101, 108, 7674, 7676, 7680, 32768, 710, 113, 59, 32768, 8791, 101, 1074, 7687, 0, 0, 7709, 114, 114, 111, 119, 512, 108, 114, 7695, 7701, 101, 102, 116, 59, 32768, 8634, 105, 103, 104, 116, 59, 32768, 8635, 1280, 82, 83, 97, 99, 100, 7719, 7722, 7725, 7730, 7736, 59, 32768, 174, 59, 32768, 9416, 115, 116, 59, 32768, 8859, 105, 114, 99, 59, 32768, 8858, 97, 115, 104, 59, 32768, 8861, 59, 32768, 8791, 110, 105, 110, 116, 59, 32768, 10768, 105, 100, 59, 32768, 10991, 99, 105, 114, 59, 32768, 10690, 117, 98, 115, 512, 59, 117, 7771, 7773, 32768, 9827, 105, 116, 59, 32768, 9827, 1341, 7785, 7804, 7850, 0, 7871, 111, 110, 512, 59, 101, 7791, 7793, 32768, 58, 512, 59, 113, 7798, 7800, 32768, 8788, 59, 32768, 8788, 1086, 7809, 0, 0, 7820, 97, 512, 59, 116, 7814, 7816, 32768, 44, 59, 32768, 64, 768, 59, 102, 108, 7826, 7828, 7832, 32768, 8705, 110, 59, 32768, 8728, 101, 512, 109, 120, 7838, 7844, 101, 110, 116, 59, 32768, 8705, 101, 115, 59, 32768, 8450, 824, 7854, 0, 7866, 512, 59, 100, 7858, 7860, 32768, 8773, 111, 116, 59, 32768, 10861, 110, 116, 59, 32768, 8750, 768, 102, 114, 121, 7877, 7881, 7886, 59, 32896, 55349, 56660, 111, 100, 59, 32768, 8720, 33280, 169, 59, 115, 7892, 7894, 32768, 169, 114, 59, 32768, 8471, 512, 97, 111, 7903, 7908, 114, 114, 59, 32768, 8629, 115, 115, 59, 32768, 10007, 512, 99, 117, 7918, 7923, 114, 59, 32896, 55349, 56504, 512, 98, 112, 7928, 7938, 512, 59, 101, 7933, 7935, 32768, 10959, 59, 32768, 10961, 512, 59, 101, 7943, 7945, 32768, 10960, 59, 32768, 10962, 100, 111, 116, 59, 32768, 8943, 1792, 100, 101, 108, 112, 114, 118, 119, 7969, 7983, 7996, 8009, 8057, 8147, 8152, 97, 114, 114, 512, 108, 114, 7977, 7980, 59, 32768, 10552, 59, 32768, 10549, 1089, 7989, 0, 0, 7993, 114, 59, 32768, 8926, 99, 59, 32768, 8927, 97, 114, 114, 512, 59, 112, 8004, 8006, 32768, 8630, 59, 32768, 10557, 1536, 59, 98, 99, 100, 111, 115, 8022, 8024, 8031, 8044, 8049, 8053, 32768, 8746, 114, 99, 97, 112, 59, 32768, 10824, 512, 97, 117, 8036, 8040, 112, 59, 32768, 10822, 112, 59, 32768, 10826, 111, 116, 59, 32768, 8845, 114, 59, 32768, 10821, 59, 32896, 8746, 65024, 1024, 97, 108, 114, 118, 8066, 8078, 8116, 8123, 114, 114, 512, 59, 109, 8073, 8075, 32768, 8631, 59, 32768, 10556, 121, 768, 101, 118, 119, 8086, 8104, 8109, 113, 1089, 8093, 0, 0, 8099, 114, 101, 99, 59, 32768, 8926, 117, 99, 99, 59, 32768, 8927, 101, 101, 59, 32768, 8910, 101, 100, 103, 101, 59, 32768, 8911, 101, 110, 33024, 164, 59, 32768, 164, 101, 97, 114, 114, 111, 119, 512, 108, 114, 8134, 8140, 101, 102, 116, 59, 32768, 8630, 105, 103, 104, 116, 59, 32768, 8631, 101, 101, 59, 32768, 8910, 101, 100, 59, 32768, 8911, 512, 99, 105, 8162, 8170, 111, 110, 105, 110, 116, 59, 32768, 8754, 110, 116, 59, 32768, 8753, 108, 99, 116, 121, 59, 32768, 9005, 4864, 65, 72, 97, 98, 99, 100, 101, 102, 104, 105, 106, 108, 111, 114, 115, 116, 117, 119, 122, 8221, 8226, 8231, 8267, 8282, 8296, 8327, 8351, 8366, 8379, 8466, 8471, 8487, 8621, 8647, 8676, 8697, 8712, 8720, 114, 114, 59, 32768, 8659, 97, 114, 59, 32768, 10597, 1024, 103, 108, 114, 115, 8240, 8246, 8252, 8256, 103, 101, 114, 59, 32768, 8224, 101, 116, 104, 59, 32768, 8504, 114, 59, 32768, 8595, 104, 512, 59, 118, 8262, 8264, 32768, 8208, 59, 32768, 8867, 572, 8271, 8278, 97, 114, 111, 119, 59, 32768, 10511, 97, 99, 59, 32768, 733, 512, 97, 121, 8287, 8293, 114, 111, 110, 59, 32768, 271, 59, 32768, 1076, 768, 59, 97, 111, 8303, 8305, 8320, 32768, 8518, 512, 103, 114, 8310, 8316, 103, 101, 114, 59, 32768, 8225, 114, 59, 32768, 8650, 116, 115, 101, 113, 59, 32768, 10871, 768, 103, 108, 109, 8334, 8339, 8344, 33024, 176, 59, 32768, 176, 116, 97, 59, 32768, 948, 112, 116, 121, 118, 59, 32768, 10673, 512, 105, 114, 8356, 8362, 115, 104, 116, 59, 32768, 10623, 59, 32896, 55349, 56609, 97, 114, 512, 108, 114, 8373, 8376, 59, 32768, 8643, 59, 32768, 8642, 1280, 97, 101, 103, 115, 118, 8390, 8418, 8421, 8428, 8433, 109, 768, 59, 111, 115, 8398, 8400, 8415, 32768, 8900, 110, 100, 512, 59, 115, 8407, 8409, 32768, 8900, 117, 105, 116, 59, 32768, 9830, 59, 32768, 9830, 59, 32768, 168, 97, 109, 109, 97, 59, 32768, 989, 105, 110, 59, 32768, 8946, 768, 59, 105, 111, 8440, 8442, 8461, 32768, 247, 100, 101, 33280, 247, 59, 111, 8450, 8452, 32768, 247, 110, 116, 105, 109, 101, 115, 59, 32768, 8903, 110, 120, 59, 32768, 8903, 99, 121, 59, 32768, 1106, 99, 1088, 8478, 0, 0, 8483, 114, 110, 59, 32768, 8990, 111, 112, 59, 32768, 8973, 1280, 108, 112, 116, 117, 119, 8498, 8504, 8509, 8556, 8570, 108, 97, 114, 59, 32768, 36, 102, 59, 32896, 55349, 56661, 1280, 59, 101, 109, 112, 115, 8520, 8522, 8535, 8542, 8548, 32768, 729, 113, 512, 59, 100, 8528, 8530, 32768, 8784, 111, 116, 59, 32768, 8785, 105, 110, 117, 115, 59, 32768, 8760, 108, 117, 115, 59, 32768, 8724, 113, 117, 97, 114, 101, 59, 32768, 8865, 98, 108, 101, 98, 97, 114, 119, 101, 100, 103, 101, 59, 32768, 8966, 110, 768, 97, 100, 104, 8578, 8585, 8597, 114, 114, 111, 119, 59, 32768, 8595, 111, 119, 110, 97, 114, 114, 111, 119, 115, 59, 32768, 8650, 97, 114, 112, 111, 111, 110, 512, 108, 114, 8608, 8614, 101, 102, 116, 59, 32768, 8643, 105, 103, 104, 116, 59, 32768, 8642, 563, 8625, 8633, 107, 97, 114, 111, 119, 59, 32768, 10512, 1088, 8638, 0, 0, 8643, 114, 110, 59, 32768, 8991, 111, 112, 59, 32768, 8972, 768, 99, 111, 116, 8654, 8666, 8670, 512, 114, 121, 8659, 8663, 59, 32896, 55349, 56505, 59, 32768, 1109, 108, 59, 32768, 10742, 114, 111, 107, 59, 32768, 273, 512, 100, 114, 8681, 8686, 111, 116, 59, 32768, 8945, 105, 512, 59, 102, 8692, 8694, 32768, 9663, 59, 32768, 9662, 512, 97, 104, 8702, 8707, 114, 114, 59, 32768, 8693, 97, 114, 59, 32768, 10607, 97, 110, 103, 108, 101, 59, 32768, 10662, 512, 99, 105, 8725, 8729, 121, 59, 32768, 1119, 103, 114, 97, 114, 114, 59, 32768, 10239, 4608, 68, 97, 99, 100, 101, 102, 103, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 120, 8774, 8788, 8807, 8844, 8849, 8852, 8866, 8895, 8929, 8977, 8989, 9004, 9046, 9136, 9151, 9171, 9184, 9199, 512, 68, 111, 8779, 8784, 111, 116, 59, 32768, 10871, 116, 59, 32768, 8785, 512, 99, 115, 8793, 8801, 117, 116, 101, 33024, 233, 59, 32768, 233, 116, 101, 114, 59, 32768, 10862, 1024, 97, 105, 111, 121, 8816, 8822, 8835, 8841, 114, 111, 110, 59, 32768, 283, 114, 512, 59, 99, 8828, 8830, 32768, 8790, 33024, 234, 59, 32768, 234, 108, 111, 110, 59, 32768, 8789, 59, 32768, 1101, 111, 116, 59, 32768, 279, 59, 32768, 8519, 512, 68, 114, 8857, 8862, 111, 116, 59, 32768, 8786, 59, 32896, 55349, 56610, 768, 59, 114, 115, 8873, 8875, 8883, 32768, 10906, 97, 118, 101, 33024, 232, 59, 32768, 232, 512, 59, 100, 8888, 8890, 32768, 10902, 111, 116, 59, 32768, 10904, 1024, 59, 105, 108, 115, 8904, 8906, 8914, 8917, 32768, 10905, 110, 116, 101, 114, 115, 59, 32768, 9191, 59, 32768, 8467, 512, 59, 100, 8922, 8924, 32768, 10901, 111, 116, 59, 32768, 10903, 768, 97, 112, 115, 8936, 8941, 8960, 99, 114, 59, 32768, 275, 116, 121, 768, 59, 115, 118, 8950, 8952, 8957, 32768, 8709, 101, 116, 59, 32768, 8709, 59, 32768, 8709, 112, 512, 49, 59, 8966, 8975, 516, 8970, 8973, 59, 32768, 8196, 59, 32768, 8197, 32768, 8195, 512, 103, 115, 8982, 8985, 59, 32768, 331, 112, 59, 32768, 8194, 512, 103, 112, 8994, 8999, 111, 110, 59, 32768, 281, 102, 59, 32896, 55349, 56662, 768, 97, 108, 115, 9011, 9023, 9028, 114, 512, 59, 115, 9017, 9019, 32768, 8917, 108, 59, 32768, 10723, 117, 115, 59, 32768, 10865, 105, 768, 59, 108, 118, 9036, 9038, 9043, 32768, 949, 111, 110, 59, 32768, 949, 59, 32768, 1013, 1024, 99, 115, 117, 118, 9055, 9071, 9099, 9128, 512, 105, 111, 9060, 9065, 114, 99, 59, 32768, 8790, 108, 111, 110, 59, 32768, 8789, 1082, 9077, 0, 0, 9081, 109, 59, 32768, 8770, 97, 110, 116, 512, 103, 108, 9088, 9093, 116, 114, 59, 32768, 10902, 101, 115, 115, 59, 32768, 10901, 768, 97, 101, 105, 9106, 9111, 9116, 108, 115, 59, 32768, 61, 115, 116, 59, 32768, 8799, 118, 512, 59, 68, 9122, 9124, 32768, 8801, 68, 59, 32768, 10872, 112, 97, 114, 115, 108, 59, 32768, 10725, 512, 68, 97, 9141, 9146, 111, 116, 59, 32768, 8787, 114, 114, 59, 32768, 10609, 768, 99, 100, 105, 9158, 9162, 9167, 114, 59, 32768, 8495, 111, 116, 59, 32768, 8784, 109, 59, 32768, 8770, 512, 97, 104, 9176, 9179, 59, 32768, 951, 33024, 240, 59, 32768, 240, 512, 109, 114, 9189, 9195, 108, 33024, 235, 59, 32768, 235, 111, 59, 32768, 8364, 768, 99, 105, 112, 9206, 9210, 9215, 108, 59, 32768, 33, 115, 116, 59, 32768, 8707, 512, 101, 111, 9220, 9230, 99, 116, 97, 116, 105, 111, 110, 59, 32768, 8496, 110, 101, 110, 116, 105, 97, 108, 101, 59, 32768, 8519, 4914, 9262, 0, 9276, 0, 9280, 9287, 0, 0, 9318, 9324, 0, 9331, 0, 9352, 9357, 9386, 0, 9395, 9497, 108, 108, 105, 110, 103, 100, 111, 116, 115, 101, 113, 59, 32768, 8786, 121, 59, 32768, 1092, 109, 97, 108, 101, 59, 32768, 9792, 768, 105, 108, 114, 9293, 9299, 9313, 108, 105, 103, 59, 32768, 64259, 1082, 9305, 0, 0, 9309, 103, 59, 32768, 64256, 105, 103, 59, 32768, 64260, 59, 32896, 55349, 56611, 108, 105, 103, 59, 32768, 64257, 108, 105, 103, 59, 32896, 102, 106, 768, 97, 108, 116, 9337, 9341, 9346, 116, 59, 32768, 9837, 105, 103, 59, 32768, 64258, 110, 115, 59, 32768, 9649, 111, 102, 59, 32768, 402, 833, 9361, 0, 9366, 102, 59, 32896, 55349, 56663, 512, 97, 107, 9370, 9375, 108, 108, 59, 32768, 8704, 512, 59, 118, 9380, 9382, 32768, 8916, 59, 32768, 10969, 97, 114, 116, 105, 110, 116, 59, 32768, 10765, 512, 97, 111, 9399, 9491, 512, 99, 115, 9404, 9487, 1794, 9413, 9443, 9453, 9470, 9474, 0, 9484, 1795, 9421, 9426, 9429, 9434, 9437, 0, 9440, 33024, 189, 59, 32768, 189, 59, 32768, 8531, 33024, 188, 59, 32768, 188, 59, 32768, 8533, 59, 32768, 8537, 59, 32768, 8539, 772, 9447, 0, 9450, 59, 32768, 8532, 59, 32768, 8534, 1285, 9459, 9464, 0, 0, 9467, 33024, 190, 59, 32768, 190, 59, 32768, 8535, 59, 32768, 8540, 53, 59, 32768, 8536, 775, 9478, 0, 9481, 59, 32768, 8538, 59, 32768, 8541, 56, 59, 32768, 8542, 108, 59, 32768, 8260, 119, 110, 59, 32768, 8994, 99, 114, 59, 32896, 55349, 56507, 4352, 69, 97, 98, 99, 100, 101, 102, 103, 105, 106, 108, 110, 111, 114, 115, 116, 118, 9537, 9547, 9575, 9582, 9595, 9600, 9679, 9684, 9694, 9700, 9705, 9725, 9773, 9779, 9785, 9810, 9917, 512, 59, 108, 9542, 9544, 32768, 8807, 59, 32768, 10892, 768, 99, 109, 112, 9554, 9560, 9572, 117, 116, 101, 59, 32768, 501, 109, 97, 512, 59, 100, 9567, 9569, 32768, 947, 59, 32768, 989, 59, 32768, 10886, 114, 101, 118, 101, 59, 32768, 287, 512, 105, 121, 9587, 9592, 114, 99, 59, 32768, 285, 59, 32768, 1075, 111, 116, 59, 32768, 289, 1024, 59, 108, 113, 115, 9609, 9611, 9614, 9633, 32768, 8805, 59, 32768, 8923, 768, 59, 113, 115, 9621, 9623, 9626, 32768, 8805, 59, 32768, 8807, 108, 97, 110, 116, 59, 32768, 10878, 1024, 59, 99, 100, 108, 9642, 9644, 9648, 9667, 32768, 10878, 99, 59, 32768, 10921, 111, 116, 512, 59, 111, 9655, 9657, 32768, 10880, 512, 59, 108, 9662, 9664, 32768, 10882, 59, 32768, 10884, 512, 59, 101, 9672, 9675, 32896, 8923, 65024, 115, 59, 32768, 10900, 114, 59, 32896, 55349, 56612, 512, 59, 103, 9689, 9691, 32768, 8811, 59, 32768, 8921, 109, 101, 108, 59, 32768, 8503, 99, 121, 59, 32768, 1107, 1024, 59, 69, 97, 106, 9714, 9716, 9719, 9722, 32768, 8823, 59, 32768, 10898, 59, 32768, 10917, 59, 32768, 10916, 1024, 69, 97, 101, 115, 9734, 9737, 9751, 9768, 59, 32768, 8809, 112, 512, 59, 112, 9743, 9745, 32768, 10890, 114, 111, 120, 59, 32768, 10890, 512, 59, 113, 9756, 9758, 32768, 10888, 512, 59, 113, 9763, 9765, 32768, 10888, 59, 32768, 8809, 105, 109, 59, 32768, 8935, 112, 102, 59, 32896, 55349, 56664, 97, 118, 101, 59, 32768, 96, 512, 99, 105, 9790, 9794, 114, 59, 32768, 8458, 109, 768, 59, 101, 108, 9802, 9804, 9807, 32768, 8819, 59, 32768, 10894, 59, 32768, 10896, 34304, 62, 59, 99, 100, 108, 113, 114, 9824, 9826, 9838, 9843, 9849, 9856, 32768, 62, 512, 99, 105, 9831, 9834, 59, 32768, 10919, 114, 59, 32768, 10874, 111, 116, 59, 32768, 8919, 80, 97, 114, 59, 32768, 10645, 117, 101, 115, 116, 59, 32768, 10876, 1280, 97, 100, 101, 108, 115, 9867, 9882, 9887, 9906, 9912, 833, 9872, 0, 9879, 112, 114, 111, 120, 59, 32768, 10886, 114, 59, 32768, 10616, 111, 116, 59, 32768, 8919, 113, 512, 108, 113, 9893, 9899, 101, 115, 115, 59, 32768, 8923, 108, 101, 115, 115, 59, 32768, 10892, 101, 115, 115, 59, 32768, 8823, 105, 109, 59, 32768, 8819, 512, 101, 110, 9922, 9932, 114, 116, 110, 101, 113, 113, 59, 32896, 8809, 65024, 69, 59, 32896, 8809, 65024, 2560, 65, 97, 98, 99, 101, 102, 107, 111, 115, 121, 9958, 9963, 10015, 10020, 10026, 10060, 10065, 10085, 10147, 10171, 114, 114, 59, 32768, 8660, 1024, 105, 108, 109, 114, 9972, 9978, 9982, 9988, 114, 115, 112, 59, 32768, 8202, 102, 59, 32768, 189, 105, 108, 116, 59, 32768, 8459, 512, 100, 114, 9993, 9998, 99, 121, 59, 32768, 1098, 768, 59, 99, 119, 10005, 10007, 10012, 32768, 8596, 105, 114, 59, 32768, 10568, 59, 32768, 8621, 97, 114, 59, 32768, 8463, 105, 114, 99, 59, 32768, 293, 768, 97, 108, 114, 10033, 10048, 10054, 114, 116, 115, 512, 59, 117, 10041, 10043, 32768, 9829, 105, 116, 59, 32768, 9829, 108, 105, 112, 59, 32768, 8230, 99, 111, 110, 59, 32768, 8889, 114, 59, 32896, 55349, 56613, 115, 512, 101, 119, 10071, 10078, 97, 114, 111, 119, 59, 32768, 10533, 97, 114, 111, 119, 59, 32768, 10534, 1280, 97, 109, 111, 112, 114, 10096, 10101, 10107, 10136, 10141, 114, 114, 59, 32768, 8703, 116, 104, 116, 59, 32768, 8763, 107, 512, 108, 114, 10113, 10124, 101, 102, 116, 97, 114, 114, 111, 119, 59, 32768, 8617, 105, 103, 104, 116, 97, 114, 114, 111, 119, 59, 32768, 8618, 102, 59, 32896, 55349, 56665, 98, 97, 114, 59, 32768, 8213, 768, 99, 108, 116, 10154, 10159, 10165, 114, 59, 32896, 55349, 56509, 97, 115, 104, 59, 32768, 8463, 114, 111, 107, 59, 32768, 295, 512, 98, 112, 10176, 10182, 117, 108, 108, 59, 32768, 8259, 104, 101, 110, 59, 32768, 8208, 5426, 10211, 0, 10220, 0, 10239, 10255, 10267, 0, 10276, 10312, 0, 0, 10318, 10371, 10458, 10485, 10491, 0, 10500, 10545, 10558, 99, 117, 116, 101, 33024, 237, 59, 32768, 237, 768, 59, 105, 121, 10226, 10228, 10235, 32768, 8291, 114, 99, 33024, 238, 59, 32768, 238, 59, 32768, 1080, 512, 99, 120, 10243, 10247, 121, 59, 32768, 1077, 99, 108, 33024, 161, 59, 32768, 161, 512, 102, 114, 10259, 10262, 59, 32768, 8660, 59, 32896, 55349, 56614, 114, 97, 118, 101, 33024, 236, 59, 32768, 236, 1024, 59, 105, 110, 111, 10284, 10286, 10300, 10306, 32768, 8520, 512, 105, 110, 10291, 10296, 110, 116, 59, 32768, 10764, 116, 59, 32768, 8749, 102, 105, 110, 59, 32768, 10716, 116, 97, 59, 32768, 8489, 108, 105, 103, 59, 32768, 307, 768, 97, 111, 112, 10324, 10361, 10365, 768, 99, 103, 116, 10331, 10335, 10357, 114, 59, 32768, 299, 768, 101, 108, 112, 10342, 10345, 10351, 59, 32768, 8465, 105, 110, 101, 59, 32768, 8464, 97, 114, 116, 59, 32768, 8465, 104, 59, 32768, 305, 102, 59, 32768, 8887, 101, 100, 59, 32768, 437, 1280, 59, 99, 102, 111, 116, 10381, 10383, 10389, 10403, 10409, 32768, 8712, 97, 114, 101, 59, 32768, 8453, 105, 110, 512, 59, 116, 10396, 10398, 32768, 8734, 105, 101, 59, 32768, 10717, 100, 111, 116, 59, 32768, 305, 1280, 59, 99, 101, 108, 112, 10420, 10422, 10427, 10444, 10451, 32768, 8747, 97, 108, 59, 32768, 8890, 512, 103, 114, 10432, 10438, 101, 114, 115, 59, 32768, 8484, 99, 97, 108, 59, 32768, 8890, 97, 114, 104, 107, 59, 32768, 10775, 114, 111, 100, 59, 32768, 10812, 1024, 99, 103, 112, 116, 10466, 10470, 10475, 10480, 121, 59, 32768, 1105, 111, 110, 59, 32768, 303, 102, 59, 32896, 55349, 56666, 97, 59, 32768, 953, 114, 111, 100, 59, 32768, 10812, 117, 101, 115, 116, 33024, 191, 59, 32768, 191, 512, 99, 105, 10504, 10509, 114, 59, 32896, 55349, 56510, 110, 1280, 59, 69, 100, 115, 118, 10521, 10523, 10526, 10531, 10541, 32768, 8712, 59, 32768, 8953, 111, 116, 59, 32768, 8949, 512, 59, 118, 10536, 10538, 32768, 8948, 59, 32768, 8947, 59, 32768, 8712, 512, 59, 105, 10549, 10551, 32768, 8290, 108, 100, 101, 59, 32768, 297, 828, 10562, 0, 10567, 99, 121, 59, 32768, 1110, 108, 33024, 239, 59, 32768, 239, 1536, 99, 102, 109, 111, 115, 117, 10585, 10598, 10603, 10609, 10615, 10630, 512, 105, 121, 10590, 10595, 114, 99, 59, 32768, 309, 59, 32768, 1081, 114, 59, 32896, 55349, 56615, 97, 116, 104, 59, 32768, 567, 112, 102, 59, 32896, 55349, 56667, 820, 10620, 0, 10625, 114, 59, 32896, 55349, 56511, 114, 99, 121, 59, 32768, 1112, 107, 99, 121, 59, 32768, 1108, 2048, 97, 99, 102, 103, 104, 106, 111, 115, 10653, 10666, 10680, 10685, 10692, 10697, 10702, 10708, 112, 112, 97, 512, 59, 118, 10661, 10663, 32768, 954, 59, 32768, 1008, 512, 101, 121, 10671, 10677, 100, 105, 108, 59, 32768, 311, 59, 32768, 1082, 114, 59, 32896, 55349, 56616, 114, 101, 101, 110, 59, 32768, 312, 99, 121, 59, 32768, 1093, 99, 121, 59, 32768, 1116, 112, 102, 59, 32896, 55349, 56668, 99, 114, 59, 32896, 55349, 56512, 5888, 65, 66, 69, 72, 97, 98, 99, 100, 101, 102, 103, 104, 106, 108, 109, 110, 111, 112, 114, 115, 116, 117, 118, 10761, 10783, 10789, 10799, 10804, 10957, 11011, 11047, 11094, 11349, 11372, 11382, 11409, 11414, 11451, 11478, 11526, 11698, 11711, 11755, 11823, 11910, 11929, 768, 97, 114, 116, 10768, 10773, 10777, 114, 114, 59, 32768, 8666, 114, 59, 32768, 8656, 97, 105, 108, 59, 32768, 10523, 97, 114, 114, 59, 32768, 10510, 512, 59, 103, 10794, 10796, 32768, 8806, 59, 32768, 10891, 97, 114, 59, 32768, 10594, 4660, 10824, 0, 10830, 0, 10838, 0, 0, 0, 0, 0, 10844, 10850, 0, 10867, 10870, 10877, 0, 10933, 117, 116, 101, 59, 32768, 314, 109, 112, 116, 121, 118, 59, 32768, 10676, 114, 97, 110, 59, 32768, 8466, 98, 100, 97, 59, 32768, 955, 103, 768, 59, 100, 108, 10857, 10859, 10862, 32768, 10216, 59, 32768, 10641, 101, 59, 32768, 10216, 59, 32768, 10885, 117, 111, 33024, 171, 59, 32768, 171, 114, 2048, 59, 98, 102, 104, 108, 112, 115, 116, 10894, 10896, 10907, 10911, 10915, 10919, 10923, 10928, 32768, 8592, 512, 59, 102, 10901, 10903, 32768, 8676, 115, 59, 32768, 10527, 115, 59, 32768, 10525, 107, 59, 32768, 8617, 112, 59, 32768, 8619, 108, 59, 32768, 10553, 105, 109, 59, 32768, 10611, 108, 59, 32768, 8610, 768, 59, 97, 101, 10939, 10941, 10946, 32768, 10923, 105, 108, 59, 32768, 10521, 512, 59, 115, 10951, 10953, 32768, 10925, 59, 32896, 10925, 65024, 768, 97, 98, 114, 10964, 10969, 10974, 114, 114, 59, 32768, 10508, 114, 107, 59, 32768, 10098, 512, 97, 107, 10979, 10991, 99, 512, 101, 107, 10985, 10988, 59, 32768, 123, 59, 32768, 91, 512, 101, 115, 10996, 10999, 59, 32768, 10635, 108, 512, 100, 117, 11005, 11008, 59, 32768, 10639, 59, 32768, 10637, 1024, 97, 101, 117, 121, 11020, 11026, 11040, 11044, 114, 111, 110, 59, 32768, 318, 512, 100, 105, 11031, 11036, 105, 108, 59, 32768, 316, 108, 59, 32768, 8968, 98, 59, 32768, 123, 59, 32768, 1083, 1024, 99, 113, 114, 115, 11056, 11060, 11072, 11090, 97, 59, 32768, 10550, 117, 111, 512, 59, 114, 11067, 11069, 32768, 8220, 59, 32768, 8222, 512, 100, 117, 11077, 11083, 104, 97, 114, 59, 32768, 10599, 115, 104, 97, 114, 59, 32768, 10571, 104, 59, 32768, 8626, 1280, 59, 102, 103, 113, 115, 11105, 11107, 11228, 11231, 11250, 32768, 8804, 116, 1280, 97, 104, 108, 114, 116, 11119, 11136, 11157, 11169, 11216, 114, 114, 111, 119, 512, 59, 116, 11128, 11130, 32768, 8592, 97, 105, 108, 59, 32768, 8610, 97, 114, 112, 111, 111, 110, 512, 100, 117, 11147, 11153, 111, 119, 110, 59, 32768, 8637, 112, 59, 32768, 8636, 101, 102, 116, 97, 114, 114, 111, 119, 115, 59, 32768, 8647, 105, 103, 104, 116, 768, 97, 104, 115, 11180, 11194, 11204, 114, 114, 111, 119, 512, 59, 115, 11189, 11191, 32768, 8596, 59, 32768, 8646, 97, 114, 112, 111, 111, 110, 115, 59, 32768, 8651, 113, 117, 105, 103, 97, 114, 114, 111, 119, 59, 32768, 8621, 104, 114, 101, 101, 116, 105, 109, 101, 115, 59, 32768, 8907, 59, 32768, 8922, 768, 59, 113, 115, 11238, 11240, 11243, 32768, 8804, 59, 32768, 8806, 108, 97, 110, 116, 59, 32768, 10877, 1280, 59, 99, 100, 103, 115, 11261, 11263, 11267, 11286, 11298, 32768, 10877, 99, 59, 32768, 10920, 111, 116, 512, 59, 111, 11274, 11276, 32768, 10879, 512, 59, 114, 11281, 11283, 32768, 10881, 59, 32768, 10883, 512, 59, 101, 11291, 11294, 32896, 8922, 65024, 115, 59, 32768, 10899, 1280, 97, 100, 101, 103, 115, 11309, 11317, 11322, 11339, 11344, 112, 112, 114, 111, 120, 59, 32768, 10885, 111, 116, 59, 32768, 8918, 113, 512, 103, 113, 11328, 11333, 116, 114, 59, 32768, 8922, 103, 116, 114, 59, 32768, 10891, 116, 114, 59, 32768, 8822, 105, 109, 59, 32768, 8818, 768, 105, 108, 114, 11356, 11362, 11368, 115, 104, 116, 59, 32768, 10620, 111, 111, 114, 59, 32768, 8970, 59, 32896, 55349, 56617, 512, 59, 69, 11377, 11379, 32768, 8822, 59, 32768, 10897, 562, 11386, 11405, 114, 512, 100, 117, 11391, 11394, 59, 32768, 8637, 512, 59, 108, 11399, 11401, 32768, 8636, 59, 32768, 10602, 108, 107, 59, 32768, 9604, 99, 121, 59, 32768, 1113, 1280, 59, 97, 99, 104, 116, 11425, 11427, 11432, 11440, 11446, 32768, 8810, 114, 114, 59, 32768, 8647, 111, 114, 110, 101, 114, 59, 32768, 8990, 97, 114, 100, 59, 32768, 10603, 114, 105, 59, 32768, 9722, 512, 105, 111, 11456, 11462, 100, 111, 116, 59, 32768, 320, 117, 115, 116, 512, 59, 97, 11470, 11472, 32768, 9136, 99, 104, 101, 59, 32768, 9136, 1024, 69, 97, 101, 115, 11487, 11490, 11504, 11521, 59, 32768, 8808, 112, 512, 59, 112, 11496, 11498, 32768, 10889, 114, 111, 120, 59, 32768, 10889, 512, 59, 113, 11509, 11511, 32768, 10887, 512, 59, 113, 11516, 11518, 32768, 10887, 59, 32768, 8808, 105, 109, 59, 32768, 8934, 2048, 97, 98, 110, 111, 112, 116, 119, 122, 11543, 11556, 11561, 11616, 11640, 11660, 11667, 11680, 512, 110, 114, 11548, 11552, 103, 59, 32768, 10220, 114, 59, 32768, 8701, 114, 107, 59, 32768, 10214, 103, 768, 108, 109, 114, 11569, 11596, 11604, 101, 102, 116, 512, 97, 114, 11577, 11584, 114, 114, 111, 119, 59, 32768, 10229, 105, 103, 104, 116, 97, 114, 114, 111, 119, 59, 32768, 10231, 97, 112, 115, 116, 111, 59, 32768, 10236, 105, 103, 104, 116, 97, 114, 114, 111, 119, 59, 32768, 10230, 112, 97, 114, 114, 111, 119, 512, 108, 114, 11627, 11633, 101, 102, 116, 59, 32768, 8619, 105, 103, 104, 116, 59, 32768, 8620, 768, 97, 102, 108, 11647, 11651, 11655, 114, 59, 32768, 10629, 59, 32896, 55349, 56669, 117, 115, 59, 32768, 10797, 105, 109, 101, 115, 59, 32768, 10804, 562, 11671, 11676, 115, 116, 59, 32768, 8727, 97, 114, 59, 32768, 95, 768, 59, 101, 102, 11687, 11689, 11695, 32768, 9674, 110, 103, 101, 59, 32768, 9674, 59, 32768, 10731, 97, 114, 512, 59, 108, 11705, 11707, 32768, 40, 116, 59, 32768, 10643, 1280, 97, 99, 104, 109, 116, 11722, 11727, 11735, 11747, 11750, 114, 114, 59, 32768, 8646, 111, 114, 110, 101, 114, 59, 32768, 8991, 97, 114, 512, 59, 100, 11742, 11744, 32768, 8651, 59, 32768, 10605, 59, 32768, 8206, 114, 105, 59, 32768, 8895, 1536, 97, 99, 104, 105, 113, 116, 11768, 11774, 11779, 11782, 11798, 11817, 113, 117, 111, 59, 32768, 8249, 114, 59, 32896, 55349, 56513, 59, 32768, 8624, 109, 768, 59, 101, 103, 11790, 11792, 11795, 32768, 8818, 59, 32768, 10893, 59, 32768, 10895, 512, 98, 117, 11803, 11806, 59, 32768, 91, 111, 512, 59, 114, 11812, 11814, 32768, 8216, 59, 32768, 8218, 114, 111, 107, 59, 32768, 322, 34816, 60, 59, 99, 100, 104, 105, 108, 113, 114, 11841, 11843, 11855, 11860, 11866, 11872, 11878, 11885, 32768, 60, 512, 99, 105, 11848, 11851, 59, 32768, 10918, 114, 59, 32768, 10873, 111, 116, 59, 32768, 8918, 114, 101, 101, 59, 32768, 8907, 109, 101, 115, 59, 32768, 8905, 97, 114, 114, 59, 32768, 10614, 117, 101, 115, 116, 59, 32768, 10875, 512, 80, 105, 11890, 11895, 97, 114, 59, 32768, 10646, 768, 59, 101, 102, 11902, 11904, 11907, 32768, 9667, 59, 32768, 8884, 59, 32768, 9666, 114, 512, 100, 117, 11916, 11923, 115, 104, 97, 114, 59, 32768, 10570, 104, 97, 114, 59, 32768, 10598, 512, 101, 110, 11934, 11944, 114, 116, 110, 101, 113, 113, 59, 32896, 8808, 65024, 69, 59, 32896, 8808, 65024, 3584, 68, 97, 99, 100, 101, 102, 104, 105, 108, 110, 111, 112, 115, 117, 11978, 11984, 12061, 12075, 12081, 12095, 12100, 12104, 12170, 12181, 12188, 12204, 12207, 12223, 68, 111, 116, 59, 32768, 8762, 1024, 99, 108, 112, 114, 11993, 11999, 12019, 12055, 114, 33024, 175, 59, 32768, 175, 512, 101, 116, 12004, 12007, 59, 32768, 9794, 512, 59, 101, 12012, 12014, 32768, 10016, 115, 101, 59, 32768, 10016, 512, 59, 115, 12024, 12026, 32768, 8614, 116, 111, 1024, 59, 100, 108, 117, 12037, 12039, 12045, 12051, 32768, 8614, 111, 119, 110, 59, 32768, 8615, 101, 102, 116, 59, 32768, 8612, 112, 59, 32768, 8613, 107, 101, 114, 59, 32768, 9646, 512, 111, 121, 12066, 12072, 109, 109, 97, 59, 32768, 10793, 59, 32768, 1084, 97, 115, 104, 59, 32768, 8212, 97, 115, 117, 114, 101, 100, 97, 110, 103, 108, 101, 59, 32768, 8737, 114, 59, 32896, 55349, 56618, 111, 59, 32768, 8487, 768, 99, 100, 110, 12111, 12118, 12146, 114, 111, 33024, 181, 59, 32768, 181, 1024, 59, 97, 99, 100, 12127, 12129, 12134, 12139, 32768, 8739, 115, 116, 59, 32768, 42, 105, 114, 59, 32768, 10992, 111, 116, 33024, 183, 59, 32768, 183, 117, 115, 768, 59, 98, 100, 12155, 12157, 12160, 32768, 8722, 59, 32768, 8863, 512, 59, 117, 12165, 12167, 32768, 8760, 59, 32768, 10794, 564, 12174, 12178, 112, 59, 32768, 10971, 114, 59, 32768, 8230, 112, 108, 117, 115, 59, 32768, 8723, 512, 100, 112, 12193, 12199, 101, 108, 115, 59, 32768, 8871, 102, 59, 32896, 55349, 56670, 59, 32768, 8723, 512, 99, 116, 12212, 12217, 114, 59, 32896, 55349, 56514, 112, 111, 115, 59, 32768, 8766, 768, 59, 108, 109, 12230, 12232, 12240, 32768, 956, 116, 105, 109, 97, 112, 59, 32768, 8888, 97, 112, 59, 32768, 8888, 6144, 71, 76, 82, 86, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 108, 109, 111, 112, 114, 115, 116, 117, 118, 119, 12294, 12315, 12364, 12376, 12393, 12472, 12496, 12547, 12553, 12636, 12641, 12703, 12725, 12747, 12752, 12876, 12881, 12957, 13033, 13089, 13294, 13359, 13384, 13499, 512, 103, 116, 12299, 12303, 59, 32896, 8921, 824, 512, 59, 118, 12308, 12311, 32896, 8811, 8402, 59, 32896, 8811, 824, 768, 101, 108, 116, 12322, 12348, 12352, 102, 116, 512, 97, 114, 12329, 12336, 114, 114, 111, 119, 59, 32768, 8653, 105, 103, 104, 116, 97, 114, 114, 111, 119, 59, 32768, 8654, 59, 32896, 8920, 824, 512, 59, 118, 12357, 12360, 32896, 8810, 8402, 59, 32896, 8810, 824, 105, 103, 104, 116, 97, 114, 114, 111, 119, 59, 32768, 8655, 512, 68, 100, 12381, 12387, 97, 115, 104, 59, 32768, 8879, 97, 115, 104, 59, 32768, 8878, 1280, 98, 99, 110, 112, 116, 12404, 12409, 12415, 12420, 12452, 108, 97, 59, 32768, 8711, 117, 116, 101, 59, 32768, 324, 103, 59, 32896, 8736, 8402, 1280, 59, 69, 105, 111, 112, 12431, 12433, 12437, 12442, 12446, 32768, 8777, 59, 32896, 10864, 824, 100, 59, 32896, 8779, 824, 115, 59, 32768, 329, 114, 111, 120, 59, 32768, 8777, 117, 114, 512, 59, 97, 12459, 12461, 32768, 9838, 108, 512, 59, 115, 12467, 12469, 32768, 9838, 59, 32768, 8469, 836, 12477, 0, 12483, 112, 33024, 160, 59, 32768, 160, 109, 112, 512, 59, 101, 12489, 12492, 32896, 8782, 824, 59, 32896, 8783, 824, 1280, 97, 101, 111, 117, 121, 12507, 12519, 12525, 12540, 12544, 833, 12512, 0, 12515, 59, 32768, 10819, 111, 110, 59, 32768, 328, 100, 105, 108, 59, 32768, 326, 110, 103, 512, 59, 100, 12532, 12534, 32768, 8775, 111, 116, 59, 32896, 10861, 824, 112, 59, 32768, 10818, 59, 32768, 1085, 97, 115, 104, 59, 32768, 8211, 1792, 59, 65, 97, 100, 113, 115, 120, 12568, 12570, 12575, 12596, 12602, 12608, 12623, 32768, 8800, 114, 114, 59, 32768, 8663, 114, 512, 104, 114, 12581, 12585, 107, 59, 32768, 10532, 512, 59, 111, 12590, 12592, 32768, 8599, 119, 59, 32768, 8599, 111, 116, 59, 32896, 8784, 824, 117, 105, 118, 59, 32768, 8802, 512, 101, 105, 12613, 12618, 97, 114, 59, 32768, 10536, 109, 59, 32896, 8770, 824, 105, 115, 116, 512, 59, 115, 12631, 12633, 32768, 8708, 59, 32768, 8708, 114, 59, 32896, 55349, 56619, 1024, 69, 101, 115, 116, 12650, 12654, 12688, 12693, 59, 32896, 8807, 824, 768, 59, 113, 115, 12661, 12663, 12684, 32768, 8817, 768, 59, 113, 115, 12670, 12672, 12676, 32768, 8817, 59, 32896, 8807, 824, 108, 97, 110, 116, 59, 32896, 10878, 824, 59, 32896, 10878, 824, 105, 109, 59, 32768, 8821, 512, 59, 114, 12698, 12700, 32768, 8815, 59, 32768, 8815, 768, 65, 97, 112, 12710, 12715, 12720, 114, 114, 59, 32768, 8654, 114, 114, 59, 32768, 8622, 97, 114, 59, 32768, 10994, 768, 59, 115, 118, 12732, 12734, 12744, 32768, 8715, 512, 59, 100, 12739, 12741, 32768, 8956, 59, 32768, 8954, 59, 32768, 8715, 99, 121, 59, 32768, 1114, 1792, 65, 69, 97, 100, 101, 115, 116, 12767, 12772, 12776, 12781, 12785, 12853, 12858, 114, 114, 59, 32768, 8653, 59, 32896, 8806, 824, 114, 114, 59, 32768, 8602, 114, 59, 32768, 8229, 1024, 59, 102, 113, 115, 12794, 12796, 12821, 12842, 32768, 8816, 116, 512, 97, 114, 12802, 12809, 114, 114, 111, 119, 59, 32768, 8602, 105, 103, 104, 116, 97, 114, 114, 111, 119, 59, 32768, 8622, 768, 59, 113, 115, 12828, 12830, 12834, 32768, 8816, 59, 32896, 8806, 824, 108, 97, 110, 116, 59, 32896, 10877, 824, 512, 59, 115, 12847, 12850, 32896, 10877, 824, 59, 32768, 8814, 105, 109, 59, 32768, 8820, 512, 59, 114, 12863, 12865, 32768, 8814, 105, 512, 59, 101, 12871, 12873, 32768, 8938, 59, 32768, 8940, 105, 100, 59, 32768, 8740, 512, 112, 116, 12886, 12891, 102, 59, 32896, 55349, 56671, 33536, 172, 59, 105, 110, 12899, 12901, 12936, 32768, 172, 110, 1024, 59, 69, 100, 118, 12911, 12913, 12917, 12923, 32768, 8713, 59, 32896, 8953, 824, 111, 116, 59, 32896, 8949, 824, 818, 12928, 12931, 12934, 59, 32768, 8713, 59, 32768, 8951, 59, 32768, 8950, 105, 512, 59, 118, 12942, 12944, 32768, 8716, 818, 12949, 12952, 12955, 59, 32768, 8716, 59, 32768, 8958, 59, 32768, 8957, 768, 97, 111, 114, 12964, 12992, 12999, 114, 1024, 59, 97, 115, 116, 12974, 12976, 12983, 12988, 32768, 8742, 108, 108, 101, 108, 59, 32768, 8742, 108, 59, 32896, 11005, 8421, 59, 32896, 8706, 824, 108, 105, 110, 116, 59, 32768, 10772, 768, 59, 99, 101, 13006, 13008, 13013, 32768, 8832, 117, 101, 59, 32768, 8928, 512, 59, 99, 13018, 13021, 32896, 10927, 824, 512, 59, 101, 13026, 13028, 32768, 8832, 113, 59, 32896, 10927, 824, 1024, 65, 97, 105, 116, 13042, 13047, 13066, 13077, 114, 114, 59, 32768, 8655, 114, 114, 768, 59, 99, 119, 13056, 13058, 13062, 32768, 8603, 59, 32896, 10547, 824, 59, 32896, 8605, 824, 103, 104, 116, 97, 114, 114, 111, 119, 59, 32768, 8603, 114, 105, 512, 59, 101, 13084, 13086, 32768, 8939, 59, 32768, 8941, 1792, 99, 104, 105, 109, 112, 113, 117, 13104, 13128, 13151, 13169, 13174, 13179, 13194, 1024, 59, 99, 101, 114, 13113, 13115, 13120, 13124, 32768, 8833, 117, 101, 59, 32768, 8929, 59, 32896, 10928, 824, 59, 32896, 55349, 56515, 111, 114, 116, 1086, 13137, 0, 0, 13142, 105, 100, 59, 32768, 8740, 97, 114, 97, 108, 108, 101, 108, 59, 32768, 8742, 109, 512, 59, 101, 13157, 13159, 32768, 8769, 512, 59, 113, 13164, 13166, 32768, 8772, 59, 32768, 8772, 105, 100, 59, 32768, 8740, 97, 114, 59, 32768, 8742, 115, 117, 512, 98, 112, 13186, 13190, 101, 59, 32768, 8930, 101, 59, 32768, 8931, 768, 98, 99, 112, 13201, 13241, 13254, 1024, 59, 69, 101, 115, 13210, 13212, 13216, 13219, 32768, 8836, 59, 32896, 10949, 824, 59, 32768, 8840, 101, 116, 512, 59, 101, 13226, 13229, 32896, 8834, 8402, 113, 512, 59, 113, 13235, 13237, 32768, 8840, 59, 32896, 10949, 824, 99, 512, 59, 101, 13247, 13249, 32768, 8833, 113, 59, 32896, 10928, 824, 1024, 59, 69, 101, 115, 13263, 13265, 13269, 13272, 32768, 8837, 59, 32896, 10950, 824, 59, 32768, 8841, 101, 116, 512, 59, 101, 13279, 13282, 32896, 8835, 8402, 113, 512, 59, 113, 13288, 13290, 32768, 8841, 59, 32896, 10950, 824, 1024, 103, 105, 108, 114, 13303, 13307, 13315, 13319, 108, 59, 32768, 8825, 108, 100, 101, 33024, 241, 59, 32768, 241, 103, 59, 32768, 8824, 105, 97, 110, 103, 108, 101, 512, 108, 114, 13330, 13344, 101, 102, 116, 512, 59, 101, 13338, 13340, 32768, 8938, 113, 59, 32768, 8940, 105, 103, 104, 116, 512, 59, 101, 13353, 13355, 32768, 8939, 113, 59, 32768, 8941, 512, 59, 109, 13364, 13366, 32768, 957, 768, 59, 101, 115, 13373, 13375, 13380, 32768, 35, 114, 111, 59, 32768, 8470, 112, 59, 32768, 8199, 2304, 68, 72, 97, 100, 103, 105, 108, 114, 115, 13403, 13409, 13415, 13420, 13426, 13439, 13446, 13476, 13493, 97, 115, 104, 59, 32768, 8877, 97, 114, 114, 59, 32768, 10500, 112, 59, 32896, 8781, 8402, 97, 115, 104, 59, 32768, 8876, 512, 101, 116, 13431, 13435, 59, 32896, 8805, 8402, 59, 32896, 62, 8402, 110, 102, 105, 110, 59, 32768, 10718, 768, 65, 101, 116, 13453, 13458, 13462, 114, 114, 59, 32768, 10498, 59, 32896, 8804, 8402, 512, 59, 114, 13467, 13470, 32896, 60, 8402, 105, 101, 59, 32896, 8884, 8402, 512, 65, 116, 13481, 13486, 114, 114, 59, 32768, 10499, 114, 105, 101, 59, 32896, 8885, 8402, 105, 109, 59, 32896, 8764, 8402, 768, 65, 97, 110, 13506, 13511, 13532, 114, 114, 59, 32768, 8662, 114, 512, 104, 114, 13517, 13521, 107, 59, 32768, 10531, 512, 59, 111, 13526, 13528, 32768, 8598, 119, 59, 32768, 8598, 101, 97, 114, 59, 32768, 10535, 9252, 13576, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 13579, 0, 13596, 13617, 13653, 13659, 13673, 13695, 13708, 0, 0, 13713, 13750, 0, 13788, 13794, 0, 13815, 13890, 13913, 13937, 13944, 59, 32768, 9416, 512, 99, 115, 13583, 13591, 117, 116, 101, 33024, 243, 59, 32768, 243, 116, 59, 32768, 8859, 512, 105, 121, 13600, 13613, 114, 512, 59, 99, 13606, 13608, 32768, 8858, 33024, 244, 59, 32768, 244, 59, 32768, 1086, 1280, 97, 98, 105, 111, 115, 13627, 13632, 13638, 13642, 13646, 115, 104, 59, 32768, 8861, 108, 97, 99, 59, 32768, 337, 118, 59, 32768, 10808, 116, 59, 32768, 8857, 111, 108, 100, 59, 32768, 10684, 108, 105, 103, 59, 32768, 339, 512, 99, 114, 13663, 13668, 105, 114, 59, 32768, 10687, 59, 32896, 55349, 56620, 1600, 13680, 0, 0, 13684, 0, 13692, 110, 59, 32768, 731, 97, 118, 101, 33024, 242, 59, 32768, 242, 59, 32768, 10689, 512, 98, 109, 13699, 13704, 97, 114, 59, 32768, 10677, 59, 32768, 937, 110, 116, 59, 32768, 8750, 1024, 97, 99, 105, 116, 13721, 13726, 13741, 13746, 114, 114, 59, 32768, 8634, 512, 105, 114, 13731, 13735, 114, 59, 32768, 10686, 111, 115, 115, 59, 32768, 10683, 110, 101, 59, 32768, 8254, 59, 32768, 10688, 768, 97, 101, 105, 13756, 13761, 13766, 99, 114, 59, 32768, 333, 103, 97, 59, 32768, 969, 768, 99, 100, 110, 13773, 13779, 13782, 114, 111, 110, 59, 32768, 959, 59, 32768, 10678, 117, 115, 59, 32768, 8854, 112, 102, 59, 32896, 55349, 56672, 768, 97, 101, 108, 13800, 13804, 13809, 114, 59, 32768, 10679, 114, 112, 59, 32768, 10681, 117, 115, 59, 32768, 8853, 1792, 59, 97, 100, 105, 111, 115, 118, 13829, 13831, 13836, 13869, 13875, 13879, 13886, 32768, 8744, 114, 114, 59, 32768, 8635, 1024, 59, 101, 102, 109, 13845, 13847, 13859, 13864, 32768, 10845, 114, 512, 59, 111, 13853, 13855, 32768, 8500, 102, 59, 32768, 8500, 33024, 170, 59, 32768, 170, 33024, 186, 59, 32768, 186, 103, 111, 102, 59, 32768, 8886, 114, 59, 32768, 10838, 108, 111, 112, 101, 59, 32768, 10839, 59, 32768, 10843, 768, 99, 108, 111, 13896, 13900, 13908, 114, 59, 32768, 8500, 97, 115, 104, 33024, 248, 59, 32768, 248, 108, 59, 32768, 8856, 105, 573, 13917, 13924, 100, 101, 33024, 245, 59, 32768, 245, 101, 115, 512, 59, 97, 13930, 13932, 32768, 8855, 115, 59, 32768, 10806, 109, 108, 33024, 246, 59, 32768, 246, 98, 97, 114, 59, 32768, 9021, 5426, 13972, 0, 14013, 0, 14017, 14053, 0, 14058, 14086, 0, 0, 14107, 14199, 0, 14202, 0, 0, 14229, 14425, 0, 14438, 114, 1024, 59, 97, 115, 116, 13981, 13983, 13997, 14009, 32768, 8741, 33280, 182, 59, 108, 13989, 13991, 32768, 182, 108, 101, 108, 59, 32768, 8741, 1082, 14003, 0, 0, 14007, 109, 59, 32768, 10995, 59, 32768, 11005, 59, 32768, 8706, 121, 59, 32768, 1087, 114, 1280, 99, 105, 109, 112, 116, 14028, 14033, 14038, 14043, 14046, 110, 116, 59, 32768, 37, 111, 100, 59, 32768, 46, 105, 108, 59, 32768, 8240, 59, 32768, 8869, 101, 110, 107, 59, 32768, 8241, 114, 59, 32896, 55349, 56621, 768, 105, 109, 111, 14064, 14074, 14080, 512, 59, 118, 14069, 14071, 32768, 966, 59, 32768, 981, 109, 97, 116, 59, 32768, 8499, 110, 101, 59, 32768, 9742, 768, 59, 116, 118, 14092, 14094, 14103, 32768, 960, 99, 104, 102, 111, 114, 107, 59, 32768, 8916, 59, 32768, 982, 512, 97, 117, 14111, 14132, 110, 512, 99, 107, 14117, 14128, 107, 512, 59, 104, 14123, 14125, 32768, 8463, 59, 32768, 8462, 118, 59, 32768, 8463, 115, 2304, 59, 97, 98, 99, 100, 101, 109, 115, 116, 14152, 14154, 14160, 14163, 14168, 14179, 14182, 14188, 14193, 32768, 43, 99, 105, 114, 59, 32768, 10787, 59, 32768, 8862, 105, 114, 59, 32768, 10786, 512, 111, 117, 14173, 14176, 59, 32768, 8724, 59, 32768, 10789, 59, 32768, 10866, 110, 33024, 177, 59, 32768, 177, 105, 109, 59, 32768, 10790, 119, 111, 59, 32768, 10791, 59, 32768, 177, 768, 105, 112, 117, 14208, 14216, 14221, 110, 116, 105, 110, 116, 59, 32768, 10773, 102, 59, 32896, 55349, 56673, 110, 100, 33024, 163, 59, 32768, 163, 2560, 59, 69, 97, 99, 101, 105, 110, 111, 115, 117, 14249, 14251, 14254, 14258, 14263, 14336, 14348, 14367, 14413, 14418, 32768, 8826, 59, 32768, 10931, 112, 59, 32768, 10935, 117, 101, 59, 32768, 8828, 512, 59, 99, 14268, 14270, 32768, 10927, 1536, 59, 97, 99, 101, 110, 115, 14283, 14285, 14293, 14302, 14306, 14331, 32768, 8826, 112, 112, 114, 111, 120, 59, 32768, 10935, 117, 114, 108, 121, 101, 113, 59, 32768, 8828, 113, 59, 32768, 10927, 768, 97, 101, 115, 14313, 14321, 14326, 112, 112, 114, 111, 120, 59, 32768, 10937, 113, 113, 59, 32768, 10933, 105, 109, 59, 32768, 8936, 105, 109, 59, 32768, 8830, 109, 101, 512, 59, 115, 14343, 14345, 32768, 8242, 59, 32768, 8473, 768, 69, 97, 115, 14355, 14358, 14362, 59, 32768, 10933, 112, 59, 32768, 10937, 105, 109, 59, 32768, 8936, 768, 100, 102, 112, 14374, 14377, 14402, 59, 32768, 8719, 768, 97, 108, 115, 14384, 14390, 14396, 108, 97, 114, 59, 32768, 9006, 105, 110, 101, 59, 32768, 8978, 117, 114, 102, 59, 32768, 8979, 512, 59, 116, 14407, 14409, 32768, 8733, 111, 59, 32768, 8733, 105, 109, 59, 32768, 8830, 114, 101, 108, 59, 32768, 8880, 512, 99, 105, 14429, 14434, 114, 59, 32896, 55349, 56517, 59, 32768, 968, 110, 99, 115, 112, 59, 32768, 8200, 1536, 102, 105, 111, 112, 115, 117, 14457, 14462, 14467, 14473, 14480, 14486, 114, 59, 32896, 55349, 56622, 110, 116, 59, 32768, 10764, 112, 102, 59, 32896, 55349, 56674, 114, 105, 109, 101, 59, 32768, 8279, 99, 114, 59, 32896, 55349, 56518, 768, 97, 101, 111, 14493, 14513, 14526, 116, 512, 101, 105, 14499, 14508, 114, 110, 105, 111, 110, 115, 59, 32768, 8461, 110, 116, 59, 32768, 10774, 115, 116, 512, 59, 101, 14520, 14522, 32768, 63, 113, 59, 32768, 8799, 116, 33024, 34, 59, 32768, 34, 5376, 65, 66, 72, 97, 98, 99, 100, 101, 102, 104, 105, 108, 109, 110, 111, 112, 114, 115, 116, 117, 120, 14575, 14597, 14603, 14608, 14775, 14829, 14865, 14901, 14943, 14966, 15000, 15139, 15159, 15176, 15182, 15236, 15261, 15267, 15309, 15352, 15360, 768, 97, 114, 116, 14582, 14587, 14591, 114, 114, 59, 32768, 8667, 114, 59, 32768, 8658, 97, 105, 108, 59, 32768, 10524, 97, 114, 114, 59, 32768, 10511, 97, 114, 59, 32768, 10596, 1792, 99, 100, 101, 110, 113, 114, 116, 14623, 14637, 14642, 14650, 14672, 14679, 14751, 512, 101, 117, 14628, 14632, 59, 32896, 8765, 817, 116, 101, 59, 32768, 341, 105, 99, 59, 32768, 8730, 109, 112, 116, 121, 118, 59, 32768, 10675, 103, 1024, 59, 100, 101, 108, 14660, 14662, 14665, 14668, 32768, 10217, 59, 32768, 10642, 59, 32768, 10661, 101, 59, 32768, 10217, 117, 111, 33024, 187, 59, 32768, 187, 114, 2816, 59, 97, 98, 99, 102, 104, 108, 112, 115, 116, 119, 14703, 14705, 14709, 14720, 14723, 14727, 14731, 14735, 14739, 14744, 14748, 32768, 8594, 112, 59, 32768, 10613, 512, 59, 102, 14714, 14716, 32768, 8677, 115, 59, 32768, 10528, 59, 32768, 10547, 115, 59, 32768, 10526, 107, 59, 32768, 8618, 112, 59, 32768, 8620, 108, 59, 32768, 10565, 105, 109, 59, 32768, 10612, 108, 59, 32768, 8611, 59, 32768, 8605, 512, 97, 105, 14756, 14761, 105, 108, 59, 32768, 10522, 111, 512, 59, 110, 14767, 14769, 32768, 8758, 97, 108, 115, 59, 32768, 8474, 768, 97, 98, 114, 14782, 14787, 14792, 114, 114, 59, 32768, 10509, 114, 107, 59, 32768, 10099, 512, 97, 107, 14797, 14809, 99, 512, 101, 107, 14803, 14806, 59, 32768, 125, 59, 32768, 93, 512, 101, 115, 14814, 14817, 59, 32768, 10636, 108, 512, 100, 117, 14823, 14826, 59, 32768, 10638, 59, 32768, 10640, 1024, 97, 101, 117, 121, 14838, 14844, 14858, 14862, 114, 111, 110, 59, 32768, 345, 512, 100, 105, 14849, 14854, 105, 108, 59, 32768, 343, 108, 59, 32768, 8969, 98, 59, 32768, 125, 59, 32768, 1088, 1024, 99, 108, 113, 115, 14874, 14878, 14885, 14897, 97, 59, 32768, 10551, 100, 104, 97, 114, 59, 32768, 10601, 117, 111, 512, 59, 114, 14892, 14894, 32768, 8221, 59, 32768, 8221, 104, 59, 32768, 8627, 768, 97, 99, 103, 14908, 14934, 14938, 108, 1024, 59, 105, 112, 115, 14918, 14920, 14925, 14931, 32768, 8476, 110, 101, 59, 32768, 8475, 97, 114, 116, 59, 32768, 8476, 59, 32768, 8477, 116, 59, 32768, 9645, 33024, 174, 59, 32768, 174, 768, 105, 108, 114, 14950, 14956, 14962, 115, 104, 116, 59, 32768, 10621, 111, 111, 114, 59, 32768, 8971, 59, 32896, 55349, 56623, 512, 97, 111, 14971, 14990, 114, 512, 100, 117, 14977, 14980, 59, 32768, 8641, 512, 59, 108, 14985, 14987, 32768, 8640, 59, 32768, 10604, 512, 59, 118, 14995, 14997, 32768, 961, 59, 32768, 1009, 768, 103, 110, 115, 15007, 15123, 15127, 104, 116, 1536, 97, 104, 108, 114, 115, 116, 15022, 15039, 15060, 15086, 15099, 15111, 114, 114, 111, 119, 512, 59, 116, 15031, 15033, 32768, 8594, 97, 105, 108, 59, 32768, 8611, 97, 114, 112, 111, 111, 110, 512, 100, 117, 15050, 15056, 111, 119, 110, 59, 32768, 8641, 112, 59, 32768, 8640, 101, 102, 116, 512, 97, 104, 15068, 15076, 114, 114, 111, 119, 115, 59, 32768, 8644, 97, 114, 112, 111, 111, 110, 115, 59, 32768, 8652, 105, 103, 104, 116, 97, 114, 114, 111, 119, 115, 59, 32768, 8649, 113, 117, 105, 103, 97, 114, 114, 111, 119, 59, 32768, 8605, 104, 114, 101, 101, 116, 105, 109, 101, 115, 59, 32768, 8908, 103, 59, 32768, 730, 105, 110, 103, 100, 111, 116, 115, 101, 113, 59, 32768, 8787, 768, 97, 104, 109, 15146, 15151, 15156, 114, 114, 59, 32768, 8644, 97, 114, 59, 32768, 8652, 59, 32768, 8207, 111, 117, 115, 116, 512, 59, 97, 15168, 15170, 32768, 9137, 99, 104, 101, 59, 32768, 9137, 109, 105, 100, 59, 32768, 10990, 1024, 97, 98, 112, 116, 15191, 15204, 15209, 15229, 512, 110, 114, 15196, 15200, 103, 59, 32768, 10221, 114, 59, 32768, 8702, 114, 107, 59, 32768, 10215, 768, 97, 102, 108, 15216, 15220, 15224, 114, 59, 32768, 10630, 59, 32896, 55349, 56675, 117, 115, 59, 32768, 10798, 105, 109, 101, 115, 59, 32768, 10805, 512, 97, 112, 15241, 15253, 114, 512, 59, 103, 15247, 15249, 32768, 41, 116, 59, 32768, 10644, 111, 108, 105, 110, 116, 59, 32768, 10770, 97, 114, 114, 59, 32768, 8649, 1024, 97, 99, 104, 113, 15276, 15282, 15287, 15290, 113, 117, 111, 59, 32768, 8250, 114, 59, 32896, 55349, 56519, 59, 32768, 8625, 512, 98, 117, 15295, 15298, 59, 32768, 93, 111, 512, 59, 114, 15304, 15306, 32768, 8217, 59, 32768, 8217, 768, 104, 105, 114, 15316, 15322, 15328, 114, 101, 101, 59, 32768, 8908, 109, 101, 115, 59, 32768, 8906, 105, 1024, 59, 101, 102, 108, 15338, 15340, 15343, 15346, 32768, 9657, 59, 32768, 8885, 59, 32768, 9656, 116, 114, 105, 59, 32768, 10702, 108, 117, 104, 97, 114, 59, 32768, 10600, 59, 32768, 8478, 6706, 15391, 15398, 15404, 15499, 15516, 15592, 0, 15606, 15660, 0, 0, 15752, 15758, 0, 15827, 15863, 15886, 16000, 16006, 16038, 16086, 0, 16467, 0, 0, 16506, 99, 117, 116, 101, 59, 32768, 347, 113, 117, 111, 59, 32768, 8218, 2560, 59, 69, 97, 99, 101, 105, 110, 112, 115, 121, 15424, 15426, 15429, 15441, 15446, 15458, 15463, 15482, 15490, 15495, 32768, 8827, 59, 32768, 10932, 833, 15434, 0, 15437, 59, 32768, 10936, 111, 110, 59, 32768, 353, 117, 101, 59, 32768, 8829, 512, 59, 100, 15451, 15453, 32768, 10928, 105, 108, 59, 32768, 351, 114, 99, 59, 32768, 349, 768, 69, 97, 115, 15470, 15473, 15477, 59, 32768, 10934, 112, 59, 32768, 10938, 105, 109, 59, 32768, 8937, 111, 108, 105, 110, 116, 59, 32768, 10771, 105, 109, 59, 32768, 8831, 59, 32768, 1089, 111, 116, 768, 59, 98, 101, 15507, 15509, 15512, 32768, 8901, 59, 32768, 8865, 59, 32768, 10854, 1792, 65, 97, 99, 109, 115, 116, 120, 15530, 15535, 15556, 15562, 15566, 15572, 15587, 114, 114, 59, 32768, 8664, 114, 512, 104, 114, 15541, 15545, 107, 59, 32768, 10533, 512, 59, 111, 15550, 15552, 32768, 8600, 119, 59, 32768, 8600, 116, 33024, 167, 59, 32768, 167, 105, 59, 32768, 59, 119, 97, 114, 59, 32768, 10537, 109, 512, 105, 110, 15578, 15584, 110, 117, 115, 59, 32768, 8726, 59, 32768, 8726, 116, 59, 32768, 10038, 114, 512, 59, 111, 15597, 15600, 32896, 55349, 56624, 119, 110, 59, 32768, 8994, 1024, 97, 99, 111, 121, 15614, 15619, 15632, 15654, 114, 112, 59, 32768, 9839, 512, 104, 121, 15624, 15629, 99, 121, 59, 32768, 1097, 59, 32768, 1096, 114, 116, 1086, 15640, 0, 0, 15645, 105, 100, 59, 32768, 8739, 97, 114, 97, 108, 108, 101, 108, 59, 32768, 8741, 33024, 173, 59, 32768, 173, 512, 103, 109, 15664, 15681, 109, 97, 768, 59, 102, 118, 15673, 15675, 15678, 32768, 963, 59, 32768, 962, 59, 32768, 962, 2048, 59, 100, 101, 103, 108, 110, 112, 114, 15698, 15700, 15705, 15715, 15725, 15735, 15739, 15745, 32768, 8764, 111, 116, 59, 32768, 10858, 512, 59, 113, 15710, 15712, 32768, 8771, 59, 32768, 8771, 512, 59, 69, 15720, 15722, 32768, 10910, 59, 32768, 10912, 512, 59, 69, 15730, 15732, 32768, 10909, 59, 32768, 10911, 101, 59, 32768, 8774, 108, 117, 115, 59, 32768, 10788, 97, 114, 114, 59, 32768, 10610, 97, 114, 114, 59, 32768, 8592, 1024, 97, 101, 105, 116, 15766, 15788, 15796, 15808, 512, 108, 115, 15771, 15783, 108, 115, 101, 116, 109, 105, 110, 117, 115, 59, 32768, 8726, 104, 112, 59, 32768, 10803, 112, 97, 114, 115, 108, 59, 32768, 10724, 512, 100, 108, 15801, 15804, 59, 32768, 8739, 101, 59, 32768, 8995, 512, 59, 101, 15813, 15815, 32768, 10922, 512, 59, 115, 15820, 15822, 32768, 10924, 59, 32896, 10924, 65024, 768, 102, 108, 112, 15833, 15839, 15857, 116, 99, 121, 59, 32768, 1100, 512, 59, 98, 15844, 15846, 32768, 47, 512, 59, 97, 15851, 15853, 32768, 10692, 114, 59, 32768, 9023, 102, 59, 32896, 55349, 56676, 97, 512, 100, 114, 15868, 15882, 101, 115, 512, 59, 117, 15875, 15877, 32768, 9824, 105, 116, 59, 32768, 9824, 59, 32768, 8741, 768, 99, 115, 117, 15892, 15921, 15977, 512, 97, 117, 15897, 15909, 112, 512, 59, 115, 15903, 15905, 32768, 8851, 59, 32896, 8851, 65024, 112, 512, 59, 115, 15915, 15917, 32768, 8852, 59, 32896, 8852, 65024, 117, 512, 98, 112, 15927, 15952, 768, 59, 101, 115, 15934, 15936, 15939, 32768, 8847, 59, 32768, 8849, 101, 116, 512, 59, 101, 15946, 15948, 32768, 8847, 113, 59, 32768, 8849, 768, 59, 101, 115, 15959, 15961, 15964, 32768, 8848, 59, 32768, 8850, 101, 116, 512, 59, 101, 15971, 15973, 32768, 8848, 113, 59, 32768, 8850, 768, 59, 97, 102, 15984, 15986, 15996, 32768, 9633, 114, 566, 15991, 15994, 59, 32768, 9633, 59, 32768, 9642, 59, 32768, 9642, 97, 114, 114, 59, 32768, 8594, 1024, 99, 101, 109, 116, 16014, 16019, 16025, 16031, 114, 59, 32896, 55349, 56520, 116, 109, 110, 59, 32768, 8726, 105, 108, 101, 59, 32768, 8995, 97, 114, 102, 59, 32768, 8902, 512, 97, 114, 16042, 16053, 114, 512, 59, 102, 16048, 16050, 32768, 9734, 59, 32768, 9733, 512, 97, 110, 16058, 16081, 105, 103, 104, 116, 512, 101, 112, 16067, 16076, 112, 115, 105, 108, 111, 110, 59, 32768, 1013, 104, 105, 59, 32768, 981, 115, 59, 32768, 175, 1280, 98, 99, 109, 110, 112, 16096, 16221, 16288, 16291, 16295, 2304, 59, 69, 100, 101, 109, 110, 112, 114, 115, 16115, 16117, 16120, 16125, 16137, 16143, 16154, 16160, 16166, 32768, 8834, 59, 32768, 10949, 111, 116, 59, 32768, 10941, 512, 59, 100, 16130, 16132, 32768, 8838, 111, 116, 59, 32768, 10947, 117, 108, 116, 59, 32768, 10945, 512, 69, 101, 16148, 16151, 59, 32768, 10955, 59, 32768, 8842, 108, 117, 115, 59, 32768, 10943, 97, 114, 114, 59, 32768, 10617, 768, 101, 105, 117, 16173, 16206, 16210, 116, 768, 59, 101, 110, 16181, 16183, 16194, 32768, 8834, 113, 512, 59, 113, 16189, 16191, 32768, 8838, 59, 32768, 10949, 101, 113, 512, 59, 113, 16201, 16203, 32768, 8842, 59, 32768, 10955, 109, 59, 32768, 10951, 512, 98, 112, 16215, 16218, 59, 32768, 10965, 59, 32768, 10963, 99, 1536, 59, 97, 99, 101, 110, 115, 16235, 16237, 16245, 16254, 16258, 16283, 32768, 8827, 112, 112, 114, 111, 120, 59, 32768, 10936, 117, 114, 108, 121, 101, 113, 59, 32768, 8829, 113, 59, 32768, 10928, 768, 97, 101, 115, 16265, 16273, 16278, 112, 112, 114, 111, 120, 59, 32768, 10938, 113, 113, 59, 32768, 10934, 105, 109, 59, 32768, 8937, 105, 109, 59, 32768, 8831, 59, 32768, 8721, 103, 59, 32768, 9834, 3328, 49, 50, 51, 59, 69, 100, 101, 104, 108, 109, 110, 112, 115, 16322, 16327, 16332, 16337, 16339, 16342, 16356, 16368, 16382, 16388, 16394, 16405, 16411, 33024, 185, 59, 32768, 185, 33024, 178, 59, 32768, 178, 33024, 179, 59, 32768, 179, 32768, 8835, 59, 32768, 10950, 512, 111, 115, 16347, 16351, 116, 59, 32768, 10942, 117, 98, 59, 32768, 10968, 512, 59, 100, 16361, 16363, 32768, 8839, 111, 116, 59, 32768, 10948, 115, 512, 111, 117, 16374, 16378, 108, 59, 32768, 10185, 98, 59, 32768, 10967, 97, 114, 114, 59, 32768, 10619, 117, 108, 116, 59, 32768, 10946, 512, 69, 101, 16399, 16402, 59, 32768, 10956, 59, 32768, 8843, 108, 117, 115, 59, 32768, 10944, 768, 101, 105, 117, 16418, 16451, 16455, 116, 768, 59, 101, 110, 16426, 16428, 16439, 32768, 8835, 113, 512, 59, 113, 16434, 16436, 32768, 8839, 59, 32768, 10950, 101, 113, 512, 59, 113, 16446, 16448, 32768, 8843, 59, 32768, 10956, 109, 59, 32768, 10952, 512, 98, 112, 16460, 16463, 59, 32768, 10964, 59, 32768, 10966, 768, 65, 97, 110, 16473, 16478, 16499, 114, 114, 59, 32768, 8665, 114, 512, 104, 114, 16484, 16488, 107, 59, 32768, 10534, 512, 59, 111, 16493, 16495, 32768, 8601, 119, 59, 32768, 8601, 119, 97, 114, 59, 32768, 10538, 108, 105, 103, 33024, 223, 59, 32768, 223, 5938, 16538, 16552, 16557, 16579, 16584, 16591, 0, 16596, 16692, 0, 0, 0, 0, 0, 16731, 16780, 0, 16787, 16908, 0, 0, 0, 16938, 1091, 16543, 0, 0, 16549, 103, 101, 116, 59, 32768, 8982, 59, 32768, 964, 114, 107, 59, 32768, 9140, 768, 97, 101, 121, 16563, 16569, 16575, 114, 111, 110, 59, 32768, 357, 100, 105, 108, 59, 32768, 355, 59, 32768, 1090, 111, 116, 59, 32768, 8411, 108, 114, 101, 99, 59, 32768, 8981, 114, 59, 32896, 55349, 56625, 1024, 101, 105, 107, 111, 16604, 16641, 16670, 16684, 835, 16609, 0, 16624, 101, 512, 52, 102, 16614, 16617, 59, 32768, 8756, 111, 114, 101, 59, 32768, 8756, 97, 768, 59, 115, 118, 16631, 16633, 16638, 32768, 952, 121, 109, 59, 32768, 977, 59, 32768, 977, 512, 99, 110, 16646, 16665, 107, 512, 97, 115, 16652, 16660, 112, 112, 114, 111, 120, 59, 32768, 8776, 105, 109, 59, 32768, 8764, 115, 112, 59, 32768, 8201, 512, 97, 115, 16675, 16679, 112, 59, 32768, 8776, 105, 109, 59, 32768, 8764, 114, 110, 33024, 254, 59, 32768, 254, 829, 16696, 16701, 16727, 100, 101, 59, 32768, 732, 101, 115, 33536, 215, 59, 98, 100, 16710, 16712, 16723, 32768, 215, 512, 59, 97, 16717, 16719, 32768, 8864, 114, 59, 32768, 10801, 59, 32768, 10800, 116, 59, 32768, 8749, 768, 101, 112, 115, 16737, 16741, 16775, 97, 59, 32768, 10536, 1024, 59, 98, 99, 102, 16750, 16752, 16757, 16762, 32768, 8868, 111, 116, 59, 32768, 9014, 105, 114, 59, 32768, 10993, 512, 59, 111, 16767, 16770, 32896, 55349, 56677, 114, 107, 59, 32768, 10970, 97, 59, 32768, 10537, 114, 105, 109, 101, 59, 32768, 8244, 768, 97, 105, 112, 16793, 16798, 16899, 100, 101, 59, 32768, 8482, 1792, 97, 100, 101, 109, 112, 115, 116, 16813, 16868, 16873, 16876, 16883, 16889, 16893, 110, 103, 108, 101, 1280, 59, 100, 108, 113, 114, 16828, 16830, 16836, 16850, 16853, 32768, 9653, 111, 119, 110, 59, 32768, 9663, 101, 102, 116, 512, 59, 101, 16844, 16846, 32768, 9667, 113, 59, 32768, 8884, 59, 32768, 8796, 105, 103, 104, 116, 512, 59, 101, 16862, 16864, 32768, 9657, 113, 59, 32768, 8885, 111, 116, 59, 32768, 9708, 59, 32768, 8796, 105, 110, 117, 115, 59, 32768, 10810, 108, 117, 115, 59, 32768, 10809, 98, 59, 32768, 10701, 105, 109, 101, 59, 32768, 10811, 101, 122, 105, 117, 109, 59, 32768, 9186, 768, 99, 104, 116, 16914, 16926, 16931, 512, 114, 121, 16919, 16923, 59, 32896, 55349, 56521, 59, 32768, 1094, 99, 121, 59, 32768, 1115, 114, 111, 107, 59, 32768, 359, 512, 105, 111, 16942, 16947, 120, 116, 59, 32768, 8812, 104, 101, 97, 100, 512, 108, 114, 16956, 16967, 101, 102, 116, 97, 114, 114, 111, 119, 59, 32768, 8606, 105, 103, 104, 116, 97, 114, 114, 111, 119, 59, 32768, 8608, 4608, 65, 72, 97, 98, 99, 100, 102, 103, 104, 108, 109, 111, 112, 114, 115, 116, 117, 119, 17016, 17021, 17026, 17043, 17057, 17072, 17095, 17110, 17119, 17139, 17172, 17187, 17202, 17290, 17330, 17336, 17365, 17381, 114, 114, 59, 32768, 8657, 97, 114, 59, 32768, 10595, 512, 99, 114, 17031, 17039, 117, 116, 101, 33024, 250, 59, 32768, 250, 114, 59, 32768, 8593, 114, 820, 17049, 0, 17053, 121, 59, 32768, 1118, 118, 101, 59, 32768, 365, 512, 105, 121, 17062, 17069, 114, 99, 33024, 251, 59, 32768, 251, 59, 32768, 1091, 768, 97, 98, 104, 17079, 17084, 17090, 114, 114, 59, 32768, 8645, 108, 97, 99, 59, 32768, 369, 97, 114, 59, 32768, 10606, 512, 105, 114, 17100, 17106, 115, 104, 116, 59, 32768, 10622, 59, 32896, 55349, 56626, 114, 97, 118, 101, 33024, 249, 59, 32768, 249, 562, 17123, 17135, 114, 512, 108, 114, 17128, 17131, 59, 32768, 8639, 59, 32768, 8638, 108, 107, 59, 32768, 9600, 512, 99, 116, 17144, 17167, 1088, 17150, 0, 0, 17163, 114, 110, 512, 59, 101, 17156, 17158, 32768, 8988, 114, 59, 32768, 8988, 111, 112, 59, 32768, 8975, 114, 105, 59, 32768, 9720, 512, 97, 108, 17177, 17182, 99, 114, 59, 32768, 363, 33024, 168, 59, 32768, 168, 512, 103, 112, 17192, 17197, 111, 110, 59, 32768, 371, 102, 59, 32896, 55349, 56678, 1536, 97, 100, 104, 108, 115, 117, 17215, 17222, 17233, 17257, 17262, 17280, 114, 114, 111, 119, 59, 32768, 8593, 111, 119, 110, 97, 114, 114, 111, 119, 59, 32768, 8597, 97, 114, 112, 111, 111, 110, 512, 108, 114, 17244, 17250, 101, 102, 116, 59, 32768, 8639, 105, 103, 104, 116, 59, 32768, 8638, 117, 115, 59, 32768, 8846, 105, 768, 59, 104, 108, 17270, 17272, 17275, 32768, 965, 59, 32768, 978, 111, 110, 59, 32768, 965, 112, 97, 114, 114, 111, 119, 115, 59, 32768, 8648, 768, 99, 105, 116, 17297, 17320, 17325, 1088, 17303, 0, 0, 17316, 114, 110, 512, 59, 101, 17309, 17311, 32768, 8989, 114, 59, 32768, 8989, 111, 112, 59, 32768, 8974, 110, 103, 59, 32768, 367, 114, 105, 59, 32768, 9721, 99, 114, 59, 32896, 55349, 56522, 768, 100, 105, 114, 17343, 17348, 17354, 111, 116, 59, 32768, 8944, 108, 100, 101, 59, 32768, 361, 105, 512, 59, 102, 17360, 17362, 32768, 9653, 59, 32768, 9652, 512, 97, 109, 17370, 17375, 114, 114, 59, 32768, 8648, 108, 33024, 252, 59, 32768, 252, 97, 110, 103, 108, 101, 59, 32768, 10663, 3840, 65, 66, 68, 97, 99, 100, 101, 102, 108, 110, 111, 112, 114, 115, 122, 17420, 17425, 17437, 17443, 17613, 17617, 17623, 17667, 17672, 17678, 17693, 17699, 17705, 17711, 17754, 114, 114, 59, 32768, 8661, 97, 114, 512, 59, 118, 17432, 17434, 32768, 10984, 59, 32768, 10985, 97, 115, 104, 59, 32768, 8872, 512, 110, 114, 17448, 17454, 103, 114, 116, 59, 32768, 10652, 1792, 101, 107, 110, 112, 114, 115, 116, 17469, 17478, 17485, 17494, 17515, 17526, 17578, 112, 115, 105, 108, 111, 110, 59, 32768, 1013, 97, 112, 112, 97, 59, 32768, 1008, 111, 116, 104, 105, 110, 103, 59, 32768, 8709, 768, 104, 105, 114, 17501, 17505, 17508, 105, 59, 32768, 981, 59, 32768, 982, 111, 112, 116, 111, 59, 32768, 8733, 512, 59, 104, 17520, 17522, 32768, 8597, 111, 59, 32768, 1009, 512, 105, 117, 17531, 17537, 103, 109, 97, 59, 32768, 962, 512, 98, 112, 17542, 17560, 115, 101, 116, 110, 101, 113, 512, 59, 113, 17553, 17556, 32896, 8842, 65024, 59, 32896, 10955, 65024, 115, 101, 116, 110, 101, 113, 512, 59, 113, 17571, 17574, 32896, 8843, 65024, 59, 32896, 10956, 65024, 512, 104, 114, 17583, 17589, 101, 116, 97, 59, 32768, 977, 105, 97, 110, 103, 108, 101, 512, 108, 114, 17600, 17606, 101, 102, 116, 59, 32768, 8882, 105, 103, 104, 116, 59, 32768, 8883, 121, 59, 32768, 1074, 97, 115, 104, 59, 32768, 8866, 768, 101, 108, 114, 17630, 17648, 17654, 768, 59, 98, 101, 17637, 17639, 17644, 32768, 8744, 97, 114, 59, 32768, 8891, 113, 59, 32768, 8794, 108, 105, 112, 59, 32768, 8942, 512, 98, 116, 17659, 17664, 97, 114, 59, 32768, 124, 59, 32768, 124, 114, 59, 32896, 55349, 56627, 116, 114, 105, 59, 32768, 8882, 115, 117, 512, 98, 112, 17685, 17689, 59, 32896, 8834, 8402, 59, 32896, 8835, 8402, 112, 102, 59, 32896, 55349, 56679, 114, 111, 112, 59, 32768, 8733, 116, 114, 105, 59, 32768, 8883, 512, 99, 117, 17716, 17721, 114, 59, 32896, 55349, 56523, 512, 98, 112, 17726, 17740, 110, 512, 69, 101, 17732, 17736, 59, 32896, 10955, 65024, 59, 32896, 8842, 65024, 110, 512, 69, 101, 17746, 17750, 59, 32896, 10956, 65024, 59, 32896, 8843, 65024, 105, 103, 122, 97, 103, 59, 32768, 10650, 1792, 99, 101, 102, 111, 112, 114, 115, 17777, 17783, 17815, 17820, 17826, 17829, 17842, 105, 114, 99, 59, 32768, 373, 512, 100, 105, 17788, 17809, 512, 98, 103, 17793, 17798, 97, 114, 59, 32768, 10847, 101, 512, 59, 113, 17804, 17806, 32768, 8743, 59, 32768, 8793, 101, 114, 112, 59, 32768, 8472, 114, 59, 32896, 55349, 56628, 112, 102, 59, 32896, 55349, 56680, 59, 32768, 8472, 512, 59, 101, 17834, 17836, 32768, 8768, 97, 116, 104, 59, 32768, 8768, 99, 114, 59, 32896, 55349, 56524, 5428, 17871, 17891, 0, 17897, 0, 17902, 17917, 0, 0, 17920, 17935, 17940, 17945, 0, 0, 17977, 17992, 0, 18008, 18024, 18029, 768, 97, 105, 117, 17877, 17881, 17886, 112, 59, 32768, 8898, 114, 99, 59, 32768, 9711, 112, 59, 32768, 8899, 116, 114, 105, 59, 32768, 9661, 114, 59, 32896, 55349, 56629, 512, 65, 97, 17906, 17911, 114, 114, 59, 32768, 10234, 114, 114, 59, 32768, 10231, 59, 32768, 958, 512, 65, 97, 17924, 17929, 114, 114, 59, 32768, 10232, 114, 114, 59, 32768, 10229, 97, 112, 59, 32768, 10236, 105, 115, 59, 32768, 8955, 768, 100, 112, 116, 17951, 17956, 17970, 111, 116, 59, 32768, 10752, 512, 102, 108, 17961, 17965, 59, 32896, 55349, 56681, 117, 115, 59, 32768, 10753, 105, 109, 101, 59, 32768, 10754, 512, 65, 97, 17981, 17986, 114, 114, 59, 32768, 10233, 114, 114, 59, 32768, 10230, 512, 99, 113, 17996, 18001, 114, 59, 32896, 55349, 56525, 99, 117, 112, 59, 32768, 10758, 512, 112, 116, 18012, 18018, 108, 117, 115, 59, 32768, 10756, 114, 105, 59, 32768, 9651, 101, 101, 59, 32768, 8897, 101, 100, 103, 101, 59, 32768, 8896, 2048, 97, 99, 101, 102, 105, 111, 115, 117, 18052, 18068, 18081, 18087, 18092, 18097, 18103, 18109, 99, 512, 117, 121, 18058, 18065, 116, 101, 33024, 253, 59, 32768, 253, 59, 32768, 1103, 512, 105, 121, 18073, 18078, 114, 99, 59, 32768, 375, 59, 32768, 1099, 110, 33024, 165, 59, 32768, 165, 114, 59, 32896, 55349, 56630, 99, 121, 59, 32768, 1111, 112, 102, 59, 32896, 55349, 56682, 99, 114, 59, 32896, 55349, 56526, 512, 99, 109, 18114, 18118, 121, 59, 32768, 1102, 108, 33024, 255, 59, 32768, 255, 2560, 97, 99, 100, 101, 102, 104, 105, 111, 115, 119, 18145, 18152, 18166, 18171, 18186, 18191, 18196, 18204, 18210, 18216, 99, 117, 116, 101, 59, 32768, 378, 512, 97, 121, 18157, 18163, 114, 111, 110, 59, 32768, 382, 59, 32768, 1079, 111, 116, 59, 32768, 380, 512, 101, 116, 18176, 18182, 116, 114, 102, 59, 32768, 8488, 97, 59, 32768, 950, 114, 59, 32896, 55349, 56631, 99, 121, 59, 32768, 1078, 103, 114, 97, 114, 114, 59, 32768, 8669, 112, 102, 59, 32896, 55349, 56683, 99, 114, 59, 32896, 55349, 56527, 512, 106, 110, 18221, 18224, 59, 32768, 8205, 106, 59, 32768, 8204]);
 
-},{}],145:[function(require,module,exports){
+},{}],153:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 // Generated using scripts/write-decode-map.ts
 // prettier-ignore
 exports.default = new Uint16Array([1024, 97, 103, 108, 113, 9, 23, 27, 31, 1086, 15, 0, 0, 19, 112, 59, 32768, 38, 111, 115, 59, 32768, 39, 116, 59, 32768, 62, 116, 59, 32768, 60, 117, 111, 116, 59, 32768, 34]);
 
-},{}],146:[function(require,module,exports){
+},{}],154:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -14556,7 +14708,7 @@ var Parser = /** @class */ (function () {
 }());
 exports.Parser = Parser;
 
-},{"./Tokenizer":147}],147:[function(require,module,exports){
+},{"./Tokenizer":155}],155:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -15379,7 +15531,7 @@ var Tokenizer = /** @class */ (function () {
 }());
 exports.default = Tokenizer;
 
-},{"entities/lib/decode":142,"entities/lib/decode_codepoint":143}],148:[function(require,module,exports){
+},{"entities/lib/decode":150,"entities/lib/decode_codepoint":151}],156:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -15434,7 +15586,7 @@ var WritableStream = /** @class */ (function (_super) {
 }(stream_1.Writable));
 exports.WritableStream = WritableStream;
 
-},{"./Parser":146,"stream":26,"string_decoder":41}],149:[function(require,module,exports){
+},{"./Parser":154,"stream":26,"string_decoder":41}],157:[function(require,module,exports){
 (function (Buffer){(function (){
 'use strict'
 
@@ -15815,8 +15967,8 @@ Link.formatAttribute = function( attr, value ) {
 
 module.exports = Link
 
-}).call(this)}).call(this,{"isBuffer":require("../../../../../../../../../home/olaf/.nvm/versions/node/v16.13.0/lib/node_modules/browserify/node_modules/is-buffer/index.js")})
-},{"../../../../../../../../../home/olaf/.nvm/versions/node/v16.13.0/lib/node_modules/browserify/node_modules/is-buffer/index.js":20}],150:[function(require,module,exports){
+}).call(this)}).call(this,{"isBuffer":require("../../../../../../.nvm/versions/node/v18.7.0/lib/node_modules/browserify/node_modules/is-buffer/index.js")})
+},{"../../../../../../.nvm/versions/node/v18.7.0/lib/node_modules/browserify/node_modules/is-buffer/index.js":20}],158:[function(require,module,exports){
 /**
  * MIT License
  * 
@@ -21804,9 +21956,9 @@ module.exports = Link
 
 })));
 
-},{}],151:[function(require,module,exports){
+},{}],159:[function(require,module,exports){
 arguments[4][18][0].apply(exports,arguments)
-},{"dup":18}],152:[function(require,module,exports){
+},{"dup":18}],160:[function(require,module,exports){
 'use strict';
 
 const isStream = stream =>
@@ -21836,7 +21988,7 @@ isStream.transform = stream =>
 
 module.exports = isStream;
 
-},{}],153:[function(require,module,exports){
+},{}],161:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -21861,7 +22013,7 @@ __exportStar(require("./lib/JsonLdContext"), exports);
 __exportStar(require("./lib/JsonLdContextNormalized"), exports);
 __exportStar(require("./lib/Util"), exports);
 
-},{"./lib/ContextParser":154,"./lib/ErrorCoded":155,"./lib/FetchDocumentLoader":156,"./lib/IDocumentLoader":157,"./lib/JsonLdContext":158,"./lib/JsonLdContextNormalized":159,"./lib/Util":160}],154:[function(require,module,exports){
+},{"./lib/ContextParser":162,"./lib/ErrorCoded":163,"./lib/FetchDocumentLoader":164,"./lib/IDocumentLoader":165,"./lib/JsonLdContext":166,"./lib/JsonLdContextNormalized":167,"./lib/Util":168}],162:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.defaultExpandOptions = exports.ContextParser = void 0;
@@ -22623,7 +22775,7 @@ exports.defaultExpandOptions = {
     allowVocabRelativeToBase: true,
 };
 
-},{"./ErrorCoded":155,"./FetchDocumentLoader":156,"./JsonLdContextNormalized":159,"./Util":160,"canonicalize":119,"cross-fetch/polyfill":120,"relative-to-absolute-iri":306}],155:[function(require,module,exports){
+},{"./ErrorCoded":163,"./FetchDocumentLoader":164,"./JsonLdContextNormalized":167,"./Util":168,"canonicalize":127,"cross-fetch/polyfill":128,"relative-to-absolute-iri":297}],163:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ERROR_CODES = exports.ErrorCoded = void 0;
@@ -22700,7 +22852,7 @@ var ERROR_CODES;
     ERROR_CODES["INVALID_STREAMING_KEY_ORDER"] = "invalid streaming key order";
 })(ERROR_CODES = exports.ERROR_CODES || (exports.ERROR_CODES = {}));
 
-},{}],156:[function(require,module,exports){
+},{}],164:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.FetchDocumentLoader = void 0;
@@ -22760,16 +22912,16 @@ class FetchDocumentLoader {
 }
 exports.FetchDocumentLoader = FetchDocumentLoader;
 
-},{"./ErrorCoded":155,"cross-fetch/polyfill":120,"http-link-header":149,"relative-to-absolute-iri":306}],157:[function(require,module,exports){
+},{"./ErrorCoded":163,"cross-fetch/polyfill":128,"http-link-header":157,"relative-to-absolute-iri":297}],165:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 
-},{}],158:[function(require,module,exports){
+},{}],166:[function(require,module,exports){
 "use strict";
 // tslint:disable:max-line-length
 Object.defineProperty(exports, "__esModule", { value: true });
 
-},{}],159:[function(require,module,exports){
+},{}],167:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.JsonLdContextNormalized = void 0;
@@ -22939,7 +23091,7 @@ class JsonLdContextNormalized {
 }
 exports.JsonLdContextNormalized = JsonLdContextNormalized;
 
-},{"./ContextParser":154,"./ErrorCoded":155,"./Util":160,"relative-to-absolute-iri":306}],160:[function(require,module,exports){
+},{"./ContextParser":162,"./ErrorCoded":163,"./Util":168,"relative-to-absolute-iri":297}],168:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Util = void 0;
@@ -23172,7 +23324,7 @@ Util.CONTAINERS_1_0 = [
     '@index',
 ];
 
-},{}],161:[function(require,module,exports){
+},{}],169:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -23187,7 +23339,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./lib/JsonLdParser"), exports);
 
-},{"./lib/JsonLdParser":163}],162:[function(require,module,exports){
+},{"./lib/JsonLdParser":171}],170:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ContextTree = void 0;
@@ -23233,7 +23385,7 @@ class ContextTree {
 }
 exports.ContextTree = ContextTree;
 
-},{}],163:[function(require,module,exports){
+},{}],171:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.JsonLdParser = void 0;
@@ -23688,7 +23840,7 @@ JsonLdParser.ENTRY_HANDLERS = [
     new EntryHandlerInvalidFallback_1.EntryHandlerInvalidFallback(),
 ];
 
-},{"./ParsingContext":164,"./Util":165,"./entryhandler/EntryHandlerArrayValue":170,"./entryhandler/EntryHandlerContainer":171,"./entryhandler/EntryHandlerInvalidFallback":172,"./entryhandler/EntryHandlerPredicate":173,"./entryhandler/keyword/EntryHandlerKeywordContext":175,"./entryhandler/keyword/EntryHandlerKeywordGraph":176,"./entryhandler/keyword/EntryHandlerKeywordId":177,"./entryhandler/keyword/EntryHandlerKeywordIncluded":178,"./entryhandler/keyword/EntryHandlerKeywordNest":179,"./entryhandler/keyword/EntryHandlerKeywordType":180,"./entryhandler/keyword/EntryHandlerKeywordUnknownFallback":181,"./entryhandler/keyword/EntryHandlerKeywordValue":182,"http-link-header":149,"jsonld-context-parser":153,"jsonparse":209,"stream":26}],164:[function(require,module,exports){
+},{"./ParsingContext":172,"./Util":173,"./entryhandler/EntryHandlerArrayValue":178,"./entryhandler/EntryHandlerContainer":179,"./entryhandler/EntryHandlerInvalidFallback":180,"./entryhandler/EntryHandlerPredicate":181,"./entryhandler/keyword/EntryHandlerKeywordContext":183,"./entryhandler/keyword/EntryHandlerKeywordGraph":184,"./entryhandler/keyword/EntryHandlerKeywordId":185,"./entryhandler/keyword/EntryHandlerKeywordIncluded":186,"./entryhandler/keyword/EntryHandlerKeywordNest":187,"./entryhandler/keyword/EntryHandlerKeywordType":188,"./entryhandler/keyword/EntryHandlerKeywordUnknownFallback":189,"./entryhandler/keyword/EntryHandlerKeywordValue":190,"http-link-header":157,"jsonld-context-parser":161,"jsonparse":195,"stream":26}],172:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ParsingContext = void 0;
@@ -24011,7 +24163,7 @@ ParsingContext.EXPAND_OPTIONS = {
     },
 };
 
-},{"./ContextTree":162,"./JsonLdParser":163,"jsonld-context-parser":153,"jsonld-context-parser/lib/ErrorCoded":155}],165:[function(require,module,exports){
+},{"./ContextTree":170,"./JsonLdParser":171,"jsonld-context-parser":161,"jsonld-context-parser/lib/ErrorCoded":163}],173:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Util = void 0;
@@ -24811,7 +24963,7 @@ Util.XSD_INTEGER = Util.XSD + 'integer';
 Util.XSD_DOUBLE = Util.XSD + 'double';
 Util.RDF = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#';
 
-},{"./entryhandler/EntryHandlerContainer":171,"canonicalize":119,"jsonld-context-parser":153,"rdf-data-factory":254}],166:[function(require,module,exports){
+},{"./entryhandler/EntryHandlerContainer":179,"canonicalize":127,"jsonld-context-parser":161,"rdf-data-factory":244}],174:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ContainerHandlerIdentifier = void 0;
@@ -24865,7 +25017,7 @@ class ContainerHandlerIdentifier {
 }
 exports.ContainerHandlerIdentifier = ContainerHandlerIdentifier;
 
-},{}],167:[function(require,module,exports){
+},{}],175:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ContainerHandlerIndex = void 0;
@@ -24937,7 +25089,7 @@ class ContainerHandlerIndex {
 }
 exports.ContainerHandlerIndex = ContainerHandlerIndex;
 
-},{"../Util":165,"../entryhandler/EntryHandlerPredicate":173,"jsonld-context-parser":153}],168:[function(require,module,exports){
+},{"../Util":173,"../entryhandler/EntryHandlerPredicate":181,"jsonld-context-parser":161}],176:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ContainerHandlerLanguage = void 0;
@@ -24970,7 +25122,7 @@ class ContainerHandlerLanguage {
 }
 exports.ContainerHandlerLanguage = ContainerHandlerLanguage;
 
-},{"jsonld-context-parser":153}],169:[function(require,module,exports){
+},{"jsonld-context-parser":161}],177:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ContainerHandlerType = void 0;
@@ -25033,7 +25185,7 @@ class ContainerHandlerType {
 }
 exports.ContainerHandlerType = ContainerHandlerType;
 
-},{"../Util":165,"../entryhandler/EntryHandlerPredicate":173}],170:[function(require,module,exports){
+},{"../Util":173,"../entryhandler/EntryHandlerPredicate":181}],178:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EntryHandlerArrayValue = void 0;
@@ -25157,7 +25309,7 @@ class EntryHandlerArrayValue {
 }
 exports.EntryHandlerArrayValue = EntryHandlerArrayValue;
 
-},{"../Util":165}],171:[function(require,module,exports){
+},{"../Util":173}],179:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EntryHandlerContainer = void 0;
@@ -25347,7 +25499,7 @@ EntryHandlerContainer.CONTAINER_HANDLERS = {
     '@type': new ContainerHandlerType_1.ContainerHandlerType(),
 };
 
-},{"../Util":165,"../containerhandler/ContainerHandlerIdentifier":166,"../containerhandler/ContainerHandlerIndex":167,"../containerhandler/ContainerHandlerLanguage":168,"../containerhandler/ContainerHandlerType":169}],172:[function(require,module,exports){
+},{"../Util":173,"../containerhandler/ContainerHandlerIdentifier":174,"../containerhandler/ContainerHandlerIndex":175,"../containerhandler/ContainerHandlerLanguage":176,"../containerhandler/ContainerHandlerType":177}],180:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EntryHandlerInvalidFallback = void 0;
@@ -25374,7 +25526,7 @@ class EntryHandlerInvalidFallback {
 }
 exports.EntryHandlerInvalidFallback = EntryHandlerInvalidFallback;
 
-},{}],173:[function(require,module,exports){
+},{}],181:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EntryHandlerPredicate = void 0;
@@ -25513,7 +25665,7 @@ class EntryHandlerPredicate {
 }
 exports.EntryHandlerPredicate = EntryHandlerPredicate;
 
-},{"../Util":165,"jsonld-context-parser":153}],174:[function(require,module,exports){
+},{"../Util":173,"jsonld-context-parser":161}],182:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EntryHandlerKeyword = void 0;
@@ -25539,7 +25691,7 @@ class EntryHandlerKeyword {
 }
 exports.EntryHandlerKeyword = EntryHandlerKeyword;
 
-},{}],175:[function(require,module,exports){
+},{}],183:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EntryHandlerKeywordContext = void 0;
@@ -25577,7 +25729,7 @@ class EntryHandlerKeywordContext extends EntryHandlerKeyword_1.EntryHandlerKeywo
 }
 exports.EntryHandlerKeywordContext = EntryHandlerKeywordContext;
 
-},{"./EntryHandlerKeyword":174,"jsonld-context-parser":153}],176:[function(require,module,exports){
+},{"./EntryHandlerKeyword":182,"jsonld-context-parser":161}],184:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EntryHandlerKeywordGraph = void 0;
@@ -25596,7 +25748,7 @@ class EntryHandlerKeywordGraph extends EntryHandlerKeyword_1.EntryHandlerKeyword
 }
 exports.EntryHandlerKeywordGraph = EntryHandlerKeywordGraph;
 
-},{"./EntryHandlerKeyword":174}],177:[function(require,module,exports){
+},{"./EntryHandlerKeyword":182}],185:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EntryHandlerKeywordId = void 0;
@@ -25637,7 +25789,7 @@ class EntryHandlerKeywordId extends EntryHandlerKeyword_1.EntryHandlerKeyword {
 }
 exports.EntryHandlerKeywordId = EntryHandlerKeywordId;
 
-},{"./EntryHandlerKeyword":174,"jsonld-context-parser":153}],178:[function(require,module,exports){
+},{"./EntryHandlerKeyword":182,"jsonld-context-parser":161}],186:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EntryHandlerKeywordIncluded = void 0;
@@ -25666,7 +25818,7 @@ class EntryHandlerKeywordIncluded extends EntryHandlerKeyword_1.EntryHandlerKeyw
 }
 exports.EntryHandlerKeywordIncluded = EntryHandlerKeywordIncluded;
 
-},{"./EntryHandlerKeyword":174,"jsonld-context-parser":153}],179:[function(require,module,exports){
+},{"./EntryHandlerKeyword":182,"jsonld-context-parser":161}],187:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EntryHandlerKeywordNest = void 0;
@@ -25691,7 +25843,7 @@ class EntryHandlerKeywordNest extends EntryHandlerKeyword_1.EntryHandlerKeyword 
 }
 exports.EntryHandlerKeywordNest = EntryHandlerKeywordNest;
 
-},{"./EntryHandlerKeyword":174,"jsonld-context-parser":153}],180:[function(require,module,exports){
+},{"./EntryHandlerKeyword":182,"jsonld-context-parser":161}],188:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EntryHandlerKeywordType = void 0;
@@ -25769,7 +25921,7 @@ class EntryHandlerKeywordType extends EntryHandlerKeyword_1.EntryHandlerKeyword 
 }
 exports.EntryHandlerKeywordType = EntryHandlerKeywordType;
 
-},{"../../Util":165,"../EntryHandlerPredicate":173,"./EntryHandlerKeyword":174,"jsonld-context-parser":153}],181:[function(require,module,exports){
+},{"../../Util":173,"../EntryHandlerPredicate":181,"./EntryHandlerKeyword":182,"jsonld-context-parser":161}],189:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EntryHandlerKeywordUnknownFallback = void 0;
@@ -25823,7 +25975,7 @@ EntryHandlerKeywordUnknownFallback.VALID_KEYWORDS_TYPES = {
     '@value': null,
 };
 
-},{"jsonld-context-parser":153}],182:[function(require,module,exports){
+},{"jsonld-context-parser":161}],190:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EntryHandlerKeywordValue = void 0;
@@ -25862,7 +26014,7 @@ class EntryHandlerKeywordValue extends EntryHandlerKeyword_1.EntryHandlerKeyword
 }
 exports.EntryHandlerKeywordValue = EntryHandlerKeywordValue;
 
-},{"./EntryHandlerKeyword":174}],183:[function(require,module,exports){
+},{"./EntryHandlerKeyword":182}],191:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -25878,7 +26030,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./lib/JsonLdSerializer"), exports);
 __exportStar(require("./lib/Util"), exports);
 
-},{"./lib/JsonLdSerializer":184,"./lib/Util":186}],184:[function(require,module,exports){
+},{"./lib/JsonLdSerializer":192,"./lib/Util":194}],192:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.JsonLdSerializer = void 0;
@@ -26203,7 +26355,7 @@ class JsonLdSerializer extends stream_1.Transform {
 }
 exports.JsonLdSerializer = JsonLdSerializer;
 
-},{"./SeparatorType":185,"./Util":186,"jsonld-context-parser":153,"stream":26}],185:[function(require,module,exports){
+},{"./SeparatorType":193,"./Util":194,"jsonld-context-parser":161,"stream":26}],193:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SeparatorType = void 0;
@@ -26227,7 +26379,7 @@ SeparatorType.GRAPH_FIELD_NONCOMPACT = new SeparatorType('"@graph": [');
 SeparatorType.GRAPH_FIELD_COMPACT = new SeparatorType('"@graph":[');
 SeparatorType.CONTEXT_FIELD = new SeparatorType('"@context":');
 
-},{}],186:[function(require,module,exports){
+},{}],194:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Util = void 0;
@@ -26343,8183 +26495,7 @@ Util.RDF_TYPE = Util.RDF + 'type';
 Util.RDF_JSON = Util.RDF + 'JSON';
 Util.I18N = 'https://www.w3.org/ns/i18n#';
 
-},{"jsonld-context-parser":153}],187:[function(require,module,exports){
-/*
- * Copyright (c) 2019 Digital Bazaar, Inc. All rights reserved.
- */
-'use strict';
-
-const {
-  isArray: _isArray,
-  isObject: _isObject,
-  isString: _isString,
-} = require('./types');
-const {
-  asArray: _asArray
-} = require('./util');
-const {prependBase} = require('./url');
-const JsonLdError = require('./JsonLdError');
-const ResolvedContext = require('./ResolvedContext');
-
-const MAX_CONTEXT_URLS = 10;
-
-module.exports = class ContextResolver {
-  /**
-   * Creates a ContextResolver.
-   *
-   * @param sharedCache a shared LRU cache with `get` and `set` APIs.
-   */
-  constructor({sharedCache}) {
-    this.perOpCache = new Map();
-    this.sharedCache = sharedCache;
-  }
-
-  async resolve({
-    activeCtx, context, documentLoader, base, cycles = new Set()
-  }) {
-    // process `@context`
-    if(context && _isObject(context) && context['@context']) {
-      context = context['@context'];
-    }
-
-    // context is one or more contexts
-    context = _asArray(context);
-
-    // resolve each context in the array
-    const allResolved = [];
-    for(const ctx of context) {
-      if(_isString(ctx)) {
-        // see if `ctx` has been resolved before...
-        let resolved = this._get(ctx);
-        if(!resolved) {
-          // not resolved yet, resolve
-          resolved = await this._resolveRemoteContext(
-            {activeCtx, url: ctx, documentLoader, base, cycles});
-        }
-
-        // add to output and continue
-        if(_isArray(resolved)) {
-          allResolved.push(...resolved);
-        } else {
-          allResolved.push(resolved);
-        }
-        continue;
-      }
-      if(ctx === null) {
-        // handle `null` context, nothing to cache
-        allResolved.push(new ResolvedContext({document: null}));
-        continue;
-      }
-      if(!_isObject(ctx)) {
-        _throwInvalidLocalContext(context);
-      }
-      // context is an object, get/create `ResolvedContext` for it
-      const key = JSON.stringify(ctx);
-      let resolved = this._get(key);
-      if(!resolved) {
-        // create a new static `ResolvedContext` and cache it
-        resolved = new ResolvedContext({document: ctx});
-        this._cacheResolvedContext({key, resolved, tag: 'static'});
-      }
-      allResolved.push(resolved);
-    }
-
-    return allResolved;
-  }
-
-  _get(key) {
-    // get key from per operation cache; no `tag` is used with this cache so
-    // any retrieved context will always be the same during a single operation
-    let resolved = this.perOpCache.get(key);
-    if(!resolved) {
-      // see if the shared cache has a `static` entry for this URL
-      const tagMap = this.sharedCache.get(key);
-      if(tagMap) {
-        resolved = tagMap.get('static');
-        if(resolved) {
-          this.perOpCache.set(key, resolved);
-        }
-      }
-    }
-    return resolved;
-  }
-
-  _cacheResolvedContext({key, resolved, tag}) {
-    this.perOpCache.set(key, resolved);
-    if(tag !== undefined) {
-      let tagMap = this.sharedCache.get(key);
-      if(!tagMap) {
-        tagMap = new Map();
-        this.sharedCache.set(key, tagMap);
-      }
-      tagMap.set(tag, resolved);
-    }
-    return resolved;
-  }
-
-  async _resolveRemoteContext({activeCtx, url, documentLoader, base, cycles}) {
-    // resolve relative URL and fetch context
-    url = prependBase(base, url);
-    const {context, remoteDoc} = await this._fetchContext(
-      {activeCtx, url, documentLoader, cycles});
-
-    // update base according to remote document and resolve any relative URLs
-    base = remoteDoc.documentUrl || url;
-    _resolveContextUrls({context, base});
-
-    // resolve, cache, and return context
-    const resolved = await this.resolve(
-      {activeCtx, context, documentLoader, base, cycles});
-    this._cacheResolvedContext({key: url, resolved, tag: remoteDoc.tag});
-    return resolved;
-  }
-
-  async _fetchContext({activeCtx, url, documentLoader, cycles}) {
-    // check for max context URLs fetched during a resolve operation
-    if(cycles.size > MAX_CONTEXT_URLS) {
-      throw new JsonLdError(
-        'Maximum number of @context URLs exceeded.',
-        'jsonld.ContextUrlError',
-        {
-          code: activeCtx.processingMode === 'json-ld-1.0' ?
-            'loading remote context failed' :
-            'context overflow',
-          max: MAX_CONTEXT_URLS
-        });
-    }
-
-    // check for context URL cycle
-    // shortcut to avoid extra work that would eventually hit the max above
-    if(cycles.has(url)) {
-      throw new JsonLdError(
-        'Cyclical @context URLs detected.',
-        'jsonld.ContextUrlError',
-        {
-          code: activeCtx.processingMode === 'json-ld-1.0' ?
-            'recursive context inclusion' :
-            'context overflow',
-          url
-        });
-    }
-
-    // track cycles
-    cycles.add(url);
-
-    let context;
-    let remoteDoc;
-
-    try {
-      remoteDoc = await documentLoader(url);
-      context = remoteDoc.document || null;
-      // parse string context as JSON
-      if(_isString(context)) {
-        context = JSON.parse(context);
-      }
-    } catch(e) {
-      throw new JsonLdError(
-        'Dereferencing a URL did not result in a valid JSON-LD object. ' +
-        'Possible causes are an inaccessible URL perhaps due to ' +
-        'a same-origin policy (ensure the server uses CORS if you are ' +
-        'using client-side JavaScript), too many redirects, a ' +
-        'non-JSON response, or more than one HTTP Link Header was ' +
-        'provided for a remote context.',
-        'jsonld.InvalidUrl',
-        {code: 'loading remote context failed', url, cause: e});
-    }
-
-    // ensure ctx is an object
-    if(!_isObject(context)) {
-      throw new JsonLdError(
-        'Dereferencing a URL did not result in a JSON object. The ' +
-        'response was valid JSON, but it was not a JSON object.',
-        'jsonld.InvalidUrl', {code: 'invalid remote context', url});
-    }
-
-    // use empty context if no @context key is present
-    if(!('@context' in context)) {
-      context = {'@context': {}};
-    } else {
-      context = {'@context': context['@context']};
-    }
-
-    // append @context URL to context if given
-    if(remoteDoc.contextUrl) {
-      if(!_isArray(context['@context'])) {
-        context['@context'] = [context['@context']];
-      }
-      context['@context'].push(remoteDoc.contextUrl);
-    }
-
-    return {context, remoteDoc};
-  }
-};
-
-function _throwInvalidLocalContext(ctx) {
-  throw new JsonLdError(
-    'Invalid JSON-LD syntax; @context must be an object.',
-    'jsonld.SyntaxError', {
-      code: 'invalid local context', context: ctx
-    });
-}
-
-/**
- * Resolve all relative `@context` URLs in the given context by inline
- * replacing them with absolute URLs.
- *
- * @param context the context.
- * @param base the base IRI to use to resolve relative IRIs.
- */
-function _resolveContextUrls({context, base}) {
-  if(!context) {
-    return;
-  }
-
-  const ctx = context['@context'];
-
-  if(_isString(ctx)) {
-    context['@context'] = prependBase(base, ctx);
-    return;
-  }
-
-  if(_isArray(ctx)) {
-    for(let i = 0; i < ctx.length; ++i) {
-      const element = ctx[i];
-      if(_isString(element)) {
-        ctx[i] = prependBase(base, element);
-        continue;
-      }
-      if(_isObject(element)) {
-        _resolveContextUrls({context: {'@context': element}, base});
-      }
-    }
-    return;
-  }
-
-  if(!_isObject(ctx)) {
-    // no @context URLs can be found in non-object
-    return;
-  }
-
-  // ctx is an object, resolve any context URLs in terms
-  for(const term in ctx) {
-    _resolveContextUrls({context: ctx[term], base});
-  }
-}
-
-},{"./JsonLdError":188,"./ResolvedContext":192,"./types":206,"./url":207,"./util":208}],188:[function(require,module,exports){
-/*
- * Copyright (c) 2017 Digital Bazaar, Inc. All rights reserved.
- */
-'use strict';
-
-module.exports = class JsonLdError extends Error {
-  /**
-   * Creates a JSON-LD Error.
-   *
-   * @param msg the error message.
-   * @param type the error type.
-   * @param details the error details.
-   */
-  constructor(
-    message = 'An unspecified JSON-LD error occurred.',
-    name = 'jsonld.Error',
-    details = {}) {
-    super(message);
-    this.name = name;
-    this.message = message;
-    this.details = details;
-  }
-};
-
-},{}],189:[function(require,module,exports){
-/*
- * Copyright (c) 2017 Digital Bazaar, Inc. All rights reserved.
- */
-'use strict';
-
-module.exports = jsonld => {
-  class JsonLdProcessor {
-    toString() {
-      return '[object JsonLdProcessor]';
-    }
-  }
-  Object.defineProperty(JsonLdProcessor, 'prototype', {
-    writable: false,
-    enumerable: false
-  });
-  Object.defineProperty(JsonLdProcessor.prototype, 'constructor', {
-    writable: true,
-    enumerable: false,
-    configurable: true,
-    value: JsonLdProcessor
-  });
-
-  // The Web IDL test harness will check the number of parameters defined in
-  // the functions below. The number of parameters must exactly match the
-  // required (non-optional) parameters of the JsonLdProcessor interface as
-  // defined here:
-  // https://www.w3.org/TR/json-ld-api/#the-jsonldprocessor-interface
-
-  JsonLdProcessor.compact = function(input, ctx) {
-    if(arguments.length < 2) {
-      return Promise.reject(
-        new TypeError('Could not compact, too few arguments.'));
-    }
-    return jsonld.compact(input, ctx);
-  };
-  JsonLdProcessor.expand = function(input) {
-    if(arguments.length < 1) {
-      return Promise.reject(
-        new TypeError('Could not expand, too few arguments.'));
-    }
-    return jsonld.expand(input);
-  };
-  JsonLdProcessor.flatten = function(input) {
-    if(arguments.length < 1) {
-      return Promise.reject(
-        new TypeError('Could not flatten, too few arguments.'));
-    }
-    return jsonld.flatten(input);
-  };
-
-  return JsonLdProcessor;
-};
-
-},{}],190:[function(require,module,exports){
-/*
- * Copyright (c) 2017 Digital Bazaar, Inc. All rights reserved.
- */
-'use strict';
-
-// TODO: move `NQuads` to its own package
-module.exports = require('rdf-canonize').NQuads;
-
-},{"rdf-canonize":244}],191:[function(require,module,exports){
-/*
- * Copyright (c) 2017-2019 Digital Bazaar, Inc. All rights reserved.
- */
-'use strict';
-
-module.exports = class RequestQueue {
-  /**
-   * Creates a simple queue for requesting documents.
-   */
-  constructor() {
-    this._requests = {};
-  }
-
-  wrapLoader(loader) {
-    const self = this;
-    self._loader = loader;
-    return function(/* url */) {
-      return self.add.apply(self, arguments);
-    };
-  }
-
-  async add(url) {
-    let promise = this._requests[url];
-    if(promise) {
-      // URL already queued, wait for it to load
-      return Promise.resolve(promise);
-    }
-
-    // queue URL and load it
-    promise = this._requests[url] = this._loader(url);
-
-    try {
-      return await promise;
-    } finally {
-      delete this._requests[url];
-    }
-  }
-};
-
-},{}],192:[function(require,module,exports){
-/*
- * Copyright (c) 2019 Digital Bazaar, Inc. All rights reserved.
- */
-'use strict';
-
-const LRU = require('lru-cache');
-
-const MAX_ACTIVE_CONTEXTS = 10;
-
-module.exports = class ResolvedContext {
-  /**
-   * Creates a ResolvedContext.
-   *
-   * @param document the context document.
-   */
-  constructor({document}) {
-    this.document = document;
-    // TODO: enable customization of processed context cache
-    // TODO: limit based on size of processed contexts vs. number of them
-    this.cache = new LRU({max: MAX_ACTIVE_CONTEXTS});
-  }
-
-  getProcessed(activeCtx) {
-    return this.cache.get(activeCtx);
-  }
-
-  setProcessed(activeCtx, processedCtx) {
-    this.cache.set(activeCtx, processedCtx);
-  }
-};
-
-},{"lru-cache":210}],193:[function(require,module,exports){
-/*
- * Copyright (c) 2017 Digital Bazaar, Inc. All rights reserved.
- */
-'use strict';
-
-const JsonLdError = require('./JsonLdError');
-
-const {
-  isArray: _isArray,
-  isObject: _isObject,
-  isString: _isString,
-  isUndefined: _isUndefined
-} = require('./types');
-
-const {
-  isList: _isList,
-  isValue: _isValue,
-  isGraph: _isGraph,
-  isSimpleGraph: _isSimpleGraph,
-  isSubjectReference: _isSubjectReference
-} = require('./graphTypes');
-
-const {
-  expandIri: _expandIri,
-  getContextValue: _getContextValue,
-  isKeyword: _isKeyword,
-  process: _processContext,
-  processingMode: _processingMode
-} = require('./context');
-
-const {
-  removeBase: _removeBase,
-  prependBase: _prependBase
-} = require('./url');
-
-const {
-  addValue: _addValue,
-  asArray: _asArray,
-  compareShortestLeast: _compareShortestLeast
-} = require('./util');
-
-const api = {};
-module.exports = api;
-
-/**
- * Recursively compacts an element using the given active context. All values
- * must be in expanded form before this method is called.
- *
- * @param activeCtx the active context to use.
- * @param activeProperty the compacted property associated with the element
- *          to compact, null for none.
- * @param element the element to compact.
- * @param options the compaction options.
- * @param compactionMap the compaction map to use.
- *
- * @return a promise that resolves to the compacted value.
- */
-api.compact = async ({
-  activeCtx,
-  activeProperty = null,
-  element,
-  options = {},
-  compactionMap = () => undefined
-}) => {
-  // recursively compact array
-  if(_isArray(element)) {
-    let rval = [];
-    for(let i = 0; i < element.length; ++i) {
-      // compact, dropping any null values unless custom mapped
-      let compacted = await api.compact({
-        activeCtx,
-        activeProperty,
-        element: element[i],
-        options,
-        compactionMap
-      });
-      if(compacted === null) {
-        compacted = await compactionMap({
-          unmappedValue: element[i],
-          activeCtx,
-          activeProperty,
-          parent: element,
-          index: i,
-          options
-        });
-        if(compacted === undefined) {
-          continue;
-        }
-      }
-      rval.push(compacted);
-    }
-    if(options.compactArrays && rval.length === 1) {
-      // use single element if no container is specified
-      const container = _getContextValue(
-        activeCtx, activeProperty, '@container') || [];
-      if(container.length === 0) {
-        rval = rval[0];
-      }
-    }
-    return rval;
-  }
-
-  // use any scoped context on activeProperty
-  const ctx = _getContextValue(activeCtx, activeProperty, '@context');
-  if(!_isUndefined(ctx)) {
-    activeCtx = await _processContext({
-      activeCtx,
-      localCtx: ctx,
-      propagate: true,
-      overrideProtected: true,
-      options
-    });
-  }
-
-  // recursively compact object
-  if(_isObject(element)) {
-    if(options.link && '@id' in element &&
-      options.link.hasOwnProperty(element['@id'])) {
-      // check for a linked element to reuse
-      const linked = options.link[element['@id']];
-      for(let i = 0; i < linked.length; ++i) {
-        if(linked[i].expanded === element) {
-          return linked[i].compacted;
-        }
-      }
-    }
-
-    // do value compaction on @values and subject references
-    if(_isValue(element) || _isSubjectReference(element)) {
-      const rval =
-        api.compactValue({activeCtx, activeProperty, value: element, options});
-      if(options.link && _isSubjectReference(element)) {
-        // store linked element
-        if(!(options.link.hasOwnProperty(element['@id']))) {
-          options.link[element['@id']] = [];
-        }
-        options.link[element['@id']].push({expanded: element, compacted: rval});
-      }
-      return rval;
-    }
-
-    // if expanded property is @list and we're contained within a list
-    // container, recursively compact this item to an array
-    if(_isList(element)) {
-      const container = _getContextValue(
-        activeCtx, activeProperty, '@container') || [];
-      if(container.includes('@list')) {
-        return api.compact({
-          activeCtx,
-          activeProperty,
-          element: element['@list'],
-          options,
-          compactionMap
-        });
-      }
-    }
-
-    // FIXME: avoid misuse of active property as an expanded property?
-    const insideReverse = (activeProperty === '@reverse');
-
-    const rval = {};
-
-    // original context before applying property-scoped and local contexts
-    const inputCtx = activeCtx;
-
-    // revert to previous context, if there is one,
-    // and element is not a value object or a node reference
-    if(!_isValue(element) && !_isSubjectReference(element)) {
-      activeCtx = activeCtx.revertToPreviousContext();
-    }
-
-    // apply property-scoped context after reverting term-scoped context
-    const propertyScopedCtx =
-      _getContextValue(inputCtx, activeProperty, '@context');
-    if(!_isUndefined(propertyScopedCtx)) {
-      activeCtx = await _processContext({
-        activeCtx,
-        localCtx: propertyScopedCtx,
-        propagate: true,
-        overrideProtected: true,
-        options
-      });
-    }
-
-    if(options.link && '@id' in element) {
-      // store linked element
-      if(!options.link.hasOwnProperty(element['@id'])) {
-        options.link[element['@id']] = [];
-      }
-      options.link[element['@id']].push({expanded: element, compacted: rval});
-    }
-
-    // apply any context defined on an alias of @type
-    // if key is @type and any compacted value is a term having a local
-    // context, overlay that context
-    let types = element['@type'] || [];
-    if(types.length > 1) {
-      types = Array.from(types).sort();
-    }
-    // find all type-scoped contexts based on current context, prior to
-    // updating it
-    const typeContext = activeCtx;
-    for(const type of types) {
-      const compactedType = api.compactIri(
-        {activeCtx: typeContext, iri: type, relativeTo: {vocab: true}});
-
-      // Use any type-scoped context defined on this value
-      const ctx = _getContextValue(inputCtx, compactedType, '@context');
-      if(!_isUndefined(ctx)) {
-        activeCtx = await _processContext({
-          activeCtx,
-          localCtx: ctx,
-          options,
-          propagate: false
-        });
-      }
-    }
-
-    // process element keys in order
-    const keys = Object.keys(element).sort();
-    for(const expandedProperty of keys) {
-      const expandedValue = element[expandedProperty];
-
-      // compact @id
-      if(expandedProperty === '@id') {
-        let compactedValue = _asArray(expandedValue).map(
-          expandedIri => api.compactIri({
-            activeCtx,
-            iri: expandedIri,
-            relativeTo: {vocab: false},
-            base: options.base
-          }));
-        if(compactedValue.length === 1) {
-          compactedValue = compactedValue[0];
-        }
-
-        // use keyword alias and add value
-        const alias = api.compactIri(
-          {activeCtx, iri: '@id', relativeTo: {vocab: true}});
-
-        rval[alias] = compactedValue;
-        continue;
-      }
-
-      // compact @type(s)
-      if(expandedProperty === '@type') {
-        // resolve type values against previous context
-        let compactedValue = _asArray(expandedValue).map(
-          expandedIri => api.compactIri({
-            activeCtx: inputCtx,
-            iri: expandedIri,
-            relativeTo: {vocab: true}
-          }));
-        if(compactedValue.length === 1) {
-          compactedValue = compactedValue[0];
-        }
-
-        // use keyword alias and add value
-        const alias = api.compactIri(
-          {activeCtx, iri: '@type', relativeTo: {vocab: true}});
-        const container = _getContextValue(
-          activeCtx, alias, '@container') || [];
-
-        // treat as array for @type if @container includes @set
-        const typeAsSet =
-          container.includes('@set') &&
-          _processingMode(activeCtx, 1.1);
-        const isArray =
-          typeAsSet || (_isArray(compactedValue) && expandedValue.length === 0);
-        _addValue(rval, alias, compactedValue, {propertyIsArray: isArray});
-        continue;
-      }
-
-      // handle @reverse
-      if(expandedProperty === '@reverse') {
-        // recursively compact expanded value
-        const compactedValue = await api.compact({
-          activeCtx,
-          activeProperty: '@reverse',
-          element: expandedValue,
-          options,
-          compactionMap
-        });
-
-        // handle double-reversed properties
-        for(const compactedProperty in compactedValue) {
-          if(activeCtx.mappings.has(compactedProperty) &&
-            activeCtx.mappings.get(compactedProperty).reverse) {
-            const value = compactedValue[compactedProperty];
-            const container = _getContextValue(
-              activeCtx, compactedProperty, '@container') || [];
-            const useArray = (
-              container.includes('@set') || !options.compactArrays);
-            _addValue(
-              rval, compactedProperty, value, {propertyIsArray: useArray});
-            delete compactedValue[compactedProperty];
-          }
-        }
-
-        if(Object.keys(compactedValue).length > 0) {
-          // use keyword alias and add value
-          const alias = api.compactIri({
-            activeCtx,
-            iri: expandedProperty,
-            relativeTo: {vocab: true}
-          });
-          _addValue(rval, alias, compactedValue);
-        }
-
-        continue;
-      }
-
-      if(expandedProperty === '@preserve') {
-        // compact using activeProperty
-        const compactedValue = await api.compact({
-          activeCtx,
-          activeProperty,
-          element: expandedValue,
-          options,
-          compactionMap
-        });
-
-        if(!(_isArray(compactedValue) && compactedValue.length === 0)) {
-          _addValue(rval, expandedProperty, compactedValue);
-        }
-        continue;
-      }
-
-      // handle @index property
-      if(expandedProperty === '@index') {
-        // drop @index if inside an @index container
-        const container = _getContextValue(
-          activeCtx, activeProperty, '@container') || [];
-        if(container.includes('@index')) {
-          continue;
-        }
-
-        // use keyword alias and add value
-        const alias = api.compactIri({
-          activeCtx,
-          iri: expandedProperty,
-          relativeTo: {vocab: true}
-        });
-        _addValue(rval, alias, expandedValue);
-        continue;
-      }
-
-      // skip array processing for keywords that aren't
-      // @graph, @list, or @included
-      if(expandedProperty !== '@graph' && expandedProperty !== '@list' &&
-        expandedProperty !== '@included' &&
-        _isKeyword(expandedProperty)) {
-        // use keyword alias and add value as is
-        const alias = api.compactIri({
-          activeCtx,
-          iri: expandedProperty,
-          relativeTo: {vocab: true}
-        });
-        _addValue(rval, alias, expandedValue);
-        continue;
-      }
-
-      // Note: expanded value must be an array due to expansion algorithm.
-      if(!_isArray(expandedValue)) {
-        throw new JsonLdError(
-          'JSON-LD expansion error; expanded value must be an array.',
-          'jsonld.SyntaxError');
-      }
-
-      // preserve empty arrays
-      if(expandedValue.length === 0) {
-        const itemActiveProperty = api.compactIri({
-          activeCtx,
-          iri: expandedProperty,
-          value: expandedValue,
-          relativeTo: {vocab: true},
-          reverse: insideReverse
-        });
-        const nestProperty = activeCtx.mappings.has(itemActiveProperty) ?
-          activeCtx.mappings.get(itemActiveProperty)['@nest'] : null;
-        let nestResult = rval;
-        if(nestProperty) {
-          _checkNestProperty(activeCtx, nestProperty, options);
-          if(!_isObject(rval[nestProperty])) {
-            rval[nestProperty] = {};
-          }
-          nestResult = rval[nestProperty];
-        }
-        _addValue(
-          nestResult, itemActiveProperty, expandedValue, {
-            propertyIsArray: true
-          });
-      }
-
-      // recusively process array values
-      for(const expandedItem of expandedValue) {
-        // compact property and get container type
-        const itemActiveProperty = api.compactIri({
-          activeCtx,
-          iri: expandedProperty,
-          value: expandedItem,
-          relativeTo: {vocab: true},
-          reverse: insideReverse
-        });
-
-        // if itemActiveProperty is a @nest property, add values to nestResult,
-        // otherwise rval
-        const nestProperty = activeCtx.mappings.has(itemActiveProperty) ?
-          activeCtx.mappings.get(itemActiveProperty)['@nest'] : null;
-        let nestResult = rval;
-        if(nestProperty) {
-          _checkNestProperty(activeCtx, nestProperty, options);
-          if(!_isObject(rval[nestProperty])) {
-            rval[nestProperty] = {};
-          }
-          nestResult = rval[nestProperty];
-        }
-
-        const container = _getContextValue(
-          activeCtx, itemActiveProperty, '@container') || [];
-
-        // get simple @graph or @list value if appropriate
-        const isGraph = _isGraph(expandedItem);
-        const isList = _isList(expandedItem);
-        let inner;
-        if(isList) {
-          inner = expandedItem['@list'];
-        } else if(isGraph) {
-          inner = expandedItem['@graph'];
-        }
-
-        // recursively compact expanded item
-        let compactedItem = await api.compact({
-          activeCtx,
-          activeProperty: itemActiveProperty,
-          element: (isList || isGraph) ? inner : expandedItem,
-          options,
-          compactionMap
-        });
-
-        // handle @list
-        if(isList) {
-          // ensure @list value is an array
-          if(!_isArray(compactedItem)) {
-            compactedItem = [compactedItem];
-          }
-
-          if(!container.includes('@list')) {
-            // wrap using @list alias
-            compactedItem = {
-              [api.compactIri({
-                activeCtx,
-                iri: '@list',
-                relativeTo: {vocab: true}
-              })]: compactedItem
-            };
-
-            // include @index from expanded @list, if any
-            if('@index' in expandedItem) {
-              compactedItem[api.compactIri({
-                activeCtx,
-                iri: '@index',
-                relativeTo: {vocab: true}
-              })] = expandedItem['@index'];
-            }
-          } else {
-            _addValue(nestResult, itemActiveProperty, compactedItem, {
-              valueIsArray: true,
-              allowDuplicate: true
-            });
-            continue;
-          }
-        }
-
-        // Graph object compaction cases
-        if(isGraph) {
-          if(container.includes('@graph') && (container.includes('@id') ||
-            container.includes('@index') && _isSimpleGraph(expandedItem))) {
-            // get or create the map object
-            let mapObject;
-            if(nestResult.hasOwnProperty(itemActiveProperty)) {
-              mapObject = nestResult[itemActiveProperty];
-            } else {
-              nestResult[itemActiveProperty] = mapObject = {};
-            }
-
-            // index on @id or @index or alias of @none
-            const key = (container.includes('@id') ?
-              expandedItem['@id'] : expandedItem['@index']) ||
-              api.compactIri({activeCtx, iri: '@none',
-                relativeTo: {vocab: true}});
-            // add compactedItem to map, using value of `@id` or a new blank
-            // node identifier
-
-            _addValue(
-              mapObject, key, compactedItem, {
-                propertyIsArray:
-                  (!options.compactArrays || container.includes('@set'))
-              });
-          } else if(container.includes('@graph') &&
-            _isSimpleGraph(expandedItem)) {
-            // container includes @graph but not @id or @index and value is a
-            // simple graph object add compact value
-            // if compactedItem contains multiple values, it is wrapped in
-            // `@included`
-            if(_isArray(compactedItem) && compactedItem.length > 1) {
-              compactedItem = {'@included': compactedItem};
-            }
-            _addValue(
-              nestResult, itemActiveProperty, compactedItem, {
-                propertyIsArray:
-                  (!options.compactArrays || container.includes('@set'))
-              });
-          } else {
-            // wrap using @graph alias, remove array if only one item and
-            // compactArrays not set
-            if(_isArray(compactedItem) && compactedItem.length === 1 &&
-              options.compactArrays) {
-              compactedItem = compactedItem[0];
-            }
-            compactedItem = {
-              [api.compactIri({
-                activeCtx,
-                iri: '@graph',
-                relativeTo: {vocab: true}
-              })]: compactedItem
-            };
-
-            // include @id from expanded graph, if any
-            if('@id' in expandedItem) {
-              compactedItem[api.compactIri({
-                activeCtx,
-                iri: '@id',
-                relativeTo: {vocab: true}
-              })] = expandedItem['@id'];
-            }
-
-            // include @index from expanded graph, if any
-            if('@index' in expandedItem) {
-              compactedItem[api.compactIri({
-                activeCtx,
-                iri: '@index',
-                relativeTo: {vocab: true}
-              })] = expandedItem['@index'];
-            }
-            _addValue(
-              nestResult, itemActiveProperty, compactedItem, {
-                propertyIsArray:
-                  (!options.compactArrays || container.includes('@set'))
-              });
-          }
-        } else if(container.includes('@language') ||
-          container.includes('@index') || container.includes('@id') ||
-          container.includes('@type')) {
-          // handle language and index maps
-          // get or create the map object
-          let mapObject;
-          if(nestResult.hasOwnProperty(itemActiveProperty)) {
-            mapObject = nestResult[itemActiveProperty];
-          } else {
-            nestResult[itemActiveProperty] = mapObject = {};
-          }
-
-          let key;
-          if(container.includes('@language')) {
-          // if container is a language map, simplify compacted value to
-          // a simple string
-            if(_isValue(compactedItem)) {
-              compactedItem = compactedItem['@value'];
-            }
-            key = expandedItem['@language'];
-          } else if(container.includes('@index')) {
-            const indexKey = _getContextValue(
-              activeCtx, itemActiveProperty, '@index') || '@index';
-            const containerKey = api.compactIri(
-              {activeCtx, iri: indexKey, relativeTo: {vocab: true}});
-            if(indexKey === '@index') {
-              key = expandedItem['@index'];
-              delete compactedItem[containerKey];
-            } else {
-              let others;
-              [key, ...others] = _asArray(compactedItem[indexKey] || []);
-              if(!_isString(key)) {
-                // Will use @none if it isn't a string.
-                key = null;
-              } else {
-                switch(others.length) {
-                  case 0:
-                    delete compactedItem[indexKey];
-                    break;
-                  case 1:
-                    compactedItem[indexKey] = others[0];
-                    break;
-                  default:
-                    compactedItem[indexKey] = others;
-                    break;
-                }
-              }
-            }
-          } else if(container.includes('@id')) {
-            const idKey = api.compactIri({activeCtx, iri: '@id',
-              relativeTo: {vocab: true}});
-            key = compactedItem[idKey];
-            delete compactedItem[idKey];
-          } else if(container.includes('@type')) {
-            const typeKey = api.compactIri({
-              activeCtx,
-              iri: '@type',
-              relativeTo: {vocab: true}
-            });
-            let types;
-            [key, ...types] = _asArray(compactedItem[typeKey] || []);
-            switch(types.length) {
-              case 0:
-                delete compactedItem[typeKey];
-                break;
-              case 1:
-                compactedItem[typeKey] = types[0];
-                break;
-              default:
-                compactedItem[typeKey] = types;
-                break;
-            }
-
-            // If compactedItem contains a single entry
-            // whose key maps to @id, recompact without @type
-            if(Object.keys(compactedItem).length === 1 &&
-              '@id' in expandedItem) {
-              compactedItem = await api.compact({
-                activeCtx,
-                activeProperty: itemActiveProperty,
-                element: {'@id': expandedItem['@id']},
-                options,
-                compactionMap
-              });
-            }
-          }
-
-          // if compacting this value which has no key, index on @none
-          if(!key) {
-            key = api.compactIri({activeCtx, iri: '@none',
-              relativeTo: {vocab: true}});
-          }
-          // add compact value to map object using key from expanded value
-          // based on the container type
-          _addValue(
-            mapObject, key, compactedItem, {
-              propertyIsArray: container.includes('@set')
-            });
-        } else {
-          // use an array if: compactArrays flag is false,
-          // @container is @set or @list , value is an empty
-          // array, or key is @graph
-          const isArray = (!options.compactArrays ||
-            container.includes('@set') || container.includes('@list') ||
-            (_isArray(compactedItem) && compactedItem.length === 0) ||
-            expandedProperty === '@list' || expandedProperty === '@graph');
-
-          // add compact value
-          _addValue(
-            nestResult, itemActiveProperty, compactedItem,
-            {propertyIsArray: isArray});
-        }
-      }
-    }
-
-    return rval;
-  }
-
-  // only primitives remain which are already compact
-  return element;
-};
-
-/**
- * Compacts an IRI or keyword into a term or prefix if it can be. If the
- * IRI has an associated value it may be passed.
- *
- * @param activeCtx the active context to use.
- * @param iri the IRI to compact.
- * @param value the value to check or null.
- * @param relativeTo options for how to compact IRIs:
- *          vocab: true to split after @vocab, false not to.
- * @param reverse true if a reverse property is being compacted, false if not.
- * @param base the absolute URL to use for compacting document-relative IRIs.
- *
- * @return the compacted term, prefix, keyword alias, or the original IRI.
- */
-api.compactIri = ({
-  activeCtx,
-  iri,
-  value = null,
-  relativeTo = {vocab: false},
-  reverse = false,
-  base = null
-}) => {
-  // can't compact null
-  if(iri === null) {
-    return iri;
-  }
-
-  // if context is from a property term scoped context composed with a
-  // type-scoped context, then use the previous context instead
-  if(activeCtx.isPropertyTermScoped && activeCtx.previousContext) {
-    activeCtx = activeCtx.previousContext;
-  }
-
-  const inverseCtx = activeCtx.getInverse();
-
-  // if term is a keyword, it may be compacted to a simple alias
-  if(_isKeyword(iri) &&
-    iri in inverseCtx &&
-    '@none' in inverseCtx[iri] &&
-    '@type' in inverseCtx[iri]['@none'] &&
-    '@none' in inverseCtx[iri]['@none']['@type']) {
-    return inverseCtx[iri]['@none']['@type']['@none'];
-  }
-
-  // use inverse context to pick a term if iri is relative to vocab
-  if(relativeTo.vocab && iri in inverseCtx) {
-    const defaultLanguage = activeCtx['@language'] || '@none';
-
-    // prefer @index if available in value
-    const containers = [];
-    if(_isObject(value) && '@index' in value && !('@graph' in value)) {
-      containers.push('@index', '@index@set');
-    }
-
-    // if value is a preserve object, use its value
-    if(_isObject(value) && '@preserve' in value) {
-      value = value['@preserve'][0];
-    }
-
-    // prefer most specific container including @graph, prefering @set
-    // variations
-    if(_isGraph(value)) {
-      // favor indexmap if the graph is indexed
-      if('@index' in value) {
-        containers.push(
-          '@graph@index', '@graph@index@set', '@index', '@index@set');
-      }
-      // favor idmap if the graph is has an @id
-      if('@id' in value) {
-        containers.push(
-          '@graph@id', '@graph@id@set');
-      }
-      containers.push('@graph', '@graph@set', '@set');
-      // allow indexmap if the graph is not indexed
-      if(!('@index' in value)) {
-        containers.push(
-          '@graph@index', '@graph@index@set', '@index', '@index@set');
-      }
-      // allow idmap if the graph does not have an @id
-      if(!('@id' in value)) {
-        containers.push('@graph@id', '@graph@id@set');
-      }
-    } else if(_isObject(value) && !_isValue(value)) {
-      containers.push('@id', '@id@set', '@type', '@set@type');
-    }
-
-    // defaults for term selection based on type/language
-    let typeOrLanguage = '@language';
-    let typeOrLanguageValue = '@null';
-
-    if(reverse) {
-      typeOrLanguage = '@type';
-      typeOrLanguageValue = '@reverse';
-      containers.push('@set');
-    } else if(_isList(value)) {
-      // choose the most specific term that works for all elements in @list
-      // only select @list containers if @index is NOT in value
-      if(!('@index' in value)) {
-        containers.push('@list');
-      }
-      const list = value['@list'];
-      if(list.length === 0) {
-        // any empty list can be matched against any term that uses the
-        // @list container regardless of @type or @language
-        typeOrLanguage = '@any';
-        typeOrLanguageValue = '@none';
-      } else {
-        let commonLanguage = (list.length === 0) ? defaultLanguage : null;
-        let commonType = null;
-        for(let i = 0; i < list.length; ++i) {
-          const item = list[i];
-          let itemLanguage = '@none';
-          let itemType = '@none';
-          if(_isValue(item)) {
-            if('@direction' in item) {
-              const lang = (item['@language'] || '').toLowerCase();
-              const dir = item['@direction'];
-              itemLanguage = `${lang}_${dir}`;
-            } else if('@language' in item) {
-              itemLanguage = item['@language'].toLowerCase();
-            } else if('@type' in item) {
-              itemType = item['@type'];
-            } else {
-              // plain literal
-              itemLanguage = '@null';
-            }
-          } else {
-            itemType = '@id';
-          }
-          if(commonLanguage === null) {
-            commonLanguage = itemLanguage;
-          } else if(itemLanguage !== commonLanguage && _isValue(item)) {
-            commonLanguage = '@none';
-          }
-          if(commonType === null) {
-            commonType = itemType;
-          } else if(itemType !== commonType) {
-            commonType = '@none';
-          }
-          // there are different languages and types in the list, so choose
-          // the most generic term, no need to keep iterating the list
-          if(commonLanguage === '@none' && commonType === '@none') {
-            break;
-          }
-        }
-        commonLanguage = commonLanguage || '@none';
-        commonType = commonType || '@none';
-        if(commonType !== '@none') {
-          typeOrLanguage = '@type';
-          typeOrLanguageValue = commonType;
-        } else {
-          typeOrLanguageValue = commonLanguage;
-        }
-      }
-    } else {
-      if(_isValue(value)) {
-        if('@language' in value && !('@index' in value)) {
-          containers.push('@language', '@language@set');
-          typeOrLanguageValue = value['@language'];
-          const dir = value['@direction'];
-          if(dir) {
-            typeOrLanguageValue = `${typeOrLanguageValue}_${dir}`;
-          }
-        } else if('@direction' in value && !('@index' in value)) {
-          typeOrLanguageValue = `_${value['@direction']}`;
-        } else if('@type' in value) {
-          typeOrLanguage = '@type';
-          typeOrLanguageValue = value['@type'];
-        }
-      } else {
-        typeOrLanguage = '@type';
-        typeOrLanguageValue = '@id';
-      }
-      containers.push('@set');
-    }
-
-    // do term selection
-    containers.push('@none');
-
-    // an index map can be used to index values using @none, so add as a low
-    // priority
-    if(_isObject(value) && !('@index' in value)) {
-      // allow indexing even if no @index present
-      containers.push('@index', '@index@set');
-    }
-
-    // values without type or language can use @language map
-    if(_isValue(value) && Object.keys(value).length === 1) {
-      // allow indexing even if no @index present
-      containers.push('@language', '@language@set');
-    }
-
-    const term = _selectTerm(
-      activeCtx, iri, value, containers, typeOrLanguage, typeOrLanguageValue);
-    if(term !== null) {
-      return term;
-    }
-  }
-
-  // no term match, use @vocab if available
-  if(relativeTo.vocab) {
-    if('@vocab' in activeCtx) {
-      // determine if vocab is a prefix of the iri
-      const vocab = activeCtx['@vocab'];
-      if(iri.indexOf(vocab) === 0 && iri !== vocab) {
-        // use suffix as relative iri if it is not a term in the active context
-        const suffix = iri.substr(vocab.length);
-        if(!activeCtx.mappings.has(suffix)) {
-          return suffix;
-        }
-      }
-    }
-  }
-
-  // no term or @vocab match, check for possible CURIEs
-  let choice = null;
-  // TODO: make FastCurieMap a class with a method to do this lookup
-  const partialMatches = [];
-  let iriMap = activeCtx.fastCurieMap;
-  // check for partial matches of against `iri`, which means look until
-  // iri.length - 1, not full length
-  const maxPartialLength = iri.length - 1;
-  for(let i = 0; i < maxPartialLength && iri[i] in iriMap; ++i) {
-    iriMap = iriMap[iri[i]];
-    if('' in iriMap) {
-      partialMatches.push(iriMap[''][0]);
-    }
-  }
-  // check partial matches in reverse order to prefer longest ones first
-  for(let i = partialMatches.length - 1; i >= 0; --i) {
-    const entry = partialMatches[i];
-    const terms = entry.terms;
-    for(const term of terms) {
-      // a CURIE is usable if:
-      // 1. it has no mapping, OR
-      // 2. value is null, which means we're not compacting an @value, AND
-      //   the mapping matches the IRI
-      const curie = term + ':' + iri.substr(entry.iri.length);
-      const isUsableCurie = (activeCtx.mappings.get(term)._prefix &&
-        (!activeCtx.mappings.has(curie) ||
-        (value === null && activeCtx.mappings.get(curie)['@id'] === iri)));
-
-      // select curie if it is shorter or the same length but lexicographically
-      // less than the current choice
-      if(isUsableCurie && (choice === null ||
-        _compareShortestLeast(curie, choice) < 0)) {
-        choice = curie;
-      }
-    }
-  }
-
-  // return chosen curie
-  if(choice !== null) {
-    return choice;
-  }
-
-  // If iri could be confused with a compact IRI using a term in this context,
-  // signal an error
-  for(const [term, td] of activeCtx.mappings) {
-    if(td && td._prefix && iri.startsWith(term + ':')) {
-      throw new JsonLdError(
-        `Absolute IRI "${iri}" confused with prefix "${term}".`,
-        'jsonld.SyntaxError',
-        {code: 'IRI confused with prefix', context: activeCtx});
-    }
-  }
-
-  // compact IRI relative to base
-  if(!relativeTo.vocab) {
-    if('@base' in activeCtx) {
-      if(!activeCtx['@base']) {
-        // The None case preserves rval as potentially relative
-        return iri;
-      } else {
-        return _removeBase(_prependBase(base, activeCtx['@base']), iri);
-      }
-    } else {
-      return _removeBase(base, iri);
-    }
-  }
-
-  // return IRI as is
-  return iri;
-};
-
-/**
- * Performs value compaction on an object with '@value' or '@id' as the only
- * property.
- *
- * @param activeCtx the active context.
- * @param activeProperty the active property that points to the value.
- * @param value the value to compact.
- * @param {Object} [options] - processing options.
- *
- * @return the compaction result.
- */
-api.compactValue = ({activeCtx, activeProperty, value, options}) => {
-  // value is a @value
-  if(_isValue(value)) {
-    // get context rules
-    const type = _getContextValue(activeCtx, activeProperty, '@type');
-    const language = _getContextValue(activeCtx, activeProperty, '@language');
-    const direction = _getContextValue(activeCtx, activeProperty, '@direction');
-    const container =
-      _getContextValue(activeCtx, activeProperty, '@container') || [];
-
-    // whether or not the value has an @index that must be preserved
-    const preserveIndex = '@index' in value && !container.includes('@index');
-
-    // if there's no @index to preserve ...
-    if(!preserveIndex && type !== '@none') {
-      // matching @type or @language specified in context, compact value
-      if(value['@type'] === type) {
-        return value['@value'];
-      }
-      if('@language' in value && value['@language'] === language &&
-         '@direction' in value && value['@direction'] === direction) {
-        return value['@value'];
-      }
-      if('@language' in value && value['@language'] === language) {
-        return value['@value'];
-      }
-      if('@direction' in value && value['@direction'] === direction) {
-        return value['@value'];
-      }
-    }
-
-    // return just the value of @value if all are true:
-    // 1. @value is the only key or @index isn't being preserved
-    // 2. there is no default language or @value is not a string or
-    //   the key has a mapping with a null @language
-    const keyCount = Object.keys(value).length;
-    const isValueOnlyKey = (keyCount === 1 ||
-      (keyCount === 2 && '@index' in value && !preserveIndex));
-    const hasDefaultLanguage = ('@language' in activeCtx);
-    const isValueString = _isString(value['@value']);
-    const hasNullMapping = (activeCtx.mappings.has(activeProperty) &&
-      activeCtx.mappings.get(activeProperty)['@language'] === null);
-    if(isValueOnlyKey &&
-      type !== '@none' &&
-      (!hasDefaultLanguage || !isValueString || hasNullMapping)) {
-      return value['@value'];
-    }
-
-    const rval = {};
-
-    // preserve @index
-    if(preserveIndex) {
-      rval[api.compactIri({
-        activeCtx,
-        iri: '@index',
-        relativeTo: {vocab: true}
-      })] = value['@index'];
-    }
-
-    if('@type' in value) {
-      // compact @type IRI
-      rval[api.compactIri({
-        activeCtx,
-        iri: '@type',
-        relativeTo: {vocab: true}
-      })] = api.compactIri(
-        {activeCtx, iri: value['@type'], relativeTo: {vocab: true}});
-    } else if('@language' in value) {
-      // alias @language
-      rval[api.compactIri({
-        activeCtx,
-        iri: '@language',
-        relativeTo: {vocab: true}
-      })] = value['@language'];
-    }
-
-    if('@direction' in value) {
-      // alias @direction
-      rval[api.compactIri({
-        activeCtx,
-        iri: '@direction',
-        relativeTo: {vocab: true}
-      })] = value['@direction'];
-    }
-
-    // alias @value
-    rval[api.compactIri({
-      activeCtx,
-      iri: '@value',
-      relativeTo: {vocab: true}
-    })] = value['@value'];
-
-    return rval;
-  }
-
-  // value is a subject reference
-  const expandedProperty = _expandIri(activeCtx, activeProperty, {vocab: true},
-    options);
-  const type = _getContextValue(activeCtx, activeProperty, '@type');
-  const compacted = api.compactIri({
-    activeCtx,
-    iri: value['@id'],
-    relativeTo: {vocab: type === '@vocab'},
-    base: options.base});
-
-  // compact to scalar
-  if(type === '@id' || type === '@vocab' || expandedProperty === '@graph') {
-    return compacted;
-  }
-
-  return {
-    [api.compactIri({
-      activeCtx,
-      iri: '@id',
-      relativeTo: {vocab: true}
-    })]: compacted
-  };
-};
-
-/**
- * Picks the preferred compaction term from the given inverse context entry.
- *
- * @param activeCtx the active context.
- * @param iri the IRI to pick the term for.
- * @param value the value to pick the term for.
- * @param containers the preferred containers.
- * @param typeOrLanguage either '@type' or '@language'.
- * @param typeOrLanguageValue the preferred value for '@type' or '@language'.
- *
- * @return the preferred term.
- */
-function _selectTerm(
-  activeCtx, iri, value, containers, typeOrLanguage, typeOrLanguageValue) {
-  if(typeOrLanguageValue === null) {
-    typeOrLanguageValue = '@null';
-  }
-
-  // preferences for the value of @type or @language
-  const prefs = [];
-
-  // determine prefs for @id based on whether or not value compacts to a term
-  if((typeOrLanguageValue === '@id' || typeOrLanguageValue === '@reverse') &&
-    _isObject(value) && '@id' in value) {
-    // prefer @reverse first
-    if(typeOrLanguageValue === '@reverse') {
-      prefs.push('@reverse');
-    }
-    // try to compact value to a term
-    const term = api.compactIri(
-      {activeCtx, iri: value['@id'], relativeTo: {vocab: true}});
-    if(activeCtx.mappings.has(term) &&
-      activeCtx.mappings.get(term) &&
-      activeCtx.mappings.get(term)['@id'] === value['@id']) {
-      // prefer @vocab
-      prefs.push.apply(prefs, ['@vocab', '@id']);
-    } else {
-      // prefer @id
-      prefs.push.apply(prefs, ['@id', '@vocab']);
-    }
-  } else {
-    prefs.push(typeOrLanguageValue);
-
-    // consider direction only
-    const langDir = prefs.find(el => el.includes('_'));
-    if(langDir) {
-      // consider _dir portion
-      prefs.push(langDir.replace(/^[^_]+_/, '_'));
-    }
-  }
-  prefs.push('@none');
-
-  const containerMap = activeCtx.inverse[iri];
-  for(const container of containers) {
-    // if container not available in the map, continue
-    if(!(container in containerMap)) {
-      continue;
-    }
-
-    const typeOrLanguageValueMap = containerMap[container][typeOrLanguage];
-    for(const pref of prefs) {
-      // if type/language option not available in the map, continue
-      if(!(pref in typeOrLanguageValueMap)) {
-        continue;
-      }
-
-      // select term
-      return typeOrLanguageValueMap[pref];
-    }
-  }
-
-  return null;
-}
-
-/**
- * The value of `@nest` in the term definition must either be `@nest`, or a term
- * which resolves to `@nest`.
- *
- * @param activeCtx the active context.
- * @param nestProperty a term in the active context or `@nest`.
- * @param {Object} [options] - processing options.
- */
-function _checkNestProperty(activeCtx, nestProperty, options) {
-  if(_expandIri(activeCtx, nestProperty, {vocab: true}, options) !== '@nest') {
-    throw new JsonLdError(
-      'JSON-LD compact error; nested property must have an @nest value ' +
-      'resolving to @nest.',
-      'jsonld.SyntaxError', {code: 'invalid @nest value'});
-  }
-}
-
-},{"./JsonLdError":188,"./context":195,"./graphTypes":201,"./types":206,"./url":207,"./util":208}],194:[function(require,module,exports){
-/*
- * Copyright (c) 2017 Digital Bazaar, Inc. All rights reserved.
- */
-'use strict';
-
-const RDF = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#';
-const XSD = 'http://www.w3.org/2001/XMLSchema#';
-
-module.exports = {
-  // TODO: Deprecated and will be removed later. Use LINK_HEADER_CONTEXT.
-  LINK_HEADER_REL: 'http://www.w3.org/ns/json-ld#context',
-
-  LINK_HEADER_CONTEXT: 'http://www.w3.org/ns/json-ld#context',
-
-  RDF,
-  RDF_LIST: RDF + 'List',
-  RDF_FIRST: RDF + 'first',
-  RDF_REST: RDF + 'rest',
-  RDF_NIL: RDF + 'nil',
-  RDF_TYPE: RDF + 'type',
-  RDF_PLAIN_LITERAL: RDF + 'PlainLiteral',
-  RDF_XML_LITERAL: RDF + 'XMLLiteral',
-  RDF_JSON_LITERAL: RDF + 'JSON',
-  RDF_OBJECT: RDF + 'object',
-  RDF_LANGSTRING: RDF + 'langString',
-
-  XSD,
-  XSD_BOOLEAN: XSD + 'boolean',
-  XSD_DOUBLE: XSD + 'double',
-  XSD_INTEGER: XSD + 'integer',
-  XSD_STRING: XSD + 'string',
-};
-
-},{}],195:[function(require,module,exports){
-/*
- * Copyright (c) 2017-2019 Digital Bazaar, Inc. All rights reserved.
- */
-'use strict';
-
-const util = require('./util');
-const JsonLdError = require('./JsonLdError');
-
-const {
-  isArray: _isArray,
-  isObject: _isObject,
-  isString: _isString,
-  isUndefined: _isUndefined
-} = require('./types');
-
-const {
-  isAbsolute: _isAbsoluteIri,
-  isRelative: _isRelativeIri,
-  prependBase
-} = require('./url');
-
-const {
-  asArray: _asArray,
-  compareShortestLeast: _compareShortestLeast
-} = require('./util');
-
-const INITIAL_CONTEXT_CACHE = new Map();
-const INITIAL_CONTEXT_CACHE_MAX_SIZE = 10000;
-const KEYWORD_PATTERN = /^@[a-zA-Z]+$/;
-
-const api = {};
-module.exports = api;
-
-/**
- * Processes a local context and returns a new active context.
- *
- * @param activeCtx the current active context.
- * @param localCtx the local context to process.
- * @param options the context processing options.
- * @param propagate `true` if `false`, retains any previously defined term,
- *   which can be rolled back when the descending into a new node object.
- * @param overrideProtected `false` allows protected terms to be modified.
- *
- * @return a Promise that resolves to the new active context.
- */
-api.process = async ({
-  activeCtx, localCtx, options,
-  propagate = true,
-  overrideProtected = false,
-  cycles = new Set()
-}) => {
-  // normalize local context to an array of @context objects
-  if(_isObject(localCtx) && '@context' in localCtx &&
-    _isArray(localCtx['@context'])) {
-    localCtx = localCtx['@context'];
-  }
-  const ctxs = _asArray(localCtx);
-
-  // no contexts in array, return current active context w/o changes
-  if(ctxs.length === 0) {
-    return activeCtx;
-  }
-
-  // resolve contexts
-  const resolved = await options.contextResolver.resolve({
-    activeCtx,
-    context: localCtx,
-    documentLoader: options.documentLoader,
-    base: options.base
-  });
-
-  // override propagate if first resolved context has `@propagate`
-  if(_isObject(resolved[0].document) &&
-    typeof resolved[0].document['@propagate'] === 'boolean') {
-    // retrieve early, error checking done later
-    propagate = resolved[0].document['@propagate'];
-  }
-
-  // process each context in order, update active context
-  // on each iteration to ensure proper caching
-  let rval = activeCtx;
-
-  // track the previous context
-  // if not propagating, make sure rval has a previous context
-  if(!propagate && !rval.previousContext) {
-    // clone `rval` context before updating
-    rval = rval.clone();
-    rval.previousContext = activeCtx;
-  }
-
-  for(const resolvedContext of resolved) {
-    let {document: ctx} = resolvedContext;
-
-    // update active context to one computed from last iteration
-    activeCtx = rval;
-
-    // reset to initial context
-    if(ctx === null) {
-      // We can't nullify if there are protected terms and we're
-      // not allowing overrides (e.g. processing a property term scoped context)
-      if(!overrideProtected &&
-        Object.keys(activeCtx.protected).length !== 0) {
-        const protectedMode = (options && options.protectedMode) || 'error';
-        if(protectedMode === 'error') {
-          throw new JsonLdError(
-            'Tried to nullify a context with protected terms outside of ' +
-            'a term definition.',
-            'jsonld.SyntaxError',
-            {code: 'invalid context nullification'});
-        } else if(protectedMode === 'warn') {
-          // FIXME: remove logging and use a handler
-          console.warn('WARNING: invalid context nullification');
-
-          // get processed context from cache if available
-          const processed = resolvedContext.getProcessed(activeCtx);
-          if(processed) {
-            rval = activeCtx = processed;
-            continue;
-          }
-
-          const oldActiveCtx = activeCtx;
-          // copy all protected term definitions to fresh initial context
-          rval = activeCtx = api.getInitialContext(options).clone();
-          for(const [term, _protected] of
-            Object.entries(oldActiveCtx.protected)) {
-            if(_protected) {
-              activeCtx.mappings[term] =
-                util.clone(oldActiveCtx.mappings[term]);
-            }
-          }
-          activeCtx.protected = util.clone(oldActiveCtx.protected);
-
-          // cache processed result
-          resolvedContext.setProcessed(oldActiveCtx, rval);
-          continue;
-        }
-        throw new JsonLdError(
-          'Invalid protectedMode.',
-          'jsonld.SyntaxError',
-          {code: 'invalid protected mode', context: localCtx, protectedMode});
-      }
-      rval = activeCtx = api.getInitialContext(options).clone();
-      continue;
-    }
-
-    // get processed context from cache if available
-    const processed = resolvedContext.getProcessed(activeCtx);
-    if(processed) {
-      rval = activeCtx = processed;
-      continue;
-    }
-
-    // dereference @context key if present
-    if(_isObject(ctx) && '@context' in ctx) {
-      ctx = ctx['@context'];
-    }
-
-    // context must be an object by now, all URLs retrieved before this call
-    if(!_isObject(ctx)) {
-      throw new JsonLdError(
-        'Invalid JSON-LD syntax; @context must be an object.',
-        'jsonld.SyntaxError', {code: 'invalid local context', context: ctx});
-    }
-
-    // TODO: there is likely a `previousContext` cloning optimization that
-    // could be applied here (no need to copy it under certain conditions)
-
-    // clone context before updating it
-    rval = rval.clone();
-
-    // define context mappings for keys in local context
-    const defined = new Map();
-
-    // handle @version
-    if('@version' in ctx) {
-      if(ctx['@version'] !== 1.1) {
-        throw new JsonLdError(
-          'Unsupported JSON-LD version: ' + ctx['@version'],
-          'jsonld.UnsupportedVersion',
-          {code: 'invalid @version value', context: ctx});
-      }
-      if(activeCtx.processingMode &&
-        activeCtx.processingMode === 'json-ld-1.0') {
-        throw new JsonLdError(
-          '@version: ' + ctx['@version'] + ' not compatible with ' +
-          activeCtx.processingMode,
-          'jsonld.ProcessingModeConflict',
-          {code: 'processing mode conflict', context: ctx});
-      }
-      rval.processingMode = 'json-ld-1.1';
-      rval['@version'] = ctx['@version'];
-      defined.set('@version', true);
-    }
-
-    // if not set explicitly, set processingMode to "json-ld-1.1"
-    rval.processingMode =
-      rval.processingMode || activeCtx.processingMode;
-
-    // handle @base
-    if('@base' in ctx) {
-      let base = ctx['@base'];
-
-      if(base === null || _isAbsoluteIri(base)) {
-        // no action
-      } else if(_isRelativeIri(base)) {
-        base = prependBase(rval['@base'], base);
-      } else {
-        throw new JsonLdError(
-          'Invalid JSON-LD syntax; the value of "@base" in a ' +
-          '@context must be an absolute IRI, a relative IRI, or null.',
-          'jsonld.SyntaxError', {code: 'invalid base IRI', context: ctx});
-      }
-
-      rval['@base'] = base;
-      defined.set('@base', true);
-    }
-
-    // handle @vocab
-    if('@vocab' in ctx) {
-      const value = ctx['@vocab'];
-      if(value === null) {
-        delete rval['@vocab'];
-      } else if(!_isString(value)) {
-        throw new JsonLdError(
-          'Invalid JSON-LD syntax; the value of "@vocab" in a ' +
-          '@context must be a string or null.',
-          'jsonld.SyntaxError', {code: 'invalid vocab mapping', context: ctx});
-      } else if(!_isAbsoluteIri(value) && api.processingMode(rval, 1.0)) {
-        throw new JsonLdError(
-          'Invalid JSON-LD syntax; the value of "@vocab" in a ' +
-          '@context must be an absolute IRI.',
-          'jsonld.SyntaxError', {code: 'invalid vocab mapping', context: ctx});
-      } else {
-        rval['@vocab'] = _expandIri(rval, value, {vocab: true, base: true},
-          undefined, undefined, options);
-      }
-      defined.set('@vocab', true);
-    }
-
-    // handle @language
-    if('@language' in ctx) {
-      const value = ctx['@language'];
-      if(value === null) {
-        delete rval['@language'];
-      } else if(!_isString(value)) {
-        throw new JsonLdError(
-          'Invalid JSON-LD syntax; the value of "@language" in a ' +
-          '@context must be a string or null.',
-          'jsonld.SyntaxError',
-          {code: 'invalid default language', context: ctx});
-      } else {
-        rval['@language'] = value.toLowerCase();
-      }
-      defined.set('@language', true);
-    }
-
-    // handle @direction
-    if('@direction' in ctx) {
-      const value = ctx['@direction'];
-      if(activeCtx.processingMode === 'json-ld-1.0') {
-        throw new JsonLdError(
-          'Invalid JSON-LD syntax; @direction not compatible with ' +
-          activeCtx.processingMode,
-          'jsonld.SyntaxError',
-          {code: 'invalid context member', context: ctx});
-      }
-      if(value === null) {
-        delete rval['@direction'];
-      } else if(value !== 'ltr' && value !== 'rtl') {
-        throw new JsonLdError(
-          'Invalid JSON-LD syntax; the value of "@direction" in a ' +
-          '@context must be null, "ltr", or "rtl".',
-          'jsonld.SyntaxError',
-          {code: 'invalid base direction', context: ctx});
-      } else {
-        rval['@direction'] = value;
-      }
-      defined.set('@direction', true);
-    }
-
-    // handle @propagate
-    // note: we've already extracted it, here we just do error checking
-    if('@propagate' in ctx) {
-      const value = ctx['@propagate'];
-      if(activeCtx.processingMode === 'json-ld-1.0') {
-        throw new JsonLdError(
-          'Invalid JSON-LD syntax; @propagate not compatible with ' +
-          activeCtx.processingMode,
-          'jsonld.SyntaxError',
-          {code: 'invalid context entry', context: ctx});
-      }
-      if(typeof value !== 'boolean') {
-        throw new JsonLdError(
-          'Invalid JSON-LD syntax; @propagate value must be a boolean.',
-          'jsonld.SyntaxError',
-          {code: 'invalid @propagate value', context: localCtx});
-      }
-      defined.set('@propagate', true);
-    }
-
-    // handle @import
-    if('@import' in ctx) {
-      const value = ctx['@import'];
-      if(activeCtx.processingMode === 'json-ld-1.0') {
-        throw new JsonLdError(
-          'Invalid JSON-LD syntax; @import not compatible with ' +
-          activeCtx.processingMode,
-          'jsonld.SyntaxError',
-          {code: 'invalid context entry', context: ctx});
-      }
-      if(!_isString(value)) {
-        throw new JsonLdError(
-          'Invalid JSON-LD syntax; @import must be a string.',
-          'jsonld.SyntaxError',
-          {code: 'invalid @import value', context: localCtx});
-      }
-
-      // resolve contexts
-      const resolvedImport = await options.contextResolver.resolve({
-        activeCtx,
-        context: value,
-        documentLoader: options.documentLoader,
-        base: options.base
-      });
-      if(resolvedImport.length !== 1) {
-        throw new JsonLdError(
-          'Invalid JSON-LD syntax; @import must reference a single context.',
-          'jsonld.SyntaxError',
-          {code: 'invalid remote context', context: localCtx});
-      }
-      const processedImport = resolvedImport[0].getProcessed(activeCtx);
-      if(processedImport) {
-        // Note: if the same context were used in this active context
-        // as a reference context, then processed_input might not
-        // be a dict.
-        ctx = processedImport;
-      } else {
-        const importCtx = resolvedImport[0].document;
-        if('@import' in importCtx) {
-          throw new JsonLdError(
-            'Invalid JSON-LD syntax: ' +
-            'imported context must not include @import.',
-            'jsonld.SyntaxError',
-            {code: 'invalid context entry', context: localCtx});
-        }
-
-        // merge ctx into importCtx and replace rval with the result
-        for(const key in importCtx) {
-          if(!ctx.hasOwnProperty(key)) {
-            ctx[key] = importCtx[key];
-          }
-        }
-
-        // Note: this could potenially conflict if the import
-        // were used in the same active context as a referenced
-        // context and an import. In this case, we
-        // could override the cached result, but seems unlikely.
-        resolvedImport[0].setProcessed(activeCtx, ctx);
-      }
-
-      defined.set('@import', true);
-    }
-
-    // handle @protected; determine whether this sub-context is declaring
-    // all its terms to be "protected" (exceptions can be made on a
-    // per-definition basis)
-    defined.set('@protected', ctx['@protected'] || false);
-
-    // process all other keys
-    for(const key in ctx) {
-      api.createTermDefinition({
-        activeCtx: rval,
-        localCtx: ctx,
-        term: key,
-        defined,
-        options,
-        overrideProtected
-      });
-
-      if(_isObject(ctx[key]) && '@context' in ctx[key]) {
-        const keyCtx = ctx[key]['@context'];
-        let process = true;
-        if(_isString(keyCtx)) {
-          const url = prependBase(options.base, keyCtx);
-          // track processed contexts to avoid scoped context recursion
-          if(cycles.has(url)) {
-            process = false;
-          } else {
-            cycles.add(url);
-          }
-        }
-        // parse context to validate
-        if(process) {
-          try {
-            await api.process({
-              activeCtx: rval.clone(),
-              localCtx: ctx[key]['@context'],
-              overrideProtected: true,
-              options,
-              cycles
-            });
-          } catch(e) {
-            throw new JsonLdError(
-              'Invalid JSON-LD syntax; invalid scoped context.',
-              'jsonld.SyntaxError',
-              {
-                code: 'invalid scoped context',
-                context: ctx[key]['@context'],
-                term: key
-              });
-          }
-        }
-      }
-    }
-
-    // cache processed result
-    resolvedContext.setProcessed(activeCtx, rval);
-  }
-
-  return rval;
-};
-
-/**
- * Creates a term definition during context processing.
- *
- * @param activeCtx the current active context.
- * @param localCtx the local context being processed.
- * @param term the term in the local context to define the mapping for.
- * @param defined a map of defining/defined keys to detect cycles and prevent
- *          double definitions.
- * @param {Object} [options] - creation options.
- * @param {string} [options.protectedMode="error"] - "error" to throw error
- *   on `@protected` constraint violation, "warn" to allow violations and
- *   signal a warning.
- * @param overrideProtected `false` allows protected terms to be modified.
- */
-api.createTermDefinition = ({
-  activeCtx,
-  localCtx,
-  term,
-  defined,
-  options,
-  overrideProtected = false,
-}) => {
-  if(defined.has(term)) {
-    // term already defined
-    if(defined.get(term)) {
-      return;
-    }
-    // cycle detected
-    throw new JsonLdError(
-      'Cyclical context definition detected.',
-      'jsonld.CyclicalContext',
-      {code: 'cyclic IRI mapping', context: localCtx, term});
-  }
-
-  // now defining term
-  defined.set(term, false);
-
-  // get context term value
-  let value;
-  if(localCtx.hasOwnProperty(term)) {
-    value = localCtx[term];
-  }
-
-  if(term === '@type' &&
-     _isObject(value) &&
-     (value['@container'] || '@set') === '@set' &&
-     api.processingMode(activeCtx, 1.1)) {
-
-    const validKeys = ['@container', '@id', '@protected'];
-    const keys = Object.keys(value);
-    if(keys.length === 0 || keys.some(k => !validKeys.includes(k))) {
-      throw new JsonLdError(
-        'Invalid JSON-LD syntax; keywords cannot be overridden.',
-        'jsonld.SyntaxError',
-        {code: 'keyword redefinition', context: localCtx, term});
-    }
-  } else if(api.isKeyword(term)) {
-    throw new JsonLdError(
-      'Invalid JSON-LD syntax; keywords cannot be overridden.',
-      'jsonld.SyntaxError',
-      {code: 'keyword redefinition', context: localCtx, term});
-  } else if(term.match(KEYWORD_PATTERN)) {
-    // FIXME: remove logging and use a handler
-    console.warn('WARNING: terms beginning with "@" are reserved' +
-      ' for future use and ignored', {term});
-    return;
-  } else if(term === '') {
-    throw new JsonLdError(
-      'Invalid JSON-LD syntax; a term cannot be an empty string.',
-      'jsonld.SyntaxError',
-      {code: 'invalid term definition', context: localCtx});
-  }
-
-  // keep reference to previous mapping for potential `@protected` check
-  const previousMapping = activeCtx.mappings.get(term);
-
-  // remove old mapping
-  if(activeCtx.mappings.has(term)) {
-    activeCtx.mappings.delete(term);
-  }
-
-  // convert short-hand value to object w/@id
-  let simpleTerm = false;
-  if(_isString(value) || value === null) {
-    simpleTerm = true;
-    value = {'@id': value};
-  }
-
-  if(!_isObject(value)) {
-    throw new JsonLdError(
-      'Invalid JSON-LD syntax; @context term values must be ' +
-      'strings or objects.',
-      'jsonld.SyntaxError',
-      {code: 'invalid term definition', context: localCtx});
-  }
-
-  // create new mapping
-  const mapping = {};
-  activeCtx.mappings.set(term, mapping);
-  mapping.reverse = false;
-
-  // make sure term definition only has expected keywords
-  const validKeys = ['@container', '@id', '@language', '@reverse', '@type'];
-
-  // JSON-LD 1.1 support
-  if(api.processingMode(activeCtx, 1.1)) {
-    validKeys.push(
-      '@context', '@direction', '@index', '@nest', '@prefix', '@protected');
-  }
-
-  for(const kw in value) {
-    if(!validKeys.includes(kw)) {
-      throw new JsonLdError(
-        'Invalid JSON-LD syntax; a term definition must not contain ' + kw,
-        'jsonld.SyntaxError',
-        {code: 'invalid term definition', context: localCtx});
-    }
-  }
-
-  // always compute whether term has a colon as an optimization for
-  // _compactIri
-  const colon = term.indexOf(':');
-  mapping._termHasColon = (colon > 0);
-
-  if('@reverse' in value) {
-    if('@id' in value) {
-      throw new JsonLdError(
-        'Invalid JSON-LD syntax; a @reverse term definition must not ' +
-        'contain @id.', 'jsonld.SyntaxError',
-        {code: 'invalid reverse property', context: localCtx});
-    }
-    if('@nest' in value) {
-      throw new JsonLdError(
-        'Invalid JSON-LD syntax; a @reverse term definition must not ' +
-        'contain @nest.', 'jsonld.SyntaxError',
-        {code: 'invalid reverse property', context: localCtx});
-    }
-    const reverse = value['@reverse'];
-    if(!_isString(reverse)) {
-      throw new JsonLdError(
-        'Invalid JSON-LD syntax; a @context @reverse value must be a string.',
-        'jsonld.SyntaxError', {code: 'invalid IRI mapping', context: localCtx});
-    }
-
-    if(!api.isKeyword(reverse) && reverse.match(KEYWORD_PATTERN)) {
-      // FIXME: remove logging and use a handler
-      console.warn('WARNING: values beginning with "@" are reserved' +
-        ' for future use and ignored', {reverse});
-      if(previousMapping) {
-        activeCtx.mappings.set(term, previousMapping);
-      } else {
-        activeCtx.mappings.delete(term);
-      }
-      return;
-    }
-
-    // expand and add @id mapping
-    const id = _expandIri(
-      activeCtx, reverse, {vocab: true, base: false}, localCtx, defined,
-      options);
-    if(!_isAbsoluteIri(id)) {
-      throw new JsonLdError(
-        'Invalid JSON-LD syntax; a @context @reverse value must be an ' +
-        'absolute IRI or a blank node identifier.',
-        'jsonld.SyntaxError', {code: 'invalid IRI mapping', context: localCtx});
-    }
-
-    mapping['@id'] = id;
-    mapping.reverse = true;
-  } else if('@id' in value) {
-    let id = value['@id'];
-    if(id && !_isString(id)) {
-      throw new JsonLdError(
-        'Invalid JSON-LD syntax; a @context @id value must be an array ' +
-        'of strings or a string.',
-        'jsonld.SyntaxError', {code: 'invalid IRI mapping', context: localCtx});
-    }
-    if(id === null) {
-      // reserve a null term, which may be protected
-      mapping['@id'] = null;
-    } else if(!api.isKeyword(id) && id.match(KEYWORD_PATTERN)) {
-      // FIXME: remove logging and use a handler
-      console.warn('WARNING: values beginning with "@" are reserved' +
-        ' for future use and ignored', {id});
-      if(previousMapping) {
-        activeCtx.mappings.set(term, previousMapping);
-      } else {
-        activeCtx.mappings.delete(term);
-      }
-      return;
-    } else if(id !== term) {
-      // expand and add @id mapping
-      id = _expandIri(
-        activeCtx, id, {vocab: true, base: false}, localCtx, defined, options);
-      if(!_isAbsoluteIri(id) && !api.isKeyword(id)) {
-        throw new JsonLdError(
-          'Invalid JSON-LD syntax; a @context @id value must be an ' +
-          'absolute IRI, a blank node identifier, or a keyword.',
-          'jsonld.SyntaxError',
-          {code: 'invalid IRI mapping', context: localCtx});
-      }
-
-      // if term has the form of an IRI it must map the same
-      if(term.match(/(?::[^:])|\//)) {
-        const termDefined = new Map(defined).set(term, true);
-        const termIri = _expandIri(
-          activeCtx, term, {vocab: true, base: false},
-          localCtx, termDefined, options);
-        if(termIri !== id) {
-          throw new JsonLdError(
-            'Invalid JSON-LD syntax; term in form of IRI must ' +
-            'expand to definition.',
-            'jsonld.SyntaxError',
-            {code: 'invalid IRI mapping', context: localCtx});
-        }
-      }
-
-      mapping['@id'] = id;
-      // indicate if this term may be used as a compact IRI prefix
-      mapping._prefix = (simpleTerm &&
-        !mapping._termHasColon &&
-        id.match(/[:\/\?#\[\]@]$/));
-    }
-  }
-
-  if(!('@id' in mapping)) {
-    // see if the term has a prefix
-    if(mapping._termHasColon) {
-      const prefix = term.substr(0, colon);
-      if(localCtx.hasOwnProperty(prefix)) {
-        // define parent prefix
-        api.createTermDefinition({
-          activeCtx, localCtx, term: prefix, defined, options
-        });
-      }
-
-      if(activeCtx.mappings.has(prefix)) {
-        // set @id based on prefix parent
-        const suffix = term.substr(colon + 1);
-        mapping['@id'] = activeCtx.mappings.get(prefix)['@id'] + suffix;
-      } else {
-        // term is an absolute IRI
-        mapping['@id'] = term;
-      }
-    } else if(term === '@type') {
-      // Special case, were we've previously determined that container is @set
-      mapping['@id'] = term;
-    } else {
-      // non-IRIs *must* define @ids if @vocab is not available
-      if(!('@vocab' in activeCtx)) {
-        throw new JsonLdError(
-          'Invalid JSON-LD syntax; @context terms must define an @id.',
-          'jsonld.SyntaxError',
-          {code: 'invalid IRI mapping', context: localCtx, term});
-      }
-      // prepend vocab to term
-      mapping['@id'] = activeCtx['@vocab'] + term;
-    }
-  }
-
-  // Handle term protection
-  if(value['@protected'] === true ||
-    (defined.get('@protected') === true && value['@protected'] !== false)) {
-    activeCtx.protected[term] = true;
-    mapping.protected = true;
-  }
-
-  // IRI mapping now defined
-  defined.set(term, true);
-
-  if('@type' in value) {
-    let type = value['@type'];
-    if(!_isString(type)) {
-      throw new JsonLdError(
-        'Invalid JSON-LD syntax; an @context @type value must be a string.',
-        'jsonld.SyntaxError',
-        {code: 'invalid type mapping', context: localCtx});
-    }
-
-    if((type === '@json' || type === '@none')) {
-      if(api.processingMode(activeCtx, 1.0)) {
-        throw new JsonLdError(
-          'Invalid JSON-LD syntax; an @context @type value must not be ' +
-          `"${type}" in JSON-LD 1.0 mode.`,
-          'jsonld.SyntaxError',
-          {code: 'invalid type mapping', context: localCtx});
-      }
-    } else if(type !== '@id' && type !== '@vocab') {
-      // expand @type to full IRI
-      type = _expandIri(
-        activeCtx, type, {vocab: true, base: false}, localCtx, defined,
-        options);
-      if(!_isAbsoluteIri(type)) {
-        throw new JsonLdError(
-          'Invalid JSON-LD syntax; an @context @type value must be an ' +
-          'absolute IRI.',
-          'jsonld.SyntaxError',
-          {code: 'invalid type mapping', context: localCtx});
-      }
-      if(type.indexOf('_:') === 0) {
-        throw new JsonLdError(
-          'Invalid JSON-LD syntax; an @context @type value must be an IRI, ' +
-          'not a blank node identifier.',
-          'jsonld.SyntaxError',
-          {code: 'invalid type mapping', context: localCtx});
-      }
-    }
-
-    // add @type to mapping
-    mapping['@type'] = type;
-  }
-
-  if('@container' in value) {
-    // normalize container to an array form
-    const container = _isString(value['@container']) ?
-      [value['@container']] : (value['@container'] || []);
-    const validContainers = ['@list', '@set', '@index', '@language'];
-    let isValid = true;
-    const hasSet = container.includes('@set');
-
-    // JSON-LD 1.1 support
-    if(api.processingMode(activeCtx, 1.1)) {
-      validContainers.push('@graph', '@id', '@type');
-
-      // check container length
-      if(container.includes('@list')) {
-        if(container.length !== 1) {
-          throw new JsonLdError(
-            'Invalid JSON-LD syntax; @context @container with @list must ' +
-            'have no other values',
-            'jsonld.SyntaxError',
-            {code: 'invalid container mapping', context: localCtx});
-        }
-      } else if(container.includes('@graph')) {
-        if(container.some(key =>
-          key !== '@graph' && key !== '@id' && key !== '@index' &&
-          key !== '@set')) {
-          throw new JsonLdError(
-            'Invalid JSON-LD syntax; @context @container with @graph must ' +
-            'have no other values other than @id, @index, and @set',
-            'jsonld.SyntaxError',
-            {code: 'invalid container mapping', context: localCtx});
-        }
-      } else {
-        // otherwise, container may also include @set
-        isValid &= container.length <= (hasSet ? 2 : 1);
-      }
-
-      if(container.includes('@type')) {
-        // If mapping does not have an @type,
-        // set it to @id
-        mapping['@type'] = mapping['@type'] || '@id';
-
-        // type mapping must be either @id or @vocab
-        if(!['@id', '@vocab'].includes(mapping['@type'])) {
-          throw new JsonLdError(
-            'Invalid JSON-LD syntax; container: @type requires @type to be ' +
-            '@id or @vocab.',
-            'jsonld.SyntaxError',
-            {code: 'invalid type mapping', context: localCtx});
-        }
-      }
-    } else {
-      // in JSON-LD 1.0, container must not be an array (it must be a string,
-      // which is one of the validContainers)
-      isValid &= !_isArray(value['@container']);
-
-      // check container length
-      isValid &= container.length <= 1;
-    }
-
-    // check against valid containers
-    isValid &= container.every(c => validContainers.includes(c));
-
-    // @set not allowed with @list
-    isValid &= !(hasSet && container.includes('@list'));
-
-    if(!isValid) {
-      throw new JsonLdError(
-        'Invalid JSON-LD syntax; @context @container value must be ' +
-        'one of the following: ' + validContainers.join(', '),
-        'jsonld.SyntaxError',
-        {code: 'invalid container mapping', context: localCtx});
-    }
-
-    if(mapping.reverse &&
-      !container.every(c => ['@index', '@set'].includes(c))) {
-      throw new JsonLdError(
-        'Invalid JSON-LD syntax; @context @container value for a @reverse ' +
-        'type definition must be @index or @set.', 'jsonld.SyntaxError',
-        {code: 'invalid reverse property', context: localCtx});
-    }
-
-    // add @container to mapping
-    mapping['@container'] = container;
-  }
-
-  // property indexing
-  if('@index' in value) {
-    if(!('@container' in value) || !mapping['@container'].includes('@index')) {
-      throw new JsonLdError(
-        'Invalid JSON-LD syntax; @index without @index in @container: ' +
-        `"${value['@index']}" on term "${term}".`, 'jsonld.SyntaxError',
-        {code: 'invalid term definition', context: localCtx});
-    }
-    if(!_isString(value['@index']) || value['@index'].indexOf('@') === 0) {
-      throw new JsonLdError(
-        'Invalid JSON-LD syntax; @index must expand to an IRI: ' +
-        `"${value['@index']}" on term "${term}".`, 'jsonld.SyntaxError',
-        {code: 'invalid term definition', context: localCtx});
-    }
-    mapping['@index'] = value['@index'];
-  }
-
-  // scoped contexts
-  if('@context' in value) {
-    mapping['@context'] = value['@context'];
-  }
-
-  if('@language' in value && !('@type' in value)) {
-    let language = value['@language'];
-    if(language !== null && !_isString(language)) {
-      throw new JsonLdError(
-        'Invalid JSON-LD syntax; @context @language value must be ' +
-        'a string or null.', 'jsonld.SyntaxError',
-        {code: 'invalid language mapping', context: localCtx});
-    }
-
-    // add @language to mapping
-    if(language !== null) {
-      language = language.toLowerCase();
-    }
-    mapping['@language'] = language;
-  }
-
-  // term may be used as a prefix
-  if('@prefix' in value) {
-    if(term.match(/:|\//)) {
-      throw new JsonLdError(
-        'Invalid JSON-LD syntax; @context @prefix used on a compact IRI term',
-        'jsonld.SyntaxError',
-        {code: 'invalid term definition', context: localCtx});
-    }
-    if(api.isKeyword(mapping['@id'])) {
-      throw new JsonLdError(
-        'Invalid JSON-LD syntax; keywords may not be used as prefixes',
-        'jsonld.SyntaxError',
-        {code: 'invalid term definition', context: localCtx});
-    }
-    if(typeof value['@prefix'] === 'boolean') {
-      mapping._prefix = value['@prefix'] === true;
-    } else {
-      throw new JsonLdError(
-        'Invalid JSON-LD syntax; @context value for @prefix must be boolean',
-        'jsonld.SyntaxError',
-        {code: 'invalid @prefix value', context: localCtx});
-    }
-  }
-
-  if('@direction' in value) {
-    const direction = value['@direction'];
-    if(direction !== null && direction !== 'ltr' && direction !== 'rtl') {
-      throw new JsonLdError(
-        'Invalid JSON-LD syntax; @direction value must be ' +
-        'null, "ltr", or "rtl".',
-        'jsonld.SyntaxError',
-        {code: 'invalid base direction', context: localCtx});
-    }
-    mapping['@direction'] = direction;
-  }
-
-  if('@nest' in value) {
-    const nest = value['@nest'];
-    if(!_isString(nest) || (nest !== '@nest' && nest.indexOf('@') === 0)) {
-      throw new JsonLdError(
-        'Invalid JSON-LD syntax; @context @nest value must be ' +
-        'a string which is not a keyword other than @nest.',
-        'jsonld.SyntaxError',
-        {code: 'invalid @nest value', context: localCtx});
-    }
-    mapping['@nest'] = nest;
-  }
-
-  // disallow aliasing @context and @preserve
-  const id = mapping['@id'];
-  if(id === '@context' || id === '@preserve') {
-    throw new JsonLdError(
-      'Invalid JSON-LD syntax; @context and @preserve cannot be aliased.',
-      'jsonld.SyntaxError', {code: 'invalid keyword alias', context: localCtx});
-  }
-
-  // Check for overriding protected terms
-  if(previousMapping && previousMapping.protected && !overrideProtected) {
-    // force new term to continue to be protected and see if the mappings would
-    // be equal
-    activeCtx.protected[term] = true;
-    mapping.protected = true;
-    if(!_deepCompare(previousMapping, mapping)) {
-      const protectedMode = (options && options.protectedMode) || 'error';
-      if(protectedMode === 'error') {
-        throw new JsonLdError(
-          `Invalid JSON-LD syntax; tried to redefine "${term}" which is a ` +
-          'protected term.',
-          'jsonld.SyntaxError',
-          {code: 'protected term redefinition', context: localCtx, term});
-      } else if(protectedMode === 'warn') {
-        // FIXME: remove logging and use a handler
-        console.warn('WARNING: protected term redefinition', {term});
-        return;
-      }
-      throw new JsonLdError(
-        'Invalid protectedMode.',
-        'jsonld.SyntaxError',
-        {code: 'invalid protected mode', context: localCtx, term,
-          protectedMode});
-    }
-  }
-};
-
-/**
- * Expands a string to a full IRI. The string may be a term, a prefix, a
- * relative IRI, or an absolute IRI. The associated absolute IRI will be
- * returned.
- *
- * @param activeCtx the current active context.
- * @param value the string to expand.
- * @param relativeTo options for how to resolve relative IRIs:
- *          base: true to resolve against the base IRI, false not to.
- *          vocab: true to concatenate after @vocab, false not to.
- * @param {Object} [options] - processing options.
- *
- * @return the expanded value.
- */
-api.expandIri = (activeCtx, value, relativeTo, options) => {
-  return _expandIri(activeCtx, value, relativeTo, undefined, undefined,
-    options);
-};
-
-/**
- * Expands a string to a full IRI. The string may be a term, a prefix, a
- * relative IRI, or an absolute IRI. The associated absolute IRI will be
- * returned.
- *
- * @param activeCtx the current active context.
- * @param value the string to expand.
- * @param relativeTo options for how to resolve relative IRIs:
- *          base: true to resolve against the base IRI, false not to.
- *          vocab: true to concatenate after @vocab, false not to.
- * @param localCtx the local context being processed (only given if called
- *          during context processing).
- * @param defined a map for tracking cycles in context definitions (only given
- *          if called during context processing).
- * @param {Object} [options] - processing options.
- *
- * @return the expanded value.
- */
-function _expandIri(activeCtx, value, relativeTo, localCtx, defined, options) {
-  // already expanded
-  if(value === null || !_isString(value) || api.isKeyword(value)) {
-    return value;
-  }
-
-  // ignore non-keyword things that look like a keyword
-  if(value.match(KEYWORD_PATTERN)) {
-    return null;
-  }
-
-  // define term dependency if not defined
-  if(localCtx && localCtx.hasOwnProperty(value) &&
-    defined.get(value) !== true) {
-    api.createTermDefinition({
-      activeCtx, localCtx, term: value, defined, options
-    });
-  }
-
-  relativeTo = relativeTo || {};
-  if(relativeTo.vocab) {
-    const mapping = activeCtx.mappings.get(value);
-
-    // value is explicitly ignored with a null mapping
-    if(mapping === null) {
-      return null;
-    }
-
-    if(_isObject(mapping) && '@id' in mapping) {
-      // value is a term
-      return mapping['@id'];
-    }
-  }
-
-  // split value into prefix:suffix
-  const colon = value.indexOf(':');
-  if(colon > 0) {
-    const prefix = value.substr(0, colon);
-    const suffix = value.substr(colon + 1);
-
-    // do not expand blank nodes (prefix of '_') or already-absolute
-    // IRIs (suffix of '//')
-    if(prefix === '_' || suffix.indexOf('//') === 0) {
-      return value;
-    }
-
-    // prefix dependency not defined, define it
-    if(localCtx && localCtx.hasOwnProperty(prefix)) {
-      api.createTermDefinition({
-        activeCtx, localCtx, term: prefix, defined, options
-      });
-    }
-
-    // use mapping if prefix is defined
-    const mapping = activeCtx.mappings.get(prefix);
-    if(mapping && mapping._prefix) {
-      return mapping['@id'] + suffix;
-    }
-
-    // already absolute IRI
-    if(_isAbsoluteIri(value)) {
-      return value;
-    }
-  }
-
-  // prepend vocab
-  if(relativeTo.vocab && '@vocab' in activeCtx) {
-    return activeCtx['@vocab'] + value;
-  }
-
-  // prepend base
-  if(relativeTo.base && '@base' in activeCtx) {
-    if(activeCtx['@base']) {
-      // The null case preserves value as potentially relative
-      return prependBase(prependBase(options.base, activeCtx['@base']), value);
-    }
-  } else if(relativeTo.base) {
-    return prependBase(options.base, value);
-  }
-
-  return value;
-}
-
-/**
- * Gets the initial context.
- *
- * @param options the options to use:
- *          [base] the document base IRI.
- *
- * @return the initial context.
- */
-api.getInitialContext = options => {
-  const key = JSON.stringify({processingMode: options.processingMode});
-  const cached = INITIAL_CONTEXT_CACHE.get(key);
-  if(cached) {
-    return cached;
-  }
-
-  const initialContext = {
-    processingMode: options.processingMode,
-    mappings: new Map(),
-    inverse: null,
-    getInverse: _createInverseContext,
-    clone: _cloneActiveContext,
-    revertToPreviousContext: _revertToPreviousContext,
-    protected: {}
-  };
-  // TODO: consider using LRU cache instead
-  if(INITIAL_CONTEXT_CACHE.size === INITIAL_CONTEXT_CACHE_MAX_SIZE) {
-    // clear whole cache -- assumes scenario where the cache fills means
-    // the cache isn't being used very efficiently anyway
-    INITIAL_CONTEXT_CACHE.clear();
-  }
-  INITIAL_CONTEXT_CACHE.set(key, initialContext);
-  return initialContext;
-
-  /**
-   * Generates an inverse context for use in the compaction algorithm, if
-   * not already generated for the given active context.
-   *
-   * @return the inverse context.
-   */
-  function _createInverseContext() {
-    const activeCtx = this;
-
-    // lazily create inverse
-    if(activeCtx.inverse) {
-      return activeCtx.inverse;
-    }
-    const inverse = activeCtx.inverse = {};
-
-    // variables for building fast CURIE map
-    const fastCurieMap = activeCtx.fastCurieMap = {};
-    const irisToTerms = {};
-
-    // handle default language
-    const defaultLanguage = (activeCtx['@language'] || '@none').toLowerCase();
-
-    // handle default direction
-    const defaultDirection = activeCtx['@direction'];
-
-    // create term selections for each mapping in the context, ordered by
-    // shortest and then lexicographically least
-    const mappings = activeCtx.mappings;
-    const terms = [...mappings.keys()].sort(_compareShortestLeast);
-    for(const term of terms) {
-      const mapping = mappings.get(term);
-      if(mapping === null) {
-        continue;
-      }
-
-      let container = mapping['@container'] || '@none';
-      container = [].concat(container).sort().join('');
-
-      if(mapping['@id'] === null) {
-        continue;
-      }
-      // iterate over every IRI in the mapping
-      const ids = _asArray(mapping['@id']);
-      for(const iri of ids) {
-        let entry = inverse[iri];
-        const isKeyword = api.isKeyword(iri);
-
-        if(!entry) {
-          // initialize entry
-          inverse[iri] = entry = {};
-
-          if(!isKeyword && !mapping._termHasColon) {
-            // init IRI to term map and fast CURIE prefixes
-            irisToTerms[iri] = [term];
-            const fastCurieEntry = {iri, terms: irisToTerms[iri]};
-            if(iri[0] in fastCurieMap) {
-              fastCurieMap[iri[0]].push(fastCurieEntry);
-            } else {
-              fastCurieMap[iri[0]] = [fastCurieEntry];
-            }
-          }
-        } else if(!isKeyword && !mapping._termHasColon) {
-          // add IRI to term match
-          irisToTerms[iri].push(term);
-        }
-
-        // add new entry
-        if(!entry[container]) {
-          entry[container] = {
-            '@language': {},
-            '@type': {},
-            '@any': {}
-          };
-        }
-        entry = entry[container];
-        _addPreferredTerm(term, entry['@any'], '@none');
-
-        if(mapping.reverse) {
-          // term is preferred for values using @reverse
-          _addPreferredTerm(term, entry['@type'], '@reverse');
-        } else if(mapping['@type'] === '@none') {
-          _addPreferredTerm(term, entry['@any'], '@none');
-          _addPreferredTerm(term, entry['@language'], '@none');
-          _addPreferredTerm(term, entry['@type'], '@none');
-        } else if('@type' in mapping) {
-          // term is preferred for values using specific type
-          _addPreferredTerm(term, entry['@type'], mapping['@type']);
-        } else if('@language' in mapping && '@direction' in mapping) {
-          // term is preferred for values using specific language and direction
-          const language = mapping['@language'];
-          const direction = mapping['@direction'];
-          if(language && direction) {
-            _addPreferredTerm(term, entry['@language'],
-              `${language}_${direction}`.toLowerCase());
-          } else if(language) {
-            _addPreferredTerm(term, entry['@language'], language.toLowerCase());
-          } else if(direction) {
-            _addPreferredTerm(term, entry['@language'], `_${direction}`);
-          } else {
-            _addPreferredTerm(term, entry['@language'], '@null');
-          }
-        } else if('@language' in mapping) {
-          _addPreferredTerm(term, entry['@language'],
-            (mapping['@language'] || '@null').toLowerCase());
-        } else if('@direction' in mapping) {
-          if(mapping['@direction']) {
-            _addPreferredTerm(term, entry['@language'],
-              `_${mapping['@direction']}`);
-          } else {
-            _addPreferredTerm(term, entry['@language'], '@none');
-          }
-        } else if(defaultDirection) {
-          _addPreferredTerm(term, entry['@language'], `_${defaultDirection}`);
-          _addPreferredTerm(term, entry['@language'], '@none');
-          _addPreferredTerm(term, entry['@type'], '@none');
-        } else {
-          // add entries for no type and no language
-          _addPreferredTerm(term, entry['@language'], defaultLanguage);
-          _addPreferredTerm(term, entry['@language'], '@none');
-          _addPreferredTerm(term, entry['@type'], '@none');
-        }
-      }
-    }
-
-    // build fast CURIE map
-    for(const key in fastCurieMap) {
-      _buildIriMap(fastCurieMap, key, 1);
-    }
-
-    return inverse;
-  }
-
-  /**
-   * Runs a recursive algorithm to build a lookup map for quickly finding
-   * potential CURIEs.
-   *
-   * @param iriMap the map to build.
-   * @param key the current key in the map to work on.
-   * @param idx the index into the IRI to compare.
-   */
-  function _buildIriMap(iriMap, key, idx) {
-    const entries = iriMap[key];
-    const next = iriMap[key] = {};
-
-    let iri;
-    let letter;
-    for(const entry of entries) {
-      iri = entry.iri;
-      if(idx >= iri.length) {
-        letter = '';
-      } else {
-        letter = iri[idx];
-      }
-      if(letter in next) {
-        next[letter].push(entry);
-      } else {
-        next[letter] = [entry];
-      }
-    }
-
-    for(const key in next) {
-      if(key === '') {
-        continue;
-      }
-      _buildIriMap(next, key, idx + 1);
-    }
-  }
-
-  /**
-   * Adds the term for the given entry if not already added.
-   *
-   * @param term the term to add.
-   * @param entry the inverse context typeOrLanguage entry to add to.
-   * @param typeOrLanguageValue the key in the entry to add to.
-   */
-  function _addPreferredTerm(term, entry, typeOrLanguageValue) {
-    if(!entry.hasOwnProperty(typeOrLanguageValue)) {
-      entry[typeOrLanguageValue] = term;
-    }
-  }
-
-  /**
-   * Clones an active context, creating a child active context.
-   *
-   * @return a clone (child) of the active context.
-   */
-  function _cloneActiveContext() {
-    const child = {};
-    child.mappings = util.clone(this.mappings);
-    child.clone = this.clone;
-    child.inverse = null;
-    child.getInverse = this.getInverse;
-    child.protected = util.clone(this.protected);
-    if(this.previousContext) {
-      child.previousContext = this.previousContext.clone();
-    }
-    child.revertToPreviousContext = this.revertToPreviousContext;
-    if('@base' in this) {
-      child['@base'] = this['@base'];
-    }
-    if('@language' in this) {
-      child['@language'] = this['@language'];
-    }
-    if('@vocab' in this) {
-      child['@vocab'] = this['@vocab'];
-    }
-    return child;
-  }
-
-  /**
-   * Reverts any type-scoped context in this active context to the previous
-   * context.
-   */
-  function _revertToPreviousContext() {
-    if(!this.previousContext) {
-      return this;
-    }
-    return this.previousContext.clone();
-  }
-};
-
-/**
- * Gets the value for the given active context key and type, null if none is
- * set or undefined if none is set and type is '@context'.
- *
- * @param ctx the active context.
- * @param key the context key.
- * @param [type] the type of value to get (eg: '@id', '@type'), if not
- *          specified gets the entire entry for a key, null if not found.
- *
- * @return the value, null, or undefined.
- */
-api.getContextValue = (ctx, key, type) => {
-  // invalid key
-  if(key === null) {
-    if(type === '@context') {
-      return undefined;
-    }
-    return null;
-  }
-
-  // get specific entry information
-  if(ctx.mappings.has(key)) {
-    const entry = ctx.mappings.get(key);
-
-    if(_isUndefined(type)) {
-      // return whole entry
-      return entry;
-    }
-    if(entry.hasOwnProperty(type)) {
-      // return entry value for type
-      return entry[type];
-    }
-  }
-
-  // get default language
-  if(type === '@language' && type in ctx) {
-    return ctx[type];
-  }
-
-  // get default direction
-  if(type === '@direction' && type in ctx) {
-    return ctx[type];
-  }
-
-  if(type === '@context') {
-    return undefined;
-  }
-  return null;
-};
-
-/**
- * Processing Mode check.
- *
- * @param activeCtx the current active context.
- * @param version the string or numeric version to check.
- *
- * @return boolean.
- */
-api.processingMode = (activeCtx, version) => {
-  if(version.toString() >= '1.1') {
-    return !activeCtx.processingMode ||
-      activeCtx.processingMode >= 'json-ld-' + version.toString();
-  } else {
-    return activeCtx.processingMode === 'json-ld-1.0';
-  }
-};
-
-/**
- * Returns whether or not the given value is a keyword.
- *
- * @param v the value to check.
- *
- * @return true if the value is a keyword, false if not.
- */
-api.isKeyword = v => {
-  if(!_isString(v) || v[0] !== '@') {
-    return false;
-  }
-  switch(v) {
-    case '@base':
-    case '@container':
-    case '@context':
-    case '@default':
-    case '@direction':
-    case '@embed':
-    case '@explicit':
-    case '@graph':
-    case '@id':
-    case '@included':
-    case '@index':
-    case '@json':
-    case '@language':
-    case '@list':
-    case '@nest':
-    case '@none':
-    case '@omitDefault':
-    case '@prefix':
-    case '@preserve':
-    case '@protected':
-    case '@requireAll':
-    case '@reverse':
-    case '@set':
-    case '@type':
-    case '@value':
-    case '@version':
-    case '@vocab':
-      return true;
-  }
-  return false;
-};
-
-function _deepCompare(x1, x2) {
-  // compare `null` or primitive types directly
-  if((!(x1 && typeof x1 === 'object')) ||
-     (!(x2 && typeof x2 === 'object'))) {
-    return x1 === x2;
-  }
-  // x1 and x2 are objects (also potentially arrays)
-  const x1Array = Array.isArray(x1);
-  if(x1Array !== Array.isArray(x2)) {
-    return false;
-  }
-  if(x1Array) {
-    if(x1.length !== x2.length) {
-      return false;
-    }
-    for(let i = 0; i < x1.length; ++i) {
-      if(!_deepCompare(x1[i], x2[i])) {
-        return false;
-      }
-    }
-    return true;
-  }
-  // x1 and x2 are non-array objects
-  const k1s = Object.keys(x1);
-  const k2s = Object.keys(x2);
-  if(k1s.length !== k2s.length) {
-    return false;
-  }
-  for(const k1 in x1) {
-    let v1 = x1[k1];
-    let v2 = x2[k1];
-    // special case: `@container` can be in any order
-    if(k1 === '@container') {
-      if(Array.isArray(v1) && Array.isArray(v2)) {
-        v1 = v1.slice().sort();
-        v2 = v2.slice().sort();
-      }
-    }
-    if(!_deepCompare(v1, v2)) {
-      return false;
-    }
-  }
-  return true;
-}
-
-},{"./JsonLdError":188,"./types":206,"./url":207,"./util":208}],196:[function(require,module,exports){
-/*
- * Copyright (c) 2017 Digital Bazaar, Inc. All rights reserved.
- */
-'use strict';
-
-const {parseLinkHeader, buildHeaders} = require('../util');
-const {LINK_HEADER_CONTEXT} = require('../constants');
-const JsonLdError = require('../JsonLdError');
-const RequestQueue = require('../RequestQueue');
-const {prependBase} = require('../url');
-
-const REGEX_LINK_HEADER = /(^|(\r\n))link:/i;
-
-/**
- * Creates a built-in XMLHttpRequest document loader.
- *
- * @param options the options to use:
- *          secure: require all URLs to use HTTPS.
- *          headers: an object (map) of headers which will be passed as request
- *            headers for the requested document. Accept is not allowed.
- *          [xhr]: the XMLHttpRequest API to use.
- *
- * @return the XMLHttpRequest document loader.
- */
-module.exports = ({
-  secure,
-  headers = {},
-  xhr
-} = {headers: {}}) => {
-  headers = buildHeaders(headers);
-  const queue = new RequestQueue();
-  return queue.wrapLoader(loader);
-
-  async function loader(url) {
-    if(url.indexOf('http:') !== 0 && url.indexOf('https:') !== 0) {
-      throw new JsonLdError(
-        'URL could not be dereferenced; only "http" and "https" URLs are ' +
-        'supported.',
-        'jsonld.InvalidUrl', {code: 'loading document failed', url});
-    }
-    if(secure && url.indexOf('https') !== 0) {
-      throw new JsonLdError(
-        'URL could not be dereferenced; secure mode is enabled and ' +
-        'the URL\'s scheme is not "https".',
-        'jsonld.InvalidUrl', {code: 'loading document failed', url});
-    }
-
-    let req;
-    try {
-      req = await _get(xhr, url, headers);
-    } catch(e) {
-      throw new JsonLdError(
-        'URL could not be dereferenced, an error occurred.',
-        'jsonld.LoadDocumentError',
-        {code: 'loading document failed', url, cause: e});
-    }
-
-    if(req.status >= 400) {
-      throw new JsonLdError(
-        'URL could not be dereferenced: ' + req.statusText,
-        'jsonld.LoadDocumentError', {
-          code: 'loading document failed',
-          url,
-          httpStatusCode: req.status
-        });
-    }
-
-    let doc = {contextUrl: null, documentUrl: url, document: req.response};
-    let alternate = null;
-
-    // handle Link Header (avoid unsafe header warning by existence testing)
-    const contentType = req.getResponseHeader('Content-Type');
-    let linkHeader;
-    if(REGEX_LINK_HEADER.test(req.getAllResponseHeaders())) {
-      linkHeader = req.getResponseHeader('Link');
-    }
-    if(linkHeader && contentType !== 'application/ld+json') {
-      // only 1 related link header permitted
-      const linkHeaders = parseLinkHeader(linkHeader);
-      const linkedContext = linkHeaders[LINK_HEADER_CONTEXT];
-      if(Array.isArray(linkedContext)) {
-        throw new JsonLdError(
-          'URL could not be dereferenced, it has more than one ' +
-          'associated HTTP Link Header.',
-          'jsonld.InvalidUrl',
-          {code: 'multiple context link headers', url});
-      }
-      if(linkedContext) {
-        doc.contextUrl = linkedContext.target;
-      }
-
-      // "alternate" link header is a redirect
-      alternate = linkHeaders.alternate;
-      if(alternate &&
-        alternate.type == 'application/ld+json' &&
-        !(contentType || '').match(/^application\/(\w*\+)?json$/)) {
-        doc = await loader(prependBase(url, alternate.target));
-      }
-    }
-
-    return doc;
-  }
-};
-
-function _get(xhr, url, headers) {
-  xhr = xhr || XMLHttpRequest;
-  const req = new xhr();
-  return new Promise((resolve, reject) => {
-    req.onload = () => resolve(req);
-    req.onerror = err => reject(err);
-    req.open('GET', url, true);
-    for(const k in headers) {
-      req.setRequestHeader(k, headers[k]);
-    }
-    req.send();
-  });
-}
-
-},{"../JsonLdError":188,"../RequestQueue":191,"../constants":194,"../url":207,"../util":208}],197:[function(require,module,exports){
-/*
- * Copyright (c) 2017 Digital Bazaar, Inc. All rights reserved.
- */
-'use strict';
-
-const JsonLdError = require('./JsonLdError');
-
-const {
-  isArray: _isArray,
-  isObject: _isObject,
-  isEmptyObject: _isEmptyObject,
-  isString: _isString,
-  isUndefined: _isUndefined
-} = require('./types');
-
-const {
-  isList: _isList,
-  isValue: _isValue,
-  isGraph: _isGraph,
-  isSubject: _isSubject
-} = require('./graphTypes');
-
-const {
-  expandIri: _expandIri,
-  getContextValue: _getContextValue,
-  isKeyword: _isKeyword,
-  process: _processContext,
-  processingMode: _processingMode
-} = require('./context');
-
-const {
-  isAbsolute: _isAbsoluteIri
-} = require('./url');
-
-const {
-  addValue: _addValue,
-  asArray: _asArray,
-  getValues: _getValues,
-  validateTypeValue: _validateTypeValue
-} = require('./util');
-
-const api = {};
-module.exports = api;
-const REGEX_BCP47 = /^[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$/;
-
-/**
- * Recursively expands an element using the given context. Any context in
- * the element will be removed. All context URLs must have been retrieved
- * before calling this method.
- *
- * @param activeCtx the context to use.
- * @param activeProperty the property for the element, null for none.
- * @param element the element to expand.
- * @param options the expansion options.
- * @param insideList true if the element is a list, false if not.
- * @param insideIndex true if the element is inside an index container,
- *          false if not.
- * @param typeScopedContext an optional type-scoped active context for
- *          expanding values of nodes that were expressed according to
- *          a type-scoped context.
- * @param expansionMap(info) a function that can be used to custom map
- *          unmappable values (or to throw an error when they are detected);
- *          if this function returns `undefined` then the default behavior
- *          will be used.
- *
- * @return a Promise that resolves to the expanded value.
- */
-api.expand = async ({
-  activeCtx,
-  activeProperty = null,
-  element,
-  options = {},
-  insideList = false,
-  insideIndex = false,
-  typeScopedContext = null,
-  expansionMap = () => undefined
-}) => {
-  // nothing to expand
-  if(element === null || element === undefined) {
-    return null;
-  }
-
-  // disable framing if activeProperty is @default
-  if(activeProperty === '@default') {
-    options = Object.assign({}, options, {isFrame: false});
-  }
-
-  if(!_isArray(element) && !_isObject(element)) {
-    // drop free-floating scalars that are not in lists unless custom mapped
-    if(!insideList && (activeProperty === null ||
-      _expandIri(activeCtx, activeProperty, {vocab: true},
-        options) === '@graph')) {
-      const mapped = await expansionMap({
-        unmappedValue: element,
-        activeCtx,
-        activeProperty,
-        options,
-        insideList
-      });
-      if(mapped === undefined) {
-        return null;
-      }
-      return mapped;
-    }
-
-    // expand element according to value expansion rules
-    return _expandValue({activeCtx, activeProperty, value: element, options});
-  }
-
-  // recursively expand array
-  if(_isArray(element)) {
-    let rval = [];
-    const container = _getContextValue(
-      activeCtx, activeProperty, '@container') || [];
-    insideList = insideList || container.includes('@list');
-    for(let i = 0; i < element.length; ++i) {
-      // expand element
-      let e = await api.expand({
-        activeCtx,
-        activeProperty,
-        element: element[i],
-        options,
-        expansionMap,
-        insideIndex,
-        typeScopedContext
-      });
-      if(insideList && _isArray(e)) {
-        e = {'@list': e};
-      }
-
-      if(e === null) {
-        e = await expansionMap({
-          unmappedValue: element[i],
-          activeCtx,
-          activeProperty,
-          parent: element,
-          index: i,
-          options,
-          expandedParent: rval,
-          insideList
-        });
-        if(e === undefined) {
-          continue;
-        }
-      }
-
-      if(_isArray(e)) {
-        rval = rval.concat(e);
-      } else {
-        rval.push(e);
-      }
-    }
-    return rval;
-  }
-
-  // recursively expand object:
-
-  // first, expand the active property
-  const expandedActiveProperty = _expandIri(
-    activeCtx, activeProperty, {vocab: true}, options);
-
-  // Get any property-scoped context for activeProperty
-  const propertyScopedCtx =
-    _getContextValue(activeCtx, activeProperty, '@context');
-
-  // second, determine if any type-scoped context should be reverted; it
-  // should only be reverted when the following are all true:
-  // 1. `element` is not a value or subject reference
-  // 2. `insideIndex` is false
-  typeScopedContext = typeScopedContext ||
-    (activeCtx.previousContext ? activeCtx : null);
-  let keys = Object.keys(element).sort();
-  let mustRevert = !insideIndex;
-  if(mustRevert && typeScopedContext && keys.length <= 2 &&
-    !keys.includes('@context')) {
-    for(const key of keys) {
-      const expandedProperty = _expandIri(
-        typeScopedContext, key, {vocab: true}, options);
-      if(expandedProperty === '@value') {
-        // value found, ensure type-scoped context is used to expand it
-        mustRevert = false;
-        activeCtx = typeScopedContext;
-        break;
-      }
-      if(expandedProperty === '@id' && keys.length === 1) {
-        // subject reference found, do not revert
-        mustRevert = false;
-        break;
-      }
-    }
-  }
-
-  if(mustRevert) {
-    // revert type scoped context
-    activeCtx = activeCtx.revertToPreviousContext();
-  }
-
-  // apply property-scoped context after reverting term-scoped context
-  if(!_isUndefined(propertyScopedCtx)) {
-    activeCtx = await _processContext({
-      activeCtx,
-      localCtx: propertyScopedCtx,
-      propagate: true,
-      overrideProtected: true,
-      options
-    });
-  }
-
-  // if element has a context, process it
-  if('@context' in element) {
-    activeCtx = await _processContext(
-      {activeCtx, localCtx: element['@context'], options});
-  }
-
-  // set the type-scoped context to the context on input, for use later
-  typeScopedContext = activeCtx;
-
-  // Remember the first key found expanding to @type
-  let typeKey = null;
-
-  // look for scoped contexts on `@type`
-  for(const key of keys) {
-    const expandedProperty = _expandIri(activeCtx, key, {vocab: true}, options);
-    if(expandedProperty === '@type') {
-      // set scoped contexts from @type
-      // avoid sorting if possible
-      typeKey = typeKey || key;
-      const value = element[key];
-      const types =
-        Array.isArray(value) ?
-          (value.length > 1 ? value.slice().sort() : value) : [value];
-      for(const type of types) {
-        const ctx = _getContextValue(typeScopedContext, type, '@context');
-        if(!_isUndefined(ctx)) {
-          activeCtx = await _processContext({
-            activeCtx,
-            localCtx: ctx,
-            options,
-            propagate: false
-          });
-        }
-      }
-    }
-  }
-
-  // process each key and value in element, ignoring @nest content
-  let rval = {};
-  await _expandObject({
-    activeCtx,
-    activeProperty,
-    expandedActiveProperty,
-    element,
-    expandedParent: rval,
-    options,
-    insideList,
-    typeKey,
-    typeScopedContext,
-    expansionMap});
-
-  // get property count on expanded output
-  keys = Object.keys(rval);
-  let count = keys.length;
-
-  if('@value' in rval) {
-    // @value must only have @language or @type
-    if('@type' in rval && ('@language' in rval || '@direction' in rval)) {
-      throw new JsonLdError(
-        'Invalid JSON-LD syntax; an element containing "@value" may not ' +
-        'contain both "@type" and either "@language" or "@direction".',
-        'jsonld.SyntaxError', {code: 'invalid value object', element: rval});
-    }
-    let validCount = count - 1;
-    if('@type' in rval) {
-      validCount -= 1;
-    }
-    if('@index' in rval) {
-      validCount -= 1;
-    }
-    if('@language' in rval) {
-      validCount -= 1;
-    }
-    if('@direction' in rval) {
-      validCount -= 1;
-    }
-    if(validCount !== 0) {
-      throw new JsonLdError(
-        'Invalid JSON-LD syntax; an element containing "@value" may only ' +
-        'have an "@index" property and either "@type" ' +
-        'or either or both "@language" or "@direction".',
-        'jsonld.SyntaxError', {code: 'invalid value object', element: rval});
-    }
-    const values = rval['@value'] === null ? [] : _asArray(rval['@value']);
-    const types = _getValues(rval, '@type');
-
-    // drop null @values unless custom mapped
-    if(_processingMode(activeCtx, 1.1) && types.includes('@json') &&
-      types.length === 1) {
-      // Any value of @value is okay if @type: @json
-    } else if(values.length === 0) {
-      const mapped = await expansionMap({
-        unmappedValue: rval,
-        activeCtx,
-        activeProperty,
-        element,
-        options,
-        insideList
-      });
-      if(mapped !== undefined) {
-        rval = mapped;
-      } else {
-        rval = null;
-      }
-    } else if(!values.every(v => (_isString(v) || _isEmptyObject(v))) &&
-      '@language' in rval) {
-      // if @language is present, @value must be a string
-      throw new JsonLdError(
-        'Invalid JSON-LD syntax; only strings may be language-tagged.',
-        'jsonld.SyntaxError',
-        {code: 'invalid language-tagged value', element: rval});
-    } else if(!types.every(t =>
-      (_isAbsoluteIri(t) && !(_isString(t) && t.indexOf('_:') === 0) ||
-      _isEmptyObject(t)))) {
-      throw new JsonLdError(
-        'Invalid JSON-LD syntax; an element containing "@value" and "@type" ' +
-        'must have an absolute IRI for the value of "@type".',
-        'jsonld.SyntaxError', {code: 'invalid typed value', element: rval});
-    }
-  } else if('@type' in rval && !_isArray(rval['@type'])) {
-    // convert @type to an array
-    rval['@type'] = [rval['@type']];
-  } else if('@set' in rval || '@list' in rval) {
-    // handle @set and @list
-    if(count > 1 && !(count === 2 && '@index' in rval)) {
-      throw new JsonLdError(
-        'Invalid JSON-LD syntax; if an element has the property "@set" ' +
-        'or "@list", then it can have at most one other property that is ' +
-        '"@index".', 'jsonld.SyntaxError',
-        {code: 'invalid set or list object', element: rval});
-    }
-    // optimize away @set
-    if('@set' in rval) {
-      rval = rval['@set'];
-      keys = Object.keys(rval);
-      count = keys.length;
-    }
-  } else if(count === 1 && '@language' in rval) {
-    // drop objects with only @language unless custom mapped
-    const mapped = await expansionMap(rval, {
-      unmappedValue: rval,
-      activeCtx,
-      activeProperty,
-      element,
-      options,
-      insideList
-    });
-    if(mapped !== undefined) {
-      rval = mapped;
-    } else {
-      rval = null;
-    }
-  }
-
-  // drop certain top-level objects that do not occur in lists, unless custom
-  // mapped
-  if(_isObject(rval) &&
-    !options.keepFreeFloatingNodes && !insideList &&
-    (activeProperty === null || expandedActiveProperty === '@graph')) {
-    // drop empty object, top-level @value/@list, or object with only @id
-    if(count === 0 || '@value' in rval || '@list' in rval ||
-      (count === 1 && '@id' in rval)) {
-      const mapped = await expansionMap({
-        unmappedValue: rval,
-        activeCtx,
-        activeProperty,
-        element,
-        options,
-        insideList
-      });
-      if(mapped !== undefined) {
-        rval = mapped;
-      } else {
-        rval = null;
-      }
-    }
-  }
-
-  return rval;
-};
-
-/**
- * Expand each key and value of element adding to result
- *
- * @param activeCtx the context to use.
- * @param activeProperty the property for the element.
- * @param expandedActiveProperty the expansion of activeProperty
- * @param element the element to expand.
- * @param expandedParent the expanded result into which to add values.
- * @param options the expansion options.
- * @param insideList true if the element is a list, false if not.
- * @param typeKey first key found expanding to @type.
- * @param typeScopedContext the context before reverting.
- * @param expansionMap(info) a function that can be used to custom map
- *          unmappable values (or to throw an error when they are detected);
- *          if this function returns `undefined` then the default behavior
- *          will be used.
- */
-async function _expandObject({
-  activeCtx,
-  activeProperty,
-  expandedActiveProperty,
-  element,
-  expandedParent,
-  options = {},
-  insideList,
-  typeKey,
-  typeScopedContext,
-  expansionMap
-}) {
-  const keys = Object.keys(element).sort();
-  const nests = [];
-  let unexpandedValue;
-
-  // Figure out if this is the type for a JSON literal
-  const isJsonType = element[typeKey] &&
-    _expandIri(activeCtx,
-      (_isArray(element[typeKey]) ? element[typeKey][0] : element[typeKey]),
-      {vocab: true}, options) === '@json';
-
-  for(const key of keys) {
-    let value = element[key];
-    let expandedValue;
-
-    // skip @context
-    if(key === '@context') {
-      continue;
-    }
-
-    // expand property
-    let expandedProperty = _expandIri(activeCtx, key, {vocab: true}, options);
-
-    // drop non-absolute IRI keys that aren't keywords unless custom mapped
-    if(expandedProperty === null ||
-      !(_isAbsoluteIri(expandedProperty) || _isKeyword(expandedProperty))) {
-      // TODO: use `await` to support async
-      expandedProperty = expansionMap({
-        unmappedProperty: key,
-        activeCtx,
-        activeProperty,
-        parent: element,
-        options,
-        insideList,
-        value,
-        expandedParent
-      });
-      if(expandedProperty === undefined) {
-        continue;
-      }
-    }
-
-    if(_isKeyword(expandedProperty)) {
-      if(expandedActiveProperty === '@reverse') {
-        throw new JsonLdError(
-          'Invalid JSON-LD syntax; a keyword cannot be used as a @reverse ' +
-          'property.', 'jsonld.SyntaxError',
-          {code: 'invalid reverse property map', value});
-      }
-      if(expandedProperty in expandedParent &&
-         expandedProperty !== '@included' &&
-         expandedProperty !== '@type') {
-        throw new JsonLdError(
-          'Invalid JSON-LD syntax; colliding keywords detected.',
-          'jsonld.SyntaxError',
-          {code: 'colliding keywords', keyword: expandedProperty});
-      }
-    }
-
-    // syntax error if @id is not a string
-    if(expandedProperty === '@id') {
-      if(!_isString(value)) {
-        if(!options.isFrame) {
-          throw new JsonLdError(
-            'Invalid JSON-LD syntax; "@id" value must a string.',
-            'jsonld.SyntaxError', {code: 'invalid @id value', value});
-        }
-        if(_isObject(value)) {
-          // empty object is a wildcard
-          if(!_isEmptyObject(value)) {
-            throw new JsonLdError(
-              'Invalid JSON-LD syntax; "@id" value an empty object or array ' +
-              'of strings, if framing',
-              'jsonld.SyntaxError', {code: 'invalid @id value', value});
-          }
-        } else if(_isArray(value)) {
-          if(!value.every(v => _isString(v))) {
-            throw new JsonLdError(
-              'Invalid JSON-LD syntax; "@id" value an empty object or array ' +
-              'of strings, if framing',
-              'jsonld.SyntaxError', {code: 'invalid @id value', value});
-          }
-        } else {
-          throw new JsonLdError(
-            'Invalid JSON-LD syntax; "@id" value an empty object or array ' +
-            'of strings, if framing',
-            'jsonld.SyntaxError', {code: 'invalid @id value', value});
-        }
-      }
-
-      _addValue(
-        expandedParent, '@id',
-        _asArray(value).map(v =>
-          _isString(v) ? _expandIri(activeCtx, v, {base: true}, options) : v),
-        {propertyIsArray: options.isFrame});
-      continue;
-    }
-
-    if(expandedProperty === '@type') {
-      // if framing, can be a default object, but need to expand
-      // key to determine that
-      if(_isObject(value)) {
-        value = Object.fromEntries(Object.entries(value).map(([k, v]) => [
-          _expandIri(typeScopedContext, k, {vocab: true}),
-          _asArray(v).map(vv =>
-            _expandIri(typeScopedContext, vv, {base: true, vocab: true})
-          )
-        ]));
-      }
-      _validateTypeValue(value, options.isFrame);
-      _addValue(
-        expandedParent, '@type',
-        _asArray(value).map(v =>
-          _isString(v) ?
-            _expandIri(typeScopedContext, v,
-              {base: true, vocab: true}, options) : v),
-        {propertyIsArray: options.isFrame});
-      continue;
-    }
-
-    // Included blocks are treated as an array of separate object nodes sharing
-    // the same referencing active_property.
-    // For 1.0, it is skipped as are other unknown keywords
-    if(expandedProperty === '@included' && _processingMode(activeCtx, 1.1)) {
-      const includedResult = _asArray(await api.expand({
-        activeCtx,
-        activeProperty,
-        element: value,
-        options,
-        expansionMap
-      }));
-
-      // Expanded values must be node objects
-      if(!includedResult.every(v => _isSubject(v))) {
-        throw new JsonLdError(
-          'Invalid JSON-LD syntax; ' +
-          'values of @included must expand to node objects.',
-          'jsonld.SyntaxError', {code: 'invalid @included value', value});
-      }
-
-      _addValue(
-        expandedParent, '@included', includedResult, {propertyIsArray: true});
-      continue;
-    }
-
-    // @graph must be an array or an object
-    if(expandedProperty === '@graph' &&
-      !(_isObject(value) || _isArray(value))) {
-      throw new JsonLdError(
-        'Invalid JSON-LD syntax; "@graph" value must not be an ' +
-        'object or an array.',
-        'jsonld.SyntaxError', {code: 'invalid @graph value', value});
-    }
-
-    if(expandedProperty === '@value') {
-      // capture value for later
-      // "colliding keywords" check prevents this from being set twice
-      unexpandedValue = value;
-      if(isJsonType && _processingMode(activeCtx, 1.1)) {
-        // no coercion to array, and retain all values
-        expandedParent['@value'] = value;
-      } else {
-        _addValue(
-          expandedParent, '@value', value, {propertyIsArray: options.isFrame});
-      }
-      continue;
-    }
-
-    // @language must be a string
-    // it should match BCP47
-    if(expandedProperty === '@language') {
-      if(value === null) {
-        // drop null @language values, they expand as if they didn't exist
-        continue;
-      }
-      if(!_isString(value) && !options.isFrame) {
-        throw new JsonLdError(
-          'Invalid JSON-LD syntax; "@language" value must be a string.',
-          'jsonld.SyntaxError',
-          {code: 'invalid language-tagged string', value});
-      }
-      // ensure language value is lowercase
-      value = _asArray(value).map(v => _isString(v) ? v.toLowerCase() : v);
-
-      // ensure language tag matches BCP47
-      for(const lang of value) {
-        if(_isString(lang) && !lang.match(REGEX_BCP47)) {
-          console.warn(`@language must be valid BCP47: ${lang}`);
-        }
-      }
-
-      _addValue(
-        expandedParent, '@language', value, {propertyIsArray: options.isFrame});
-      continue;
-    }
-
-    // @direction must be "ltr" or "rtl"
-    if(expandedProperty === '@direction') {
-      if(!_isString(value) && !options.isFrame) {
-        throw new JsonLdError(
-          'Invalid JSON-LD syntax; "@direction" value must be a string.',
-          'jsonld.SyntaxError',
-          {code: 'invalid base direction', value});
-      }
-
-      value = _asArray(value);
-
-      // ensure direction is "ltr" or "rtl"
-      for(const dir of value) {
-        if(_isString(dir) && dir !== 'ltr' && dir !== 'rtl') {
-          throw new JsonLdError(
-            'Invalid JSON-LD syntax; "@direction" must be "ltr" or "rtl".',
-            'jsonld.SyntaxError',
-            {code: 'invalid base direction', value});
-        }
-      }
-
-      _addValue(
-        expandedParent, '@direction', value,
-        {propertyIsArray: options.isFrame});
-      continue;
-    }
-
-    // @index must be a string
-    if(expandedProperty === '@index') {
-      if(!_isString(value)) {
-        throw new JsonLdError(
-          'Invalid JSON-LD syntax; "@index" value must be a string.',
-          'jsonld.SyntaxError',
-          {code: 'invalid @index value', value});
-      }
-      _addValue(expandedParent, '@index', value);
-      continue;
-    }
-
-    // @reverse must be an object
-    if(expandedProperty === '@reverse') {
-      if(!_isObject(value)) {
-        throw new JsonLdError(
-          'Invalid JSON-LD syntax; "@reverse" value must be an object.',
-          'jsonld.SyntaxError', {code: 'invalid @reverse value', value});
-      }
-
-      expandedValue = await api.expand({
-        activeCtx,
-        activeProperty:
-        '@reverse',
-        element: value,
-        options,
-        expansionMap
-      });
-      // properties double-reversed
-      if('@reverse' in expandedValue) {
-        for(const property in expandedValue['@reverse']) {
-          _addValue(
-            expandedParent, property, expandedValue['@reverse'][property],
-            {propertyIsArray: true});
-        }
-      }
-
-      // FIXME: can this be merged with code below to simplify?
-      // merge in all reversed properties
-      let reverseMap = expandedParent['@reverse'] || null;
-      for(const property in expandedValue) {
-        if(property === '@reverse') {
-          continue;
-        }
-        if(reverseMap === null) {
-          reverseMap = expandedParent['@reverse'] = {};
-        }
-        _addValue(reverseMap, property, [], {propertyIsArray: true});
-        const items = expandedValue[property];
-        for(let ii = 0; ii < items.length; ++ii) {
-          const item = items[ii];
-          if(_isValue(item) || _isList(item)) {
-            throw new JsonLdError(
-              'Invalid JSON-LD syntax; "@reverse" value must not be a ' +
-              '@value or an @list.', 'jsonld.SyntaxError',
-              {code: 'invalid reverse property value', value: expandedValue});
-          }
-          _addValue(reverseMap, property, item, {propertyIsArray: true});
-        }
-      }
-
-      continue;
-    }
-
-    // nested keys
-    if(expandedProperty === '@nest') {
-      nests.push(key);
-      continue;
-    }
-
-    // use potential scoped context for key
-    let termCtx = activeCtx;
-    const ctx = _getContextValue(activeCtx, key, '@context');
-    if(!_isUndefined(ctx)) {
-      termCtx = await _processContext({
-        activeCtx,
-        localCtx: ctx,
-        propagate: true,
-        overrideProtected: true,
-        options
-      });
-    }
-
-    const container = _getContextValue(termCtx, key, '@container') || [];
-
-    if(container.includes('@language') && _isObject(value)) {
-      const direction = _getContextValue(termCtx, key, '@direction');
-      // handle language map container (skip if value is not an object)
-      expandedValue = _expandLanguageMap(termCtx, value, direction, options);
-    } else if(container.includes('@index') && _isObject(value)) {
-      // handle index container (skip if value is not an object)
-      const asGraph = container.includes('@graph');
-      const indexKey = _getContextValue(termCtx, key, '@index') || '@index';
-      const propertyIndex = indexKey !== '@index' &&
-        _expandIri(activeCtx, indexKey, {vocab: true}, options);
-
-      expandedValue = await _expandIndexMap({
-        activeCtx: termCtx,
-        options,
-        activeProperty: key,
-        value,
-        expansionMap,
-        asGraph,
-        indexKey,
-        propertyIndex
-      });
-    } else if(container.includes('@id') && _isObject(value)) {
-      // handle id container (skip if value is not an object)
-      const asGraph = container.includes('@graph');
-      expandedValue = await _expandIndexMap({
-        activeCtx: termCtx,
-        options,
-        activeProperty: key,
-        value,
-        expansionMap,
-        asGraph,
-        indexKey: '@id'
-      });
-    } else if(container.includes('@type') && _isObject(value)) {
-      // handle type container (skip if value is not an object)
-      expandedValue = await _expandIndexMap({
-        // since container is `@type`, revert type scoped context when expanding
-        activeCtx: termCtx.revertToPreviousContext(),
-        options,
-        activeProperty: key,
-        value,
-        expansionMap,
-        asGraph: false,
-        indexKey: '@type'
-      });
-    } else {
-      // recurse into @list or @set
-      const isList = (expandedProperty === '@list');
-      if(isList || expandedProperty === '@set') {
-        let nextActiveProperty = activeProperty;
-        if(isList && expandedActiveProperty === '@graph') {
-          nextActiveProperty = null;
-        }
-        expandedValue = await api.expand({
-          activeCtx: termCtx,
-          activeProperty: nextActiveProperty,
-          element: value,
-          options,
-          insideList: isList,
-          expansionMap
-        });
-      } else if(
-        _getContextValue(activeCtx, key, '@type') === '@json') {
-        expandedValue = {
-          '@type': '@json',
-          '@value': value
-        };
-      } else {
-        // recursively expand value with key as new active property
-        expandedValue = await api.expand({
-          activeCtx: termCtx,
-          activeProperty: key,
-          element: value,
-          options,
-          insideList: false,
-          expansionMap
-        });
-      }
-    }
-
-    // drop null values if property is not @value
-    if(expandedValue === null && expandedProperty !== '@value') {
-      // TODO: use `await` to support async
-      expandedValue = expansionMap({
-        unmappedValue: value,
-        expandedProperty,
-        activeCtx: termCtx,
-        activeProperty,
-        parent: element,
-        options,
-        insideList,
-        key,
-        expandedParent
-      });
-      if(expandedValue === undefined) {
-        continue;
-      }
-    }
-
-    // convert expanded value to @list if container specifies it
-    if(expandedProperty !== '@list' && !_isList(expandedValue) &&
-      container.includes('@list')) {
-      // ensure expanded value in @list is an array
-      expandedValue = {'@list': _asArray(expandedValue)};
-    }
-
-    // convert expanded value to @graph if container specifies it
-    // and value is not, itself, a graph
-    // index cases handled above
-    if(container.includes('@graph') &&
-      !container.some(key => key === '@id' || key === '@index')) {
-      // ensure expanded values are arrays
-      expandedValue = _asArray(expandedValue)
-        .map(v => ({'@graph': _asArray(v)}));
-    }
-
-    // FIXME: can this be merged with code above to simplify?
-    // merge in reverse properties
-    if(termCtx.mappings.has(key) && termCtx.mappings.get(key).reverse) {
-      const reverseMap =
-        expandedParent['@reverse'] = expandedParent['@reverse'] || {};
-      expandedValue = _asArray(expandedValue);
-      for(let ii = 0; ii < expandedValue.length; ++ii) {
-        const item = expandedValue[ii];
-        if(_isValue(item) || _isList(item)) {
-          throw new JsonLdError(
-            'Invalid JSON-LD syntax; "@reverse" value must not be a ' +
-            '@value or an @list.', 'jsonld.SyntaxError',
-            {code: 'invalid reverse property value', value: expandedValue});
-        }
-        _addValue(reverseMap, expandedProperty, item, {propertyIsArray: true});
-      }
-      continue;
-    }
-
-    // add value for property
-    // special keywords handled above
-    _addValue(expandedParent, expandedProperty, expandedValue, {
-      propertyIsArray: true
-    });
-  }
-
-  // @value must not be an object or an array (unless framing) or if @type is
-  // @json
-  if('@value' in expandedParent) {
-    if(expandedParent['@type'] === '@json' && _processingMode(activeCtx, 1.1)) {
-      // allow any value, to be verified when the object is fully expanded and
-      // the @type is @json.
-    } else if((_isObject(unexpandedValue) || _isArray(unexpandedValue)) &&
-      !options.isFrame) {
-      throw new JsonLdError(
-        'Invalid JSON-LD syntax; "@value" value must not be an ' +
-        'object or an array.',
-        'jsonld.SyntaxError',
-        {code: 'invalid value object value', value: unexpandedValue});
-    }
-  }
-
-  // expand each nested key
-  for(const key of nests) {
-    const nestedValues = _isArray(element[key]) ? element[key] : [element[key]];
-    for(const nv of nestedValues) {
-      if(!_isObject(nv) || Object.keys(nv).some(k =>
-        _expandIri(activeCtx, k, {vocab: true}, options) === '@value')) {
-        throw new JsonLdError(
-          'Invalid JSON-LD syntax; nested value must be a node object.',
-          'jsonld.SyntaxError',
-          {code: 'invalid @nest value', value: nv});
-      }
-      await _expandObject({
-        activeCtx,
-        activeProperty,
-        expandedActiveProperty,
-        element: nv,
-        expandedParent,
-        options,
-        insideList,
-        typeScopedContext,
-        typeKey,
-        expansionMap});
-    }
-  }
-}
-
-/**
- * Expands the given value by using the coercion and keyword rules in the
- * given context.
- *
- * @param activeCtx the active context to use.
- * @param activeProperty the active property the value is associated with.
- * @param value the value to expand.
- * @param {Object} [options] - processing options.
- *
- * @return the expanded value.
- */
-function _expandValue({activeCtx, activeProperty, value, options}) {
-  // nothing to expand
-  if(value === null || value === undefined) {
-    return null;
-  }
-
-  // special-case expand @id and @type (skips '@id' expansion)
-  const expandedProperty = _expandIri(
-    activeCtx, activeProperty, {vocab: true}, options);
-  if(expandedProperty === '@id') {
-    return _expandIri(activeCtx, value, {base: true}, options);
-  } else if(expandedProperty === '@type') {
-    return _expandIri(activeCtx, value, {vocab: true, base: true}, options);
-  }
-
-  // get type definition from context
-  const type = _getContextValue(activeCtx, activeProperty, '@type');
-
-  // do @id expansion (automatic for @graph)
-  if((type === '@id' || expandedProperty === '@graph') && _isString(value)) {
-    return {'@id': _expandIri(activeCtx, value, {base: true}, options)};
-  }
-  // do @id expansion w/vocab
-  if(type === '@vocab' && _isString(value)) {
-    return {
-      '@id': _expandIri(activeCtx, value, {vocab: true, base: true}, options)
-    };
-  }
-
-  // do not expand keyword values
-  if(_isKeyword(expandedProperty)) {
-    return value;
-  }
-
-  const rval = {};
-
-  if(type && !['@id', '@vocab', '@none'].includes(type)) {
-    // other type
-    rval['@type'] = type;
-  } else if(_isString(value)) {
-    // check for language tagging for strings
-    const language = _getContextValue(activeCtx, activeProperty, '@language');
-    if(language !== null) {
-      rval['@language'] = language;
-    }
-    const direction = _getContextValue(activeCtx, activeProperty, '@direction');
-    if(direction !== null) {
-      rval['@direction'] = direction;
-    }
-  }
-  // do conversion of values that aren't basic JSON types to strings
-  if(!['boolean', 'number', 'string'].includes(typeof value)) {
-    value = value.toString();
-  }
-  rval['@value'] = value;
-
-  return rval;
-}
-
-/**
- * Expands a language map.
- *
- * @param activeCtx the active context to use.
- * @param languageMap the language map to expand.
- * @param direction the direction to apply to values.
- * @param {Object} [options] - processing options.
- *
- * @return the expanded language map.
- */
-function _expandLanguageMap(activeCtx, languageMap, direction, options) {
-  const rval = [];
-  const keys = Object.keys(languageMap).sort();
-  for(const key of keys) {
-    const expandedKey = _expandIri(activeCtx, key, {vocab: true}, options);
-    let val = languageMap[key];
-    if(!_isArray(val)) {
-      val = [val];
-    }
-    for(const item of val) {
-      if(item === null) {
-        // null values are allowed (8.5) but ignored (3.1)
-        continue;
-      }
-      if(!_isString(item)) {
-        throw new JsonLdError(
-          'Invalid JSON-LD syntax; language map values must be strings.',
-          'jsonld.SyntaxError',
-          {code: 'invalid language map value', languageMap});
-      }
-      const val = {'@value': item};
-      if(expandedKey !== '@none') {
-        val['@language'] = key.toLowerCase();
-      }
-      if(direction) {
-        val['@direction'] = direction;
-      }
-      rval.push(val);
-    }
-  }
-  return rval;
-}
-
-async function _expandIndexMap(
-  {activeCtx, options, activeProperty, value, expansionMap, asGraph,
-    indexKey, propertyIndex}) {
-  const rval = [];
-  const keys = Object.keys(value).sort();
-  const isTypeIndex = indexKey === '@type';
-  for(let key of keys) {
-    // if indexKey is @type, there may be a context defined for it
-    if(isTypeIndex) {
-      const ctx = _getContextValue(activeCtx, key, '@context');
-      if(!_isUndefined(ctx)) {
-        activeCtx = await _processContext({
-          activeCtx,
-          localCtx: ctx,
-          propagate: false,
-          options
-        });
-      }
-    }
-
-    let val = value[key];
-    if(!_isArray(val)) {
-      val = [val];
-    }
-
-    val = await api.expand({
-      activeCtx,
-      activeProperty,
-      element: val,
-      options,
-      insideList: false,
-      insideIndex: true,
-      expansionMap
-    });
-
-    // expand for @type, but also for @none
-    let expandedKey;
-    if(propertyIndex) {
-      if(key === '@none') {
-        expandedKey = '@none';
-      } else {
-        expandedKey = _expandValue(
-          {activeCtx, activeProperty: indexKey, value: key, options});
-      }
-    } else {
-      expandedKey = _expandIri(activeCtx, key, {vocab: true}, options);
-    }
-
-    if(indexKey === '@id') {
-      // expand document relative
-      key = _expandIri(activeCtx, key, {base: true}, options);
-    } else if(isTypeIndex) {
-      key = expandedKey;
-    }
-
-    for(let item of val) {
-      // If this is also a @graph container, turn items into graphs
-      if(asGraph && !_isGraph(item)) {
-        item = {'@graph': [item]};
-      }
-      if(indexKey === '@type') {
-        if(expandedKey === '@none') {
-          // ignore @none
-        } else if(item['@type']) {
-          item['@type'] = [key].concat(item['@type']);
-        } else {
-          item['@type'] = [key];
-        }
-      } else if(_isValue(item) &&
-        !['@language', '@type', '@index'].includes(indexKey)) {
-        throw new JsonLdError(
-          'Invalid JSON-LD syntax; Attempt to add illegal key to value ' +
-          `object: "${indexKey}".`,
-          'jsonld.SyntaxError',
-          {code: 'invalid value object', value: item});
-      } else if(propertyIndex) {
-        // index is a property to be expanded, and values interpreted for that
-        // property
-        if(expandedKey !== '@none') {
-          // expand key as a value
-          _addValue(item, propertyIndex, expandedKey, {
-            propertyIsArray: true,
-            prependValue: true
-          });
-        }
-      } else if(expandedKey !== '@none' && !(indexKey in item)) {
-        item[indexKey] = key;
-      }
-      rval.push(item);
-    }
-  }
-  return rval;
-}
-
-},{"./JsonLdError":188,"./context":195,"./graphTypes":201,"./types":206,"./url":207,"./util":208}],198:[function(require,module,exports){
-/*
- * Copyright (c) 2017 Digital Bazaar, Inc. All rights reserved.
- */
-'use strict';
-
-const {
-  isSubjectReference: _isSubjectReference
-} = require('./graphTypes');
-
-const {
-  createMergedNodeMap: _createMergedNodeMap
-} = require('./nodeMap');
-
-const api = {};
-module.exports = api;
-
-/**
- * Performs JSON-LD flattening.
- *
- * @param input the expanded JSON-LD to flatten.
- *
- * @return the flattened output.
- */
-api.flatten = input => {
-  const defaultGraph = _createMergedNodeMap(input);
-
-  // produce flattened output
-  const flattened = [];
-  const keys = Object.keys(defaultGraph).sort();
-  for(let ki = 0; ki < keys.length; ++ki) {
-    const node = defaultGraph[keys[ki]];
-    // only add full subjects to top-level
-    if(!_isSubjectReference(node)) {
-      flattened.push(node);
-    }
-  }
-  return flattened;
-};
-
-},{"./graphTypes":201,"./nodeMap":203}],199:[function(require,module,exports){
-/*
- * Copyright (c) 2017 Digital Bazaar, Inc. All rights reserved.
- */
-'use strict';
-
-const {isKeyword} = require('./context');
-const graphTypes = require('./graphTypes');
-const types = require('./types');
-const util = require('./util');
-const url = require('./url');
-const JsonLdError = require('./JsonLdError');
-const {
-  createNodeMap: _createNodeMap,
-  mergeNodeMapGraphs: _mergeNodeMapGraphs
-} = require('./nodeMap');
-
-const api = {};
-module.exports = api;
-
-/**
- * Performs JSON-LD `merged` framing.
- *
- * @param input the expanded JSON-LD to frame.
- * @param frame the expanded JSON-LD frame to use.
- * @param options the framing options.
- *
- * @return the framed output.
- */
-api.frameMergedOrDefault = (input, frame, options) => {
-  // create framing state
-  const state = {
-    options,
-    embedded: false,
-    graph: '@default',
-    graphMap: {'@default': {}},
-    subjectStack: [],
-    link: {},
-    bnodeMap: {}
-  };
-
-  // produce a map of all graphs and name each bnode
-  // FIXME: currently uses subjects from @merged graph only
-  const issuer = new util.IdentifierIssuer('_:b');
-  _createNodeMap(input, state.graphMap, '@default', issuer);
-  if(options.merged) {
-    state.graphMap['@merged'] = _mergeNodeMapGraphs(state.graphMap);
-    state.graph = '@merged';
-  }
-  state.subjects = state.graphMap[state.graph];
-
-  // frame the subjects
-  const framed = [];
-  api.frame(state, Object.keys(state.subjects).sort(), frame, framed);
-
-  // If pruning blank nodes, find those to prune
-  if(options.pruneBlankNodeIdentifiers) {
-    // remove all blank nodes appearing only once, done in compaction
-    options.bnodesToClear =
-      Object.keys(state.bnodeMap).filter(id => state.bnodeMap[id].length === 1);
-  }
-
-  // remove @preserve from results
-  options.link = {};
-  return _cleanupPreserve(framed, options);
-};
-
-/**
- * Frames subjects according to the given frame.
- *
- * @param state the current framing state.
- * @param subjects the subjects to filter.
- * @param frame the frame.
- * @param parent the parent subject or top-level array.
- * @param property the parent property, initialized to null.
- */
-api.frame = (state, subjects, frame, parent, property = null) => {
-  // validate the frame
-  _validateFrame(frame);
-  frame = frame[0];
-
-  // get flags for current frame
-  const options = state.options;
-  const flags = {
-    embed: _getFrameFlag(frame, options, 'embed'),
-    explicit: _getFrameFlag(frame, options, 'explicit'),
-    requireAll: _getFrameFlag(frame, options, 'requireAll')
-  };
-
-  // get link for current graph
-  if(!state.link.hasOwnProperty(state.graph)) {
-    state.link[state.graph] = {};
-  }
-  const link = state.link[state.graph];
-
-  // filter out subjects that match the frame
-  const matches = _filterSubjects(state, subjects, frame, flags);
-
-  // add matches to output
-  const ids = Object.keys(matches).sort();
-  for(const id of ids) {
-    const subject = matches[id];
-
-    /* Note: In order to treat each top-level match as a compartmentalized
-    result, clear the unique embedded subjects map when the property is null,
-    which only occurs at the top-level. */
-    if(property === null) {
-      state.uniqueEmbeds = {[state.graph]: {}};
-    } else {
-      state.uniqueEmbeds[state.graph] = state.uniqueEmbeds[state.graph] || {};
-    }
-
-    if(flags.embed === '@link' && id in link) {
-      // TODO: may want to also match an existing linked subject against
-      // the current frame ... so different frames could produce different
-      // subjects that are only shared in-memory when the frames are the same
-
-      // add existing linked subject
-      _addFrameOutput(parent, property, link[id]);
-      continue;
-    }
-
-    // start output for subject
-    const output = {'@id': id};
-    if(id.indexOf('_:') === 0) {
-      util.addValue(state.bnodeMap, id, output, {propertyIsArray: true});
-    }
-    link[id] = output;
-
-    // validate @embed
-    if((flags.embed === '@first' || flags.embed === '@last') && state.is11) {
-      throw new JsonLdError(
-        'Invalid JSON-LD syntax; invalid value of @embed.',
-        'jsonld.SyntaxError', {code: 'invalid @embed value', frame});
-    }
-
-    if(!state.embedded && state.uniqueEmbeds[state.graph].hasOwnProperty(id)) {
-      // skip adding this node object to the top level, as it was
-      // already included in another node object
-      continue;
-    }
-
-    // if embed is @never or if a circular reference would be created by an
-    // embed, the subject cannot be embedded, just add the reference;
-    // note that a circular reference won't occur when the embed flag is
-    // `@link` as the above check will short-circuit before reaching this point
-    if(state.embedded &&
-      (flags.embed === '@never' ||
-      _createsCircularReference(subject, state.graph, state.subjectStack))) {
-      _addFrameOutput(parent, property, output);
-      continue;
-    }
-
-    // if only the first (or once) should be embedded
-    if(state.embedded &&
-       (flags.embed == '@first' || flags.embed == '@once') &&
-       state.uniqueEmbeds[state.graph].hasOwnProperty(id)) {
-      _addFrameOutput(parent, property, output);
-      continue;
-    }
-
-    // if only the last match should be embedded
-    if(flags.embed === '@last') {
-      // remove any existing embed
-      if(id in state.uniqueEmbeds[state.graph]) {
-        _removeEmbed(state, id);
-      }
-    }
-
-    state.uniqueEmbeds[state.graph][id] = {parent, property};
-
-    // push matching subject onto stack to enable circular embed checks
-    state.subjectStack.push({subject, graph: state.graph});
-
-    // subject is also the name of a graph
-    if(id in state.graphMap) {
-      let recurse = false;
-      let subframe = null;
-      if(!('@graph' in frame)) {
-        recurse = state.graph !== '@merged';
-        subframe = {};
-      } else {
-        subframe = frame['@graph'][0];
-        recurse = !(id === '@merged' || id === '@default');
-        if(!types.isObject(subframe)) {
-          subframe = {};
-        }
-      }
-
-      if(recurse) {
-        // recurse into graph
-        api.frame(
-          {...state, graph: id, embedded: false},
-          Object.keys(state.graphMap[id]).sort(), [subframe], output, '@graph');
-      }
-    }
-
-    // if frame has @included, recurse over its sub-frame
-    if('@included' in frame) {
-      api.frame(
-        {...state, embedded: false},
-        subjects, frame['@included'], output, '@included');
-    }
-
-    // iterate over subject properties
-    for(const prop of Object.keys(subject).sort()) {
-      // copy keywords to output
-      if(isKeyword(prop)) {
-        output[prop] = util.clone(subject[prop]);
-
-        if(prop === '@type') {
-          // count bnode values of @type
-          for(const type of subject['@type']) {
-            if(type.indexOf('_:') === 0) {
-              util.addValue(
-                state.bnodeMap, type, output, {propertyIsArray: true});
-            }
-          }
-        }
-        continue;
-      }
-
-      // explicit is on and property isn't in the frame, skip processing
-      if(flags.explicit && !(prop in frame)) {
-        continue;
-      }
-
-      // add objects
-      for(const o of subject[prop]) {
-        const subframe = (prop in frame ?
-          frame[prop] : _createImplicitFrame(flags));
-
-        // recurse into list
-        if(graphTypes.isList(o)) {
-          const subframe =
-            (frame[prop] && frame[prop][0] && frame[prop][0]['@list']) ?
-              frame[prop][0]['@list'] :
-              _createImplicitFrame(flags);
-
-          // add empty list
-          const list = {'@list': []};
-          _addFrameOutput(output, prop, list);
-
-          // add list objects
-          const src = o['@list'];
-          for(const oo of src) {
-            if(graphTypes.isSubjectReference(oo)) {
-              // recurse into subject reference
-              api.frame(
-                {...state, embedded: true},
-                [oo['@id']], subframe, list, '@list');
-            } else {
-              // include other values automatically
-              _addFrameOutput(list, '@list', util.clone(oo));
-            }
-          }
-        } else if(graphTypes.isSubjectReference(o)) {
-          // recurse into subject reference
-          api.frame(
-            {...state, embedded: true},
-            [o['@id']], subframe, output, prop);
-        } else if(_valueMatch(subframe[0], o)) {
-          // include other values, if they match
-          _addFrameOutput(output, prop, util.clone(o));
-        }
-      }
-    }
-
-    // handle defaults
-    for(const prop of Object.keys(frame).sort()) {
-      // skip keywords
-      if(prop === '@type') {
-        if(!types.isObject(frame[prop][0]) ||
-           !('@default' in frame[prop][0])) {
-          continue;
-        }
-        // allow through default types
-      } else if(isKeyword(prop)) {
-        continue;
-      }
-
-      // if omit default is off, then include default values for properties
-      // that appear in the next frame but are not in the matching subject
-      const next = frame[prop][0] || {};
-      const omitDefaultOn = _getFrameFlag(next, options, 'omitDefault');
-      if(!omitDefaultOn && !(prop in output)) {
-        let preserve = '@null';
-        if('@default' in next) {
-          preserve = util.clone(next['@default']);
-        }
-        if(!types.isArray(preserve)) {
-          preserve = [preserve];
-        }
-        output[prop] = [{'@preserve': preserve}];
-      }
-    }
-
-    // if embed reverse values by finding nodes having this subject as a value
-    // of the associated property
-    for(const reverseProp of Object.keys(frame['@reverse'] || {}).sort()) {
-      const subframe = frame['@reverse'][reverseProp];
-      for(const subject of Object.keys(state.subjects)) {
-        const nodeValues =
-          util.getValues(state.subjects[subject], reverseProp);
-        if(nodeValues.some(v => v['@id'] === id)) {
-          // node has property referencing this subject, recurse
-          output['@reverse'] = output['@reverse'] || {};
-          util.addValue(
-            output['@reverse'], reverseProp, [], {propertyIsArray: true});
-          api.frame(
-            {...state, embedded: true},
-            [subject], subframe, output['@reverse'][reverseProp],
-            property);
-        }
-      }
-    }
-
-    // add output to parent
-    _addFrameOutput(parent, property, output);
-
-    // pop matching subject from circular ref-checking stack
-    state.subjectStack.pop();
-  }
-};
-
-/**
- * Replace `@null` with `null`, removing it from arrays.
- *
- * @param input the framed, compacted output.
- * @param options the framing options used.
- *
- * @return the resulting output.
- */
-api.cleanupNull = (input, options) => {
-  // recurse through arrays
-  if(types.isArray(input)) {
-    const noNulls = input.map(v => api.cleanupNull(v, options));
-    return noNulls.filter(v => v); // removes nulls from array
-  }
-
-  if(input === '@null') {
-    return null;
-  }
-
-  if(types.isObject(input)) {
-    // handle in-memory linked nodes
-    if('@id' in input) {
-      const id = input['@id'];
-      if(options.link.hasOwnProperty(id)) {
-        const idx = options.link[id].indexOf(input);
-        if(idx !== -1) {
-          // already visited
-          return options.link[id][idx];
-        }
-        // prevent circular visitation
-        options.link[id].push(input);
-      } else {
-        // prevent circular visitation
-        options.link[id] = [input];
-      }
-    }
-
-    for(const key in input) {
-      input[key] = api.cleanupNull(input[key], options);
-    }
-  }
-  return input;
-};
-
-/**
- * Creates an implicit frame when recursing through subject matches. If
- * a frame doesn't have an explicit frame for a particular property, then
- * a wildcard child frame will be created that uses the same flags that the
- * parent frame used.
- *
- * @param flags the current framing flags.
- *
- * @return the implicit frame.
- */
-function _createImplicitFrame(flags) {
-  const frame = {};
-  for(const key in flags) {
-    if(flags[key] !== undefined) {
-      frame['@' + key] = [flags[key]];
-    }
-  }
-  return [frame];
-}
-
-/**
- * Checks the current subject stack to see if embedding the given subject
- * would cause a circular reference.
- *
- * @param subjectToEmbed the subject to embed.
- * @param graph the graph the subject to embed is in.
- * @param subjectStack the current stack of subjects.
- *
- * @return true if a circular reference would be created, false if not.
- */
-function _createsCircularReference(subjectToEmbed, graph, subjectStack) {
-  for(let i = subjectStack.length - 1; i >= 0; --i) {
-    const subject = subjectStack[i];
-    if(subject.graph === graph &&
-      subject.subject['@id'] === subjectToEmbed['@id']) {
-      return true;
-    }
-  }
-  return false;
-}
-
-/**
- * Gets the frame flag value for the given flag name.
- *
- * @param frame the frame.
- * @param options the framing options.
- * @param name the flag name.
- *
- * @return the flag value.
- */
-function _getFrameFlag(frame, options, name) {
-  const flag = '@' + name;
-  let rval = (flag in frame ? frame[flag][0] : options[name]);
-  if(name === 'embed') {
-    // default is "@last"
-    // backwards-compatibility support for "embed" maps:
-    // true => "@last"
-    // false => "@never"
-    if(rval === true) {
-      rval = '@once';
-    } else if(rval === false) {
-      rval = '@never';
-    } else if(rval !== '@always' && rval !== '@never' && rval !== '@link' &&
-      rval !== '@first' && rval !== '@last' && rval !== '@once') {
-      throw new JsonLdError(
-        'Invalid JSON-LD syntax; invalid value of @embed.',
-        'jsonld.SyntaxError', {code: 'invalid @embed value', frame});
-    }
-  }
-  return rval;
-}
-
-/**
- * Validates a JSON-LD frame, throwing an exception if the frame is invalid.
- *
- * @param frame the frame to validate.
- */
-function _validateFrame(frame) {
-  if(!types.isArray(frame) || frame.length !== 1 || !types.isObject(frame[0])) {
-    throw new JsonLdError(
-      'Invalid JSON-LD syntax; a JSON-LD frame must be a single object.',
-      'jsonld.SyntaxError', {frame});
-  }
-
-  if('@id' in frame[0]) {
-    for(const id of util.asArray(frame[0]['@id'])) {
-      // @id must be wildcard or an IRI
-      if(!(types.isObject(id) || url.isAbsolute(id)) ||
-        (types.isString(id) && id.indexOf('_:') === 0)) {
-        throw new JsonLdError(
-          'Invalid JSON-LD syntax; invalid @id in frame.',
-          'jsonld.SyntaxError', {code: 'invalid frame', frame});
-      }
-    }
-  }
-
-  if('@type' in frame[0]) {
-    for(const type of util.asArray(frame[0]['@type'])) {
-      // @id must be wildcard or an IRI
-      if(!(types.isObject(type) || url.isAbsolute(type)) ||
-        (types.isString(type) && type.indexOf('_:') === 0)) {
-        throw new JsonLdError(
-          'Invalid JSON-LD syntax; invalid @type in frame.',
-          'jsonld.SyntaxError', {code: 'invalid frame', frame});
-      }
-    }
-  }
-}
-
-/**
- * Returns a map of all of the subjects that match a parsed frame.
- *
- * @param state the current framing state.
- * @param subjects the set of subjects to filter.
- * @param frame the parsed frame.
- * @param flags the frame flags.
- *
- * @return all of the matched subjects.
- */
-function _filterSubjects(state, subjects, frame, flags) {
-  // filter subjects in @id order
-  const rval = {};
-  for(const id of subjects) {
-    const subject = state.graphMap[state.graph][id];
-    if(_filterSubject(state, subject, frame, flags)) {
-      rval[id] = subject;
-    }
-  }
-  return rval;
-}
-
-/**
- * Returns true if the given subject matches the given frame.
- *
- * Matches either based on explicit type inclusion where the node has any
- * type listed in the frame. If the frame has empty types defined matches
- * nodes not having a @type. If the frame has a type of {} defined matches
- * nodes having any type defined.
- *
- * Otherwise, does duck typing, where the node must have all of the
- * properties defined in the frame.
- *
- * @param state the current framing state.
- * @param subject the subject to check.
- * @param frame the frame to check.
- * @param flags the frame flags.
- *
- * @return true if the subject matches, false if not.
- */
-function _filterSubject(state, subject, frame, flags) {
-  // check ducktype
-  let wildcard = true;
-  let matchesSome = false;
-
-  for(const key in frame) {
-    let matchThis = false;
-    const nodeValues = util.getValues(subject, key);
-    const isEmpty = util.getValues(frame, key).length === 0;
-
-    if(key === '@id') {
-      // match on no @id or any matching @id, including wildcard
-      if(types.isEmptyObject(frame['@id'][0] || {})) {
-        matchThis = true;
-      } else if(frame['@id'].length >= 0) {
-        matchThis = frame['@id'].includes(nodeValues[0]);
-      }
-      if(!flags.requireAll) {
-        return matchThis;
-      }
-    } else if(key === '@type') {
-      // check @type (object value means 'any' type,
-      // fall through to ducktyping)
-      wildcard = false;
-      if(isEmpty) {
-        if(nodeValues.length > 0) {
-          // don't match on no @type
-          return false;
-        }
-        matchThis = true;
-      } else if(frame['@type'].length === 1 &&
-        types.isEmptyObject(frame['@type'][0])) {
-        // match on wildcard @type if there is a type
-        matchThis = nodeValues.length > 0;
-      } else {
-        // match on a specific @type
-        for(const type of frame['@type']) {
-          if(types.isObject(type) && '@default' in type) {
-            // match on default object
-            matchThis = true;
-          } else {
-            matchThis = matchThis || nodeValues.some(tt => tt === type);
-          }
-        }
-      }
-      if(!flags.requireAll) {
-        return matchThis;
-      }
-    } else if(isKeyword(key)) {
-      continue;
-    } else {
-      // Force a copy of this frame entry so it can be manipulated
-      const thisFrame = util.getValues(frame, key)[0];
-      let hasDefault = false;
-      if(thisFrame) {
-        _validateFrame([thisFrame]);
-        hasDefault = '@default' in thisFrame;
-      }
-
-      // no longer a wildcard pattern if frame has any non-keyword properties
-      wildcard = false;
-
-      // skip, but allow match if node has no value for property, and frame has
-      // a default value
-      if(nodeValues.length === 0 && hasDefault) {
-        continue;
-      }
-
-      // if frame value is empty, don't match if subject has any value
-      if(nodeValues.length > 0 && isEmpty) {
-        return false;
-      }
-
-      if(thisFrame === undefined) {
-        // node does not match if values is not empty and the value of property
-        // in frame is match none.
-        if(nodeValues.length > 0) {
-          return false;
-        }
-        matchThis = true;
-      } else {
-        if(graphTypes.isList(thisFrame)) {
-          const listValue = thisFrame['@list'][0];
-          if(graphTypes.isList(nodeValues[0])) {
-            const nodeListValues = nodeValues[0]['@list'];
-
-            if(graphTypes.isValue(listValue)) {
-              // match on any matching value
-              matchThis = nodeListValues.some(lv => _valueMatch(listValue, lv));
-            } else if(graphTypes.isSubject(listValue) ||
-              graphTypes.isSubjectReference(listValue)) {
-              matchThis = nodeListValues.some(lv => _nodeMatch(
-                state, listValue, lv, flags));
-            }
-          }
-        } else if(graphTypes.isValue(thisFrame)) {
-          matchThis = nodeValues.some(nv => _valueMatch(thisFrame, nv));
-        } else if(graphTypes.isSubjectReference(thisFrame)) {
-          matchThis =
-            nodeValues.some(nv => _nodeMatch(state, thisFrame, nv, flags));
-        } else if(types.isObject(thisFrame)) {
-          matchThis = nodeValues.length > 0;
-        } else {
-          matchThis = false;
-        }
-      }
-    }
-
-    // all non-defaulted values must match if requireAll is set
-    if(!matchThis && flags.requireAll) {
-      return false;
-    }
-
-    matchesSome = matchesSome || matchThis;
-  }
-
-  // return true if wildcard or subject matches some properties
-  return wildcard || matchesSome;
-}
-
-/**
- * Removes an existing embed.
- *
- * @param state the current framing state.
- * @param id the @id of the embed to remove.
- */
-function _removeEmbed(state, id) {
-  // get existing embed
-  const embeds = state.uniqueEmbeds[state.graph];
-  const embed = embeds[id];
-  const parent = embed.parent;
-  const property = embed.property;
-
-  // create reference to replace embed
-  const subject = {'@id': id};
-
-  // remove existing embed
-  if(types.isArray(parent)) {
-    // replace subject with reference
-    for(let i = 0; i < parent.length; ++i) {
-      if(util.compareValues(parent[i], subject)) {
-        parent[i] = subject;
-        break;
-      }
-    }
-  } else {
-    // replace subject with reference
-    const useArray = types.isArray(parent[property]);
-    util.removeValue(parent, property, subject, {propertyIsArray: useArray});
-    util.addValue(parent, property, subject, {propertyIsArray: useArray});
-  }
-
-  // recursively remove dependent dangling embeds
-  const removeDependents = id => {
-    // get embed keys as a separate array to enable deleting keys in map
-    const ids = Object.keys(embeds);
-    for(const next of ids) {
-      if(next in embeds && types.isObject(embeds[next].parent) &&
-        embeds[next].parent['@id'] === id) {
-        delete embeds[next];
-        removeDependents(next);
-      }
-    }
-  };
-  removeDependents(id);
-}
-
-/**
- * Removes the @preserve keywords from expanded result of framing.
- *
- * @param input the framed, framed output.
- * @param options the framing options used.
- *
- * @return the resulting output.
- */
-function _cleanupPreserve(input, options) {
-  // recurse through arrays
-  if(types.isArray(input)) {
-    return input.map(value => _cleanupPreserve(value, options));
-  }
-
-  if(types.isObject(input)) {
-    // remove @preserve
-    if('@preserve' in input) {
-      return input['@preserve'][0];
-    }
-
-    // skip @values
-    if(graphTypes.isValue(input)) {
-      return input;
-    }
-
-    // recurse through @lists
-    if(graphTypes.isList(input)) {
-      input['@list'] = _cleanupPreserve(input['@list'], options);
-      return input;
-    }
-
-    // handle in-memory linked nodes
-    if('@id' in input) {
-      const id = input['@id'];
-      if(options.link.hasOwnProperty(id)) {
-        const idx = options.link[id].indexOf(input);
-        if(idx !== -1) {
-          // already visited
-          return options.link[id][idx];
-        }
-        // prevent circular visitation
-        options.link[id].push(input);
-      } else {
-        // prevent circular visitation
-        options.link[id] = [input];
-      }
-    }
-
-    // recurse through properties
-    for(const prop in input) {
-      // potentially remove the id, if it is an unreference bnode
-      if(prop === '@id' && options.bnodesToClear.includes(input[prop])) {
-        delete input['@id'];
-        continue;
-      }
-
-      input[prop] = _cleanupPreserve(input[prop], options);
-    }
-  }
-  return input;
-}
-
-/**
- * Adds framing output to the given parent.
- *
- * @param parent the parent to add to.
- * @param property the parent property.
- * @param output the output to add.
- */
-function _addFrameOutput(parent, property, output) {
-  if(types.isObject(parent)) {
-    util.addValue(parent, property, output, {propertyIsArray: true});
-  } else {
-    parent.push(output);
-  }
-}
-
-/**
- * Node matches if it is a node, and matches the pattern as a frame.
- *
- * @param state the current framing state.
- * @param pattern used to match value
- * @param value to check
- * @param flags the frame flags.
- */
-function _nodeMatch(state, pattern, value, flags) {
-  if(!('@id' in value)) {
-    return false;
-  }
-  const nodeObject = state.subjects[value['@id']];
-  return nodeObject && _filterSubject(state, nodeObject, pattern, flags);
-}
-
-/**
- * Value matches if it is a value and matches the value pattern
- *
- * * `pattern` is empty
- * * @values are the same, or `pattern[@value]` is a wildcard, and
- * * @types are the same or `value[@type]` is not null
- *   and `pattern[@type]` is `{}`, or `value[@type]` is null
- *   and `pattern[@type]` is null or `[]`, and
- * * @languages are the same or `value[@language]` is not null
- *   and `pattern[@language]` is `{}`, or `value[@language]` is null
- *   and `pattern[@language]` is null or `[]`.
- *
- * @param pattern used to match value
- * @param value to check
- */
-function _valueMatch(pattern, value) {
-  const v1 = value['@value'];
-  const t1 = value['@type'];
-  const l1 = value['@language'];
-  const v2 = pattern['@value'] ?
-    (types.isArray(pattern['@value']) ?
-      pattern['@value'] : [pattern['@value']]) :
-    [];
-  const t2 = pattern['@type'] ?
-    (types.isArray(pattern['@type']) ?
-      pattern['@type'] : [pattern['@type']]) :
-    [];
-  const l2 = pattern['@language'] ?
-    (types.isArray(pattern['@language']) ?
-      pattern['@language'] : [pattern['@language']]) :
-    [];
-
-  if(v2.length === 0 && t2.length === 0 && l2.length === 0) {
-    return true;
-  }
-  if(!(v2.includes(v1) || types.isEmptyObject(v2[0]))) {
-    return false;
-  }
-  if(!(!t1 && t2.length === 0 || t2.includes(t1) || t1 &&
-    types.isEmptyObject(t2[0]))) {
-    return false;
-  }
-  if(!(!l1 && l2.length === 0 || l2.includes(l1) || l1 &&
-    types.isEmptyObject(l2[0]))) {
-    return false;
-  }
-  return true;
-}
-
-},{"./JsonLdError":188,"./context":195,"./graphTypes":201,"./nodeMap":203,"./types":206,"./url":207,"./util":208}],200:[function(require,module,exports){
-/*
- * Copyright (c) 2017 Digital Bazaar, Inc. All rights reserved.
- */
-'use strict';
-
-const JsonLdError = require('./JsonLdError');
-const graphTypes = require('./graphTypes');
-const types = require('./types');
-const util = require('./util');
-
-// constants
-const {
-  // RDF,
-  RDF_LIST,
-  RDF_FIRST,
-  RDF_REST,
-  RDF_NIL,
-  RDF_TYPE,
-  // RDF_PLAIN_LITERAL,
-  // RDF_XML_LITERAL,
-  RDF_JSON_LITERAL,
-  // RDF_OBJECT,
-  // RDF_LANGSTRING,
-
-  // XSD,
-  XSD_BOOLEAN,
-  XSD_DOUBLE,
-  XSD_INTEGER,
-  XSD_STRING,
-} = require('./constants');
-
-const REGEX_BCP47 = /^[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$/;
-
-const api = {};
-module.exports = api;
-
-/**
- * Converts an RDF dataset to JSON-LD.
- *
- * @param dataset the RDF dataset.
- * @param options the RDF serialization options.
- *
- * @return a Promise that resolves to the JSON-LD output.
- */
-api.fromRDF = async (
-  dataset,
-  {
-    useRdfType = false,
-    useNativeTypes = false,
-    rdfDirection = null
-  }
-) => {
-  const defaultGraph = {};
-  const graphMap = {'@default': defaultGraph};
-  const referencedOnce = {};
-
-  for(const quad of dataset) {
-    // TODO: change 'name' to 'graph'
-    const name = (quad.graph.termType === 'DefaultGraph') ?
-      '@default' : quad.graph.value;
-    if(!(name in graphMap)) {
-      graphMap[name] = {};
-    }
-    if(name !== '@default' && !(name in defaultGraph)) {
-      defaultGraph[name] = {'@id': name};
-    }
-
-    const nodeMap = graphMap[name];
-
-    // get subject, predicate, object
-    const s = quad.subject.value;
-    const p = quad.predicate.value;
-    const o = quad.object;
-
-    if(!(s in nodeMap)) {
-      nodeMap[s] = {'@id': s};
-    }
-    const node = nodeMap[s];
-
-    const objectIsNode = o.termType.endsWith('Node');
-    if(objectIsNode && !(o.value in nodeMap)) {
-      nodeMap[o.value] = {'@id': o.value};
-    }
-
-    if(p === RDF_TYPE && !useRdfType && objectIsNode) {
-      util.addValue(node, '@type', o.value, {propertyIsArray: true});
-      continue;
-    }
-
-    const value = _RDFToObject(o, useNativeTypes, rdfDirection);
-    util.addValue(node, p, value, {propertyIsArray: true});
-
-    // object may be an RDF list/partial list node but we can't know easily
-    // until all triples are read
-    if(objectIsNode) {
-      if(o.value === RDF_NIL) {
-        // track rdf:nil uniquely per graph
-        const object = nodeMap[o.value];
-        if(!('usages' in object)) {
-          object.usages = [];
-        }
-        object.usages.push({
-          node,
-          property: p,
-          value
-        });
-      } else if(o.value in referencedOnce) {
-        // object referenced more than once
-        referencedOnce[o.value] = false;
-      } else {
-        // keep track of single reference
-        referencedOnce[o.value] = {
-          node,
-          property: p,
-          value
-        };
-      }
-    }
-  }
-
-  /*
-  for(let name in dataset) {
-    const graph = dataset[name];
-    if(!(name in graphMap)) {
-      graphMap[name] = {};
-    }
-    if(name !== '@default' && !(name in defaultGraph)) {
-      defaultGraph[name] = {'@id': name};
-    }
-    const nodeMap = graphMap[name];
-    for(let ti = 0; ti < graph.length; ++ti) {
-      const triple = graph[ti];
-
-      // get subject, predicate, object
-      const s = triple.subject.value;
-      const p = triple.predicate.value;
-      const o = triple.object;
-
-      if(!(s in nodeMap)) {
-        nodeMap[s] = {'@id': s};
-      }
-      const node = nodeMap[s];
-
-      const objectIsId = (o.type === 'IRI' || o.type === 'blank node');
-      if(objectIsId && !(o.value in nodeMap)) {
-        nodeMap[o.value] = {'@id': o.value};
-      }
-
-      if(p === RDF_TYPE && !useRdfType && objectIsId) {
-        util.addValue(node, '@type', o.value, {propertyIsArray: true});
-        continue;
-      }
-
-      const value = _RDFToObject(o, useNativeTypes);
-      util.addValue(node, p, value, {propertyIsArray: true});
-
-      // object may be an RDF list/partial list node but we can't know easily
-      // until all triples are read
-      if(objectIsId) {
-        if(o.value === RDF_NIL) {
-          // track rdf:nil uniquely per graph
-          const object = nodeMap[o.value];
-          if(!('usages' in object)) {
-            object.usages = [];
-          }
-          object.usages.push({
-            node: node,
-            property: p,
-            value: value
-          });
-        } else if(o.value in referencedOnce) {
-          // object referenced more than once
-          referencedOnce[o.value] = false;
-        } else {
-          // keep track of single reference
-          referencedOnce[o.value] = {
-            node: node,
-            property: p,
-            value: value
-          };
-        }
-      }
-    }
-  }*/
-
-  // convert linked lists to @list arrays
-  for(const name in graphMap) {
-    const graphObject = graphMap[name];
-
-    // no @lists to be converted, continue
-    if(!(RDF_NIL in graphObject)) {
-      continue;
-    }
-
-    // iterate backwards through each RDF list
-    const nil = graphObject[RDF_NIL];
-    if(!nil.usages) {
-      continue;
-    }
-    for(let usage of nil.usages) {
-      let node = usage.node;
-      let property = usage.property;
-      let head = usage.value;
-      const list = [];
-      const listNodes = [];
-
-      // ensure node is a well-formed list node; it must:
-      // 1. Be referenced only once.
-      // 2. Have an array for rdf:first that has 1 item.
-      // 3. Have an array for rdf:rest that has 1 item.
-      // 4. Have no keys other than: @id, rdf:first, rdf:rest, and,
-      //   optionally, @type where the value is rdf:List.
-      let nodeKeyCount = Object.keys(node).length;
-      while(property === RDF_REST &&
-        types.isObject(referencedOnce[node['@id']]) &&
-        types.isArray(node[RDF_FIRST]) && node[RDF_FIRST].length === 1 &&
-        types.isArray(node[RDF_REST]) && node[RDF_REST].length === 1 &&
-        (nodeKeyCount === 3 ||
-          (nodeKeyCount === 4 && types.isArray(node['@type']) &&
-          node['@type'].length === 1 && node['@type'][0] === RDF_LIST))) {
-        list.push(node[RDF_FIRST][0]);
-        listNodes.push(node['@id']);
-
-        // get next node, moving backwards through list
-        usage = referencedOnce[node['@id']];
-        node = usage.node;
-        property = usage.property;
-        head = usage.value;
-        nodeKeyCount = Object.keys(node).length;
-
-        // if node is not a blank node, then list head found
-        if(!graphTypes.isBlankNode(node)) {
-          break;
-        }
-      }
-
-      // transform list into @list object
-      delete head['@id'];
-      head['@list'] = list.reverse();
-      for(const listNode of listNodes) {
-        delete graphObject[listNode];
-      }
-    }
-
-    delete nil.usages;
-  }
-
-  const result = [];
-  const subjects = Object.keys(defaultGraph).sort();
-  for(const subject of subjects) {
-    const node = defaultGraph[subject];
-    if(subject in graphMap) {
-      const graph = node['@graph'] = [];
-      const graphObject = graphMap[subject];
-      const graphSubjects = Object.keys(graphObject).sort();
-      for(const graphSubject of graphSubjects) {
-        const node = graphObject[graphSubject];
-        // only add full subjects to top-level
-        if(!graphTypes.isSubjectReference(node)) {
-          graph.push(node);
-        }
-      }
-    }
-    // only add full subjects to top-level
-    if(!graphTypes.isSubjectReference(node)) {
-      result.push(node);
-    }
-  }
-
-  return result;
-};
-
-/**
- * Converts an RDF triple object to a JSON-LD object.
- *
- * @param o the RDF triple object to convert.
- * @param useNativeTypes true to output native types, false not to.
- *
- * @return the JSON-LD object.
- */
-function _RDFToObject(o, useNativeTypes, rdfDirection) {
-  // convert NamedNode/BlankNode object to JSON-LD
-  if(o.termType.endsWith('Node')) {
-    return {'@id': o.value};
-  }
-
-  // convert literal to JSON-LD
-  const rval = {'@value': o.value};
-
-  // add language
-  if(o.language) {
-    rval['@language'] = o.language;
-  } else {
-    let type = o.datatype.value;
-    if(!type) {
-      type = XSD_STRING;
-    }
-    if(type === RDF_JSON_LITERAL) {
-      type = '@json';
-      try {
-        rval['@value'] = JSON.parse(rval['@value']);
-      } catch(e) {
-        throw new JsonLdError(
-          'JSON literal could not be parsed.',
-          'jsonld.InvalidJsonLiteral',
-          {code: 'invalid JSON literal', value: rval['@value'], cause: e});
-      }
-    }
-    // use native types for certain xsd types
-    if(useNativeTypes) {
-      if(type === XSD_BOOLEAN) {
-        if(rval['@value'] === 'true') {
-          rval['@value'] = true;
-        } else if(rval['@value'] === 'false') {
-          rval['@value'] = false;
-        }
-      } else if(types.isNumeric(rval['@value'])) {
-        if(type === XSD_INTEGER) {
-          const i = parseInt(rval['@value'], 10);
-          if(i.toFixed(0) === rval['@value']) {
-            rval['@value'] = i;
-          }
-        } else if(type === XSD_DOUBLE) {
-          rval['@value'] = parseFloat(rval['@value']);
-        }
-      }
-      // do not add native type
-      if(![XSD_BOOLEAN, XSD_INTEGER, XSD_DOUBLE, XSD_STRING].includes(type)) {
-        rval['@type'] = type;
-      }
-    } else if(rdfDirection === 'i18n-datatype' &&
-      type.startsWith('https://www.w3.org/ns/i18n#')) {
-      const [, language, direction] = type.split(/[#_]/);
-      if(language.length > 0) {
-        rval['@language'] = language;
-        if(!language.match(REGEX_BCP47)) {
-          console.warn(`@language must be valid BCP47: ${language}`);
-        }
-      }
-      rval['@direction'] = direction;
-    } else if(type !== XSD_STRING) {
-      rval['@type'] = type;
-    }
-  }
-
-  return rval;
-}
-
-},{"./JsonLdError":188,"./constants":194,"./graphTypes":201,"./types":206,"./util":208}],201:[function(require,module,exports){
-/*
- * Copyright (c) 2017 Digital Bazaar, Inc. All rights reserved.
- */
-'use strict';
-
-const types = require('./types');
-
-const api = {};
-module.exports = api;
-
-/**
- * Returns true if the given value is a subject with properties.
- *
- * @param v the value to check.
- *
- * @return true if the value is a subject with properties, false if not.
- */
-api.isSubject = v => {
-  // Note: A value is a subject if all of these hold true:
-  // 1. It is an Object.
-  // 2. It is not a @value, @set, or @list.
-  // 3. It has more than 1 key OR any existing key is not @id.
-  if(types.isObject(v) &&
-    !(('@value' in v) || ('@set' in v) || ('@list' in v))) {
-    const keyCount = Object.keys(v).length;
-    return (keyCount > 1 || !('@id' in v));
-  }
-  return false;
-};
-
-/**
- * Returns true if the given value is a subject reference.
- *
- * @param v the value to check.
- *
- * @return true if the value is a subject reference, false if not.
- */
-api.isSubjectReference = v =>
-  // Note: A value is a subject reference if all of these hold true:
-  // 1. It is an Object.
-  // 2. It has a single key: @id.
-  (types.isObject(v) && Object.keys(v).length === 1 && ('@id' in v));
-
-/**
- * Returns true if the given value is a @value.
- *
- * @param v the value to check.
- *
- * @return true if the value is a @value, false if not.
- */
-api.isValue = v =>
-  // Note: A value is a @value if all of these hold true:
-  // 1. It is an Object.
-  // 2. It has the @value property.
-  types.isObject(v) && ('@value' in v);
-
-/**
- * Returns true if the given value is a @list.
- *
- * @param v the value to check.
- *
- * @return true if the value is a @list, false if not.
- */
-api.isList = v =>
-  // Note: A value is a @list if all of these hold true:
-  // 1. It is an Object.
-  // 2. It has the @list property.
-  types.isObject(v) && ('@list' in v);
-
-/**
- * Returns true if the given value is a @graph.
- *
- * @return true if the value is a @graph, false if not.
- */
-api.isGraph = v => {
-  // Note: A value is a graph if all of these hold true:
-  // 1. It is an object.
-  // 2. It has an `@graph` key.
-  // 3. It may have '@id' or '@index'
-  return types.isObject(v) &&
-    '@graph' in v &&
-    Object.keys(v)
-      .filter(key => key !== '@id' && key !== '@index').length === 1;
-};
-
-/**
- * Returns true if the given value is a simple @graph.
- *
- * @return true if the value is a simple @graph, false if not.
- */
-api.isSimpleGraph = v => {
-  // Note: A value is a simple graph if all of these hold true:
-  // 1. It is an object.
-  // 2. It has an `@graph` key.
-  // 3. It has only 1 key or 2 keys where one of them is `@index`.
-  return api.isGraph(v) && !('@id' in v);
-};
-
-/**
- * Returns true if the given value is a blank node.
- *
- * @param v the value to check.
- *
- * @return true if the value is a blank node, false if not.
- */
-api.isBlankNode = v => {
-  // Note: A value is a blank node if all of these hold true:
-  // 1. It is an Object.
-  // 2. If it has an @id key its value begins with '_:'.
-  // 3. It has no keys OR is not a @value, @set, or @list.
-  if(types.isObject(v)) {
-    if('@id' in v) {
-      return (v['@id'].indexOf('_:') === 0);
-    }
-    return (Object.keys(v).length === 0 ||
-      !(('@value' in v) || ('@set' in v) || ('@list' in v)));
-  }
-  return false;
-};
-
-},{"./types":206}],202:[function(require,module,exports){
-/**
- * A JavaScript implementation of the JSON-LD API.
- *
- * @author Dave Longley
- *
- * @license BSD 3-Clause License
- * Copyright (c) 2011-2019 Digital Bazaar, Inc.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer.
- *
- * Redistributions in binary form must reproduce the above copyright
- * notice, this list of conditions and the following disclaimer in the
- * documentation and/or other materials provided with the distribution.
- *
- * Neither the name of the Digital Bazaar, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from
- * this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
- * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
- * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
- * PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
- * HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
- * TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
- * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
- * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-const canonize = require('rdf-canonize');
-const platform = require('./platform');
-const util = require('./util');
-const ContextResolver = require('./ContextResolver');
-const IdentifierIssuer = util.IdentifierIssuer;
-const JsonLdError = require('./JsonLdError');
-const LRU = require('lru-cache');
-const NQuads = require('./NQuads');
-
-const {expand: _expand} = require('./expand');
-const {flatten: _flatten} = require('./flatten');
-const {fromRDF: _fromRDF} = require('./fromRdf');
-const {toRDF: _toRDF} = require('./toRdf');
-
-const {
-  frameMergedOrDefault: _frameMergedOrDefault,
-  cleanupNull: _cleanupNull
-} = require('./frame');
-
-const {
-  isArray: _isArray,
-  isObject: _isObject,
-  isString: _isString
-} = require('./types');
-
-const {
-  isSubjectReference: _isSubjectReference,
-} = require('./graphTypes');
-
-const {
-  expandIri: _expandIri,
-  getInitialContext: _getInitialContext,
-  process: _processContext,
-  processingMode: _processingMode
-} = require('./context');
-
-const {
-  compact: _compact,
-  compactIri: _compactIri
-} = require('./compact');
-
-const {
-  createNodeMap: _createNodeMap,
-  createMergedNodeMap: _createMergedNodeMap,
-  mergeNodeMaps: _mergeNodeMaps
-} = require('./nodeMap');
-
-/* eslint-disable indent */
-// attaches jsonld API to the given object
-const wrapper = function(jsonld) {
-
-/** Registered RDF dataset parsers hashed by content-type. */
-const _rdfParsers = {};
-
-// resolved context cache
-// TODO: consider basing max on context size rather than number
-const RESOLVED_CONTEXT_CACHE_MAX_SIZE = 100;
-const _resolvedContextCache = new LRU({max: RESOLVED_CONTEXT_CACHE_MAX_SIZE});
-
-/* Core API */
-
-/**
- * Performs JSON-LD compaction.
- *
- * @param input the JSON-LD input to compact.
- * @param ctx the context to compact with.
- * @param [options] options to use:
- *          [base] the base IRI to use.
- *          [compactArrays] true to compact arrays to single values when
- *            appropriate, false not to (default: true).
- *          [compactToRelative] true to compact IRIs to be relative to document
- *            base, false to keep absolute (default: true)
- *          [graph] true to always output a top-level graph (default: false).
- *          [expandContext] a context to expand with.
- *          [skipExpansion] true to assume the input is expanded and skip
- *            expansion, false not to, defaults to false.
- *          [documentLoader(url, options)] the document loader.
- *          [expansionMap(info)] a function that can be used to custom map
- *            unmappable values (or to throw an error when they are detected);
- *            if this function returns `undefined` then the default behavior
- *            will be used.
- *          [framing] true if compaction is occuring during a framing operation.
- *          [compactionMap(info)] a function that can be used to custom map
- *            unmappable values (or to throw an error when they are detected);
- *            if this function returns `undefined` then the default behavior
- *            will be used.
- *          [contextResolver] internal use only.
- *
- * @return a Promise that resolves to the compacted output.
- */
-jsonld.compact = async function(input, ctx, options) {
-  if(arguments.length < 2) {
-    throw new TypeError('Could not compact, too few arguments.');
-  }
-
-  if(ctx === null) {
-    throw new JsonLdError(
-      'The compaction context must not be null.',
-      'jsonld.CompactError', {code: 'invalid local context'});
-  }
-
-  // nothing to compact
-  if(input === null) {
-    return null;
-  }
-
-  // set default options
-  options = _setDefaults(options, {
-    base: _isString(input) ? input : '',
-    compactArrays: true,
-    compactToRelative: true,
-    graph: false,
-    skipExpansion: false,
-    link: false,
-    issuer: new IdentifierIssuer('_:b'),
-    contextResolver: new ContextResolver(
-      {sharedCache: _resolvedContextCache})
-  });
-  if(options.link) {
-    // force skip expansion when linking, "link" is not part of the public
-    // API, it should only be called from framing
-    options.skipExpansion = true;
-  }
-  if(!options.compactToRelative) {
-    delete options.base;
-  }
-
-  // expand input
-  let expanded;
-  if(options.skipExpansion) {
-    expanded = input;
-  } else {
-    expanded = await jsonld.expand(input, options);
-  }
-
-  // process context
-  const activeCtx = await jsonld.processContext(
-    _getInitialContext(options), ctx, options);
-
-  // do compaction
-  let compacted = await _compact({
-    activeCtx,
-    element: expanded,
-    options,
-    compactionMap: options.compactionMap
-  });
-
-  // perform clean up
-  if(options.compactArrays && !options.graph && _isArray(compacted)) {
-    if(compacted.length === 1) {
-      // simplify to a single item
-      compacted = compacted[0];
-    } else if(compacted.length === 0) {
-      // simplify to an empty object
-      compacted = {};
-    }
-  } else if(options.graph && _isObject(compacted)) {
-    // always use array if graph option is on
-    compacted = [compacted];
-  }
-
-  // follow @context key
-  if(_isObject(ctx) && '@context' in ctx) {
-    ctx = ctx['@context'];
-  }
-
-  // build output context
-  ctx = util.clone(ctx);
-  if(!_isArray(ctx)) {
-    ctx = [ctx];
-  }
-  // remove empty contexts
-  const tmp = ctx;
-  ctx = [];
-  for(let i = 0; i < tmp.length; ++i) {
-    if(!_isObject(tmp[i]) || Object.keys(tmp[i]).length > 0) {
-      ctx.push(tmp[i]);
-    }
-  }
-
-  // remove array if only one context
-  const hasContext = (ctx.length > 0);
-  if(ctx.length === 1) {
-    ctx = ctx[0];
-  }
-
-  // add context and/or @graph
-  if(_isArray(compacted)) {
-    // use '@graph' keyword
-    const graphAlias = _compactIri({
-      activeCtx, iri: '@graph', relativeTo: {vocab: true}
-    });
-    const graph = compacted;
-    compacted = {};
-    if(hasContext) {
-      compacted['@context'] = ctx;
-    }
-    compacted[graphAlias] = graph;
-  } else if(_isObject(compacted) && hasContext) {
-    // reorder keys so @context is first
-    const graph = compacted;
-    compacted = {'@context': ctx};
-    for(const key in graph) {
-      compacted[key] = graph[key];
-    }
-  }
-
-  return compacted;
-};
-
-/**
- * Performs JSON-LD expansion.
- *
- * @param input the JSON-LD input to expand.
- * @param [options] the options to use:
- *          [base] the base IRI to use.
- *          [expandContext] a context to expand with.
- *          [keepFreeFloatingNodes] true to keep free-floating nodes,
- *            false not to, defaults to false.
- *          [documentLoader(url, options)] the document loader.
- *          [expansionMap(info)] a function that can be used to custom map
- *            unmappable values (or to throw an error when they are detected);
- *            if this function returns `undefined` then the default behavior
- *            will be used.
- *          [contextResolver] internal use only.
- *
- * @return a Promise that resolves to the expanded output.
- */
-jsonld.expand = async function(input, options) {
-  if(arguments.length < 1) {
-    throw new TypeError('Could not expand, too few arguments.');
-  }
-
-  // set default options
-  options = _setDefaults(options, {
-    keepFreeFloatingNodes: false,
-    contextResolver: new ContextResolver(
-      {sharedCache: _resolvedContextCache})
-  });
-  if(options.expansionMap === false) {
-    options.expansionMap = undefined;
-  }
-
-  // build set of objects that may have @contexts to resolve
-  const toResolve = {};
-
-  // build set of contexts to process prior to expansion
-  const contextsToProcess = [];
-
-  // if an `expandContext` has been given ensure it gets resolved
-  if('expandContext' in options) {
-    const expandContext = util.clone(options.expandContext);
-    if(_isObject(expandContext) && '@context' in expandContext) {
-      toResolve.expandContext = expandContext;
-    } else {
-      toResolve.expandContext = {'@context': expandContext};
-    }
-    contextsToProcess.push(toResolve.expandContext);
-  }
-
-  // if input is a string, attempt to dereference remote document
-  let defaultBase;
-  if(!_isString(input)) {
-    // input is not a URL, do not need to retrieve it first
-    toResolve.input = util.clone(input);
-  } else {
-    // load remote doc
-    const remoteDoc = await jsonld.get(input, options);
-    defaultBase = remoteDoc.documentUrl;
-    toResolve.input = remoteDoc.document;
-    if(remoteDoc.contextUrl) {
-      // context included in HTTP link header and must be resolved
-      toResolve.remoteContext = {'@context': remoteDoc.contextUrl};
-      contextsToProcess.push(toResolve.remoteContext);
-    }
-  }
-
-  // set default base
-  if(!('base' in options)) {
-    options.base = defaultBase || '';
-  }
-
-  // process any additional contexts
-  let activeCtx = _getInitialContext(options);
-  for(const localCtx of contextsToProcess) {
-    activeCtx = await _processContext({activeCtx, localCtx, options});
-  }
-
-  // expand resolved input
-  let expanded = await _expand({
-    activeCtx,
-    element: toResolve.input,
-    options,
-    expansionMap: options.expansionMap
-  });
-
-  // optimize away @graph with no other properties
-  if(_isObject(expanded) && ('@graph' in expanded) &&
-    Object.keys(expanded).length === 1) {
-    expanded = expanded['@graph'];
-  } else if(expanded === null) {
-    expanded = [];
-  }
-
-  // normalize to an array
-  if(!_isArray(expanded)) {
-    expanded = [expanded];
-  }
-
-  return expanded;
-};
-
-/**
- * Performs JSON-LD flattening.
- *
- * @param input the JSON-LD to flatten.
- * @param ctx the context to use to compact the flattened output, or null.
- * @param [options] the options to use:
- *          [base] the base IRI to use.
- *          [expandContext] a context to expand with.
- *          [documentLoader(url, options)] the document loader.
- *          [contextResolver] internal use only.
- *
- * @return a Promise that resolves to the flattened output.
- */
-jsonld.flatten = async function(input, ctx, options) {
-  if(arguments.length < 1) {
-    return new TypeError('Could not flatten, too few arguments.');
-  }
-
-  if(typeof ctx === 'function') {
-    ctx = null;
-  } else {
-    ctx = ctx || null;
-  }
-
-  // set default options
-  options = _setDefaults(options, {
-    base: _isString(input) ? input : '',
-    contextResolver: new ContextResolver(
-      {sharedCache: _resolvedContextCache})
-  });
-
-  // expand input
-  const expanded = await jsonld.expand(input, options);
-
-  // do flattening
-  const flattened = _flatten(expanded);
-
-  if(ctx === null) {
-    // no compaction required
-    return flattened;
-  }
-
-  // compact result (force @graph option to true, skip expansion)
-  options.graph = true;
-  options.skipExpansion = true;
-  const compacted = await jsonld.compact(flattened, ctx, options);
-
-  return compacted;
-};
-
-/**
- * Performs JSON-LD framing.
- *
- * @param input the JSON-LD input to frame.
- * @param frame the JSON-LD frame to use.
- * @param [options] the framing options.
- *          [base] the base IRI to use.
- *          [expandContext] a context to expand with.
- *          [embed] default @embed flag: '@last', '@always', '@never', '@link'
- *            (default: '@last').
- *          [explicit] default @explicit flag (default: false).
- *          [requireAll] default @requireAll flag (default: true).
- *          [omitDefault] default @omitDefault flag (default: false).
- *          [documentLoader(url, options)] the document loader.
- *          [contextResolver] internal use only.
- *
- * @return a Promise that resolves to the framed output.
- */
-jsonld.frame = async function(input, frame, options) {
-  if(arguments.length < 2) {
-    throw new TypeError('Could not frame, too few arguments.');
-  }
-
-  // set default options
-  options = _setDefaults(options, {
-    base: _isString(input) ? input : '',
-    embed: '@once',
-    explicit: false,
-    requireAll: false,
-    omitDefault: false,
-    bnodesToClear: [],
-    contextResolver: new ContextResolver(
-      {sharedCache: _resolvedContextCache})
-  });
-
-  // if frame is a string, attempt to dereference remote document
-  if(_isString(frame)) {
-    // load remote doc
-    const remoteDoc = await jsonld.get(frame, options);
-    frame = remoteDoc.document;
-
-    if(remoteDoc.contextUrl) {
-      // inject link header @context into frame
-      let ctx = frame['@context'];
-      if(!ctx) {
-        ctx = remoteDoc.contextUrl;
-      } else if(_isArray(ctx)) {
-        ctx.push(remoteDoc.contextUrl);
-      } else {
-        ctx = [ctx, remoteDoc.contextUrl];
-      }
-      frame['@context'] = ctx;
-    }
-  }
-
-  const frameContext = frame ? frame['@context'] || {} : {};
-
-  // process context
-  const activeCtx = await jsonld.processContext(
-    _getInitialContext(options), frameContext, options);
-
-  // mode specific defaults
-  if(!options.hasOwnProperty('omitGraph')) {
-    options.omitGraph = _processingMode(activeCtx, 1.1);
-  }
-  if(!options.hasOwnProperty('pruneBlankNodeIdentifiers')) {
-    options.pruneBlankNodeIdentifiers = _processingMode(activeCtx, 1.1);
-  }
-
-  // expand input
-  const expanded = await jsonld.expand(input, options);
-
-  // expand frame
-  const opts = {...options};
-  opts.isFrame = true;
-  opts.keepFreeFloatingNodes = true;
-  const expandedFrame = await jsonld.expand(frame, opts);
-
-  // if the unexpanded frame includes a key expanding to @graph, frame the
-  // default graph, otherwise, the merged graph
-  const frameKeys = Object.keys(frame)
-    .map(key => _expandIri(activeCtx, key, {vocab: true}));
-  opts.merged = !frameKeys.includes('@graph');
-  opts.is11 = _processingMode(activeCtx, 1.1);
-
-  // do framing
-  const framed = _frameMergedOrDefault(expanded, expandedFrame, opts);
-
-  opts.graph = !options.omitGraph;
-  opts.skipExpansion = true;
-  opts.link = {};
-  opts.framing = true;
-  let compacted = await jsonld.compact(framed, frameContext, opts);
-
-  // replace @null with null, compacting arrays
-  opts.link = {};
-  compacted = _cleanupNull(compacted, opts);
-
-  return compacted;
-};
-
-/**
- * **Experimental**
- *
- * Links a JSON-LD document's nodes in memory.
- *
- * @param input the JSON-LD document to link.
- * @param [ctx] the JSON-LD context to apply.
- * @param [options] the options to use:
- *          [base] the base IRI to use.
- *          [expandContext] a context to expand with.
- *          [documentLoader(url, options)] the document loader.
- *          [contextResolver] internal use only.
- *
- * @return a Promise that resolves to the linked output.
- */
-jsonld.link = async function(input, ctx, options) {
-  // API matches running frame with a wildcard frame and embed: '@link'
-  // get arguments
-  const frame = {};
-  if(ctx) {
-    frame['@context'] = ctx;
-  }
-  frame['@embed'] = '@link';
-  return jsonld.frame(input, frame, options);
-};
-
-/**
- * Performs RDF dataset normalization on the given input. The input is JSON-LD
- * unless the 'inputFormat' option is used. The output is an RDF dataset
- * unless the 'format' option is used.
- *
- * @param input the input to normalize as JSON-LD or as a format specified by
- *          the 'inputFormat' option.
- * @param [options] the options to use:
- *          [algorithm] the normalization algorithm to use, `URDNA2015` or
- *            `URGNA2012` (default: `URDNA2015`).
- *          [base] the base IRI to use.
- *          [expandContext] a context to expand with.
- *          [skipExpansion] true to assume the input is expanded and skip
- *            expansion, false not to, defaults to false.
- *          [inputFormat] the format if input is not JSON-LD:
- *            'application/n-quads' for N-Quads.
- *          [format] the format if output is a string:
- *            'application/n-quads' for N-Quads.
- *          [documentLoader(url, options)] the document loader.
- *          [useNative] true to use a native canonize algorithm
- *          [contextResolver] internal use only.
- *
- * @return a Promise that resolves to the normalized output.
- */
-jsonld.normalize = jsonld.canonize = async function(input, options) {
-  if(arguments.length < 1) {
-    throw new TypeError('Could not canonize, too few arguments.');
-  }
-
-  // set default options
-  options = _setDefaults(options, {
-    base: _isString(input) ? input : '',
-    algorithm: 'URDNA2015',
-    skipExpansion: false,
-    contextResolver: new ContextResolver(
-      {sharedCache: _resolvedContextCache})
-  });
-  if('inputFormat' in options) {
-    if(options.inputFormat !== 'application/n-quads' &&
-      options.inputFormat !== 'application/nquads') {
-      throw new JsonLdError(
-        'Unknown canonicalization input format.',
-        'jsonld.CanonizeError');
-    }
-    // TODO: `await` for async parsers
-    const parsedInput = NQuads.parse(input);
-
-    // do canonicalization
-    return canonize.canonize(parsedInput, options);
-  }
-
-  // convert to RDF dataset then do normalization
-  const opts = {...options};
-  delete opts.format;
-  opts.produceGeneralizedRdf = false;
-  const dataset = await jsonld.toRDF(input, opts);
-
-  // do canonicalization
-  return canonize.canonize(dataset, options);
-};
-
-/**
- * Converts an RDF dataset to JSON-LD.
- *
- * @param dataset a serialized string of RDF in a format specified by the
- *          format option or an RDF dataset to convert.
- * @param [options] the options to use:
- *          [format] the format if dataset param must first be parsed:
- *            'application/n-quads' for N-Quads (default).
- *          [rdfParser] a custom RDF-parser to use to parse the dataset.
- *          [useRdfType] true to use rdf:type, false to use @type
- *            (default: false).
- *          [useNativeTypes] true to convert XSD types into native types
- *            (boolean, integer, double), false not to (default: false).
- *
- * @return a Promise that resolves to the JSON-LD document.
- */
-jsonld.fromRDF = async function(dataset, options) {
-  if(arguments.length < 1) {
-    throw new TypeError('Could not convert from RDF, too few arguments.');
-  }
-
-  // set default options
-  options = _setDefaults(options, {
-    format: _isString(dataset) ? 'application/n-quads' : undefined
-  });
-
-  const {format} = options;
-  let {rdfParser} = options;
-
-  // handle special format
-  if(format) {
-    // check supported formats
-    rdfParser = rdfParser || _rdfParsers[format];
-    if(!rdfParser) {
-      throw new JsonLdError(
-        'Unknown input format.',
-        'jsonld.UnknownFormat', {format});
-    }
-  } else {
-    // no-op parser, assume dataset already parsed
-    rdfParser = () => dataset;
-  }
-
-  // rdfParser must be synchronous or return a promise, no callback support
-  const parsedDataset = await rdfParser(dataset);
-  return _fromRDF(parsedDataset, options);
-};
-
-/**
- * Outputs the RDF dataset found in the given JSON-LD object.
- *
- * @param input the JSON-LD input.
- * @param [options] the options to use:
- *          [base] the base IRI to use.
- *          [expandContext] a context to expand with.
- *          [skipExpansion] true to assume the input is expanded and skip
- *            expansion, false not to, defaults to false.
- *          [format] the format to use to output a string:
- *            'application/n-quads' for N-Quads.
- *          [produceGeneralizedRdf] true to output generalized RDF, false
- *            to produce only standard RDF (default: false).
- *          [documentLoader(url, options)] the document loader.
- *          [contextResolver] internal use only.
- *
- * @return a Promise that resolves to the RDF dataset.
- */
-jsonld.toRDF = async function(input, options) {
-  if(arguments.length < 1) {
-    throw new TypeError('Could not convert to RDF, too few arguments.');
-  }
-
-  // set default options
-  options = _setDefaults(options, {
-    base: _isString(input) ? input : '',
-    skipExpansion: false,
-    contextResolver: new ContextResolver(
-      {sharedCache: _resolvedContextCache})
-  });
-
-  // TODO: support toRDF custom map?
-  let expanded;
-  if(options.skipExpansion) {
-    expanded = input;
-  } else {
-    // expand input
-    expanded = await jsonld.expand(input, options);
-  }
-
-  // output RDF dataset
-  const dataset = _toRDF(expanded, options);
-  if(options.format) {
-    if(options.format === 'application/n-quads' ||
-      options.format === 'application/nquads') {
-      return NQuads.serialize(dataset);
-    }
-    throw new JsonLdError(
-      'Unknown output format.',
-      'jsonld.UnknownFormat', {format: options.format});
-  }
-
-  return dataset;
-};
-
-/**
- * **Experimental**
- *
- * Recursively flattens the nodes in the given JSON-LD input into a merged
- * map of node ID => node. All graphs will be merged into the default graph.
- *
- * @param input the JSON-LD input.
- * @param [options] the options to use:
- *          [base] the base IRI to use.
- *          [expandContext] a context to expand with.
- *          [issuer] a jsonld.IdentifierIssuer to use to label blank nodes.
- *          [documentLoader(url, options)] the document loader.
- *          [contextResolver] internal use only.
- *
- * @return a Promise that resolves to the merged node map.
- */
-jsonld.createNodeMap = async function(input, options) {
-  if(arguments.length < 1) {
-    throw new TypeError('Could not create node map, too few arguments.');
-  }
-
-  // set default options
-  options = _setDefaults(options, {
-    base: _isString(input) ? input : '',
-    contextResolver: new ContextResolver(
-      {sharedCache: _resolvedContextCache})
-  });
-
-  // expand input
-  const expanded = await jsonld.expand(input, options);
-
-  return _createMergedNodeMap(expanded, options);
-};
-
-/**
- * **Experimental**
- *
- * Merges two or more JSON-LD documents into a single flattened document.
- *
- * @param docs the JSON-LD documents to merge together.
- * @param ctx the context to use to compact the merged result, or null.
- * @param [options] the options to use:
- *          [base] the base IRI to use.
- *          [expandContext] a context to expand with.
- *          [issuer] a jsonld.IdentifierIssuer to use to label blank nodes.
- *          [mergeNodes] true to merge properties for nodes with the same ID,
- *            false to ignore new properties for nodes with the same ID once
- *            the ID has been defined; note that this may not prevent merging
- *            new properties where a node is in the `object` position
- *            (default: true).
- *          [documentLoader(url, options)] the document loader.
- *          [contextResolver] internal use only.
- *
- * @return a Promise that resolves to the merged output.
- */
-jsonld.merge = async function(docs, ctx, options) {
-  if(arguments.length < 1) {
-    throw new TypeError('Could not merge, too few arguments.');
-  }
-  if(!_isArray(docs)) {
-    throw new TypeError('Could not merge, "docs" must be an array.');
-  }
-
-  if(typeof ctx === 'function') {
-    ctx = null;
-  } else {
-    ctx = ctx || null;
-  }
-
-  // set default options
-  options = _setDefaults(options, {
-    contextResolver: new ContextResolver(
-      {sharedCache: _resolvedContextCache})
-  });
-
-  // expand all documents
-  const expanded = await Promise.all(docs.map(doc => {
-    const opts = {...options};
-    return jsonld.expand(doc, opts);
-  }));
-
-  let mergeNodes = true;
-  if('mergeNodes' in options) {
-    mergeNodes = options.mergeNodes;
-  }
-
-  const issuer = options.issuer || new IdentifierIssuer('_:b');
-  const graphs = {'@default': {}};
-
-  for(let i = 0; i < expanded.length; ++i) {
-    // uniquely relabel blank nodes
-    const doc = util.relabelBlankNodes(expanded[i], {
-      issuer: new IdentifierIssuer('_:b' + i + '-')
-    });
-
-    // add nodes to the shared node map graphs if merging nodes, to a
-    // separate graph set if not
-    const _graphs = (mergeNodes || i === 0) ? graphs : {'@default': {}};
-    _createNodeMap(doc, _graphs, '@default', issuer);
-
-    if(_graphs !== graphs) {
-      // merge document graphs but don't merge existing nodes
-      for(const graphName in _graphs) {
-        const _nodeMap = _graphs[graphName];
-        if(!(graphName in graphs)) {
-          graphs[graphName] = _nodeMap;
-          continue;
-        }
-        const nodeMap = graphs[graphName];
-        for(const key in _nodeMap) {
-          if(!(key in nodeMap)) {
-            nodeMap[key] = _nodeMap[key];
-          }
-        }
-      }
-    }
-  }
-
-  // add all non-default graphs to default graph
-  const defaultGraph = _mergeNodeMaps(graphs);
-
-  // produce flattened output
-  const flattened = [];
-  const keys = Object.keys(defaultGraph).sort();
-  for(let ki = 0; ki < keys.length; ++ki) {
-    const node = defaultGraph[keys[ki]];
-    // only add full subjects to top-level
-    if(!_isSubjectReference(node)) {
-      flattened.push(node);
-    }
-  }
-
-  if(ctx === null) {
-    return flattened;
-  }
-
-  // compact result (force @graph option to true, skip expansion)
-  options.graph = true;
-  options.skipExpansion = true;
-  const compacted = await jsonld.compact(flattened, ctx, options);
-
-  return compacted;
-};
-
-/**
- * The default document loader for external documents.
- *
- * @param url the URL to load.
- *
- * @return a promise that resolves to the remote document.
- */
-Object.defineProperty(jsonld, 'documentLoader', {
-  get: () => jsonld._documentLoader,
-  set: v => jsonld._documentLoader = v
-});
-// default document loader not implemented
-jsonld.documentLoader = async url => {
-  throw new JsonLdError(
-    'Could not retrieve a JSON-LD document from the URL. URL ' +
-    'dereferencing not implemented.', 'jsonld.LoadDocumentError',
-    {code: 'loading document failed', url});
-};
-
-/**
- * Gets a remote JSON-LD document using the default document loader or
- * one given in the passed options.
- *
- * @param url the URL to fetch.
- * @param [options] the options to use:
- *          [documentLoader] the document loader to use.
- *
- * @return a Promise that resolves to the retrieved remote document.
- */
-jsonld.get = async function(url, options) {
-  let load;
-  if(typeof options.documentLoader === 'function') {
-    load = options.documentLoader;
-  } else {
-    load = jsonld.documentLoader;
-  }
-
-  const remoteDoc = await load(url);
-
-  try {
-    if(!remoteDoc.document) {
-      throw new JsonLdError(
-        'No remote document found at the given URL.',
-        'jsonld.NullRemoteDocument');
-    }
-    if(_isString(remoteDoc.document)) {
-      remoteDoc.document = JSON.parse(remoteDoc.document);
-    }
-  } catch(e) {
-    throw new JsonLdError(
-      'Could not retrieve a JSON-LD document from the URL.',
-      'jsonld.LoadDocumentError', {
-        code: 'loading document failed',
-        cause: e,
-        remoteDoc
-      });
-  }
-
-  return remoteDoc;
-};
-
-/**
- * Processes a local context, resolving any URLs as necessary, and returns a
- * new active context.
- *
- * @param activeCtx the current active context.
- * @param localCtx the local context to process.
- * @param [options] the options to use:
- *          [documentLoader(url, options)] the document loader.
- *          [contextResolver] internal use only.
- *
- * @return a Promise that resolves to the new active context.
- */
-jsonld.processContext = async function(
-  activeCtx, localCtx, options) {
-  // set default options
-  options = _setDefaults(options, {
-    base: '',
-    contextResolver: new ContextResolver(
-      {sharedCache: _resolvedContextCache})
-  });
-
-  // return initial context early for null context
-  if(localCtx === null) {
-    return _getInitialContext(options);
-  }
-
-  // get URLs in localCtx
-  localCtx = util.clone(localCtx);
-  if(!(_isObject(localCtx) && '@context' in localCtx)) {
-    localCtx = {'@context': localCtx};
-  }
-
-  return _processContext({activeCtx, localCtx, options});
-};
-
-// backwards compatibility
-jsonld.getContextValue = require('./context').getContextValue;
-
-/**
- * Document loaders.
- */
-jsonld.documentLoaders = {};
-
-/**
- * Assigns the default document loader for external document URLs to a built-in
- * default. Supported types currently include: 'xhr' and 'node'.
- *
- * @param type the type to set.
- * @param [params] the parameters required to use the document loader.
- */
-jsonld.useDocumentLoader = function(type) {
-  if(!(type in jsonld.documentLoaders)) {
-    throw new JsonLdError(
-      'Unknown document loader type: "' + type + '"',
-      'jsonld.UnknownDocumentLoader',
-      {type});
-  }
-
-  // set document loader
-  jsonld.documentLoader = jsonld.documentLoaders[type].apply(
-    jsonld, Array.prototype.slice.call(arguments, 1));
-};
-
-/**
- * Registers an RDF dataset parser by content-type, for use with
- * jsonld.fromRDF. An RDF dataset parser will always be given one parameter,
- * a string of input. An RDF dataset parser can be synchronous or
- * asynchronous (by returning a promise).
- *
- * @param contentType the content-type for the parser.
- * @param parser(input) the parser function (takes a string as a parameter
- *          and either returns an RDF dataset or a Promise that resolves to one.
- */
-jsonld.registerRDFParser = function(contentType, parser) {
-  _rdfParsers[contentType] = parser;
-};
-
-/**
- * Unregisters an RDF dataset parser by content-type.
- *
- * @param contentType the content-type for the parser.
- */
-jsonld.unregisterRDFParser = function(contentType) {
-  delete _rdfParsers[contentType];
-};
-
-// register the N-Quads RDF parser
-jsonld.registerRDFParser('application/n-quads', NQuads.parse);
-jsonld.registerRDFParser('application/nquads', NQuads.parse);
-
-/* URL API */
-jsonld.url = require('./url');
-
-/* Utility API */
-jsonld.util = util;
-// backwards compatibility
-Object.assign(jsonld, util);
-
-// reexpose API as jsonld.promises for backwards compatability
-jsonld.promises = jsonld;
-
-// backwards compatibility
-jsonld.RequestQueue = require('./RequestQueue');
-
-/* WebIDL API */
-jsonld.JsonLdProcessor = require('./JsonLdProcessor')(jsonld);
-
-platform.setupGlobals(jsonld);
-platform.setupDocumentLoaders(jsonld);
-
-function _setDefaults(options, {
-  documentLoader = jsonld.documentLoader,
-  ...defaults
-}) {
-  return Object.assign({}, {documentLoader}, defaults, options);
-}
-
-// end of jsonld API `wrapper` factory
-return jsonld;
-};
-
-// external APIs:
-
-// used to generate a new jsonld API instance
-const factory = function() {
-  return wrapper(function() {
-    return factory();
-  });
-};
-
-// wrap the main jsonld API instance
-wrapper(factory);
-// export API
-module.exports = factory;
-
-},{"./ContextResolver":187,"./JsonLdError":188,"./JsonLdProcessor":189,"./NQuads":190,"./RequestQueue":191,"./compact":193,"./context":195,"./expand":197,"./flatten":198,"./frame":199,"./fromRdf":200,"./graphTypes":201,"./nodeMap":203,"./platform":204,"./toRdf":205,"./types":206,"./url":207,"./util":208,"lru-cache":210,"rdf-canonize":244}],203:[function(require,module,exports){
-/*
- * Copyright (c) 2017 Digital Bazaar, Inc. All rights reserved.
- */
-'use strict';
-
-const {isKeyword} = require('./context');
-const graphTypes = require('./graphTypes');
-const types = require('./types');
-const util = require('./util');
-const JsonLdError = require('./JsonLdError');
-
-const api = {};
-module.exports = api;
-
-/**
- * Creates a merged JSON-LD node map (node ID => node).
- *
- * @param input the expanded JSON-LD to create a node map of.
- * @param [options] the options to use:
- *          [issuer] a jsonld.IdentifierIssuer to use to label blank nodes.
- *
- * @return the node map.
- */
-api.createMergedNodeMap = (input, options) => {
-  options = options || {};
-
-  // produce a map of all subjects and name each bnode
-  const issuer = options.issuer || new util.IdentifierIssuer('_:b');
-  const graphs = {'@default': {}};
-  api.createNodeMap(input, graphs, '@default', issuer);
-
-  // add all non-default graphs to default graph
-  return api.mergeNodeMaps(graphs);
-};
-
-/**
- * Recursively flattens the subjects in the given JSON-LD expanded input
- * into a node map.
- *
- * @param input the JSON-LD expanded input.
- * @param graphs a map of graph name to subject map.
- * @param graph the name of the current graph.
- * @param issuer the blank node identifier issuer.
- * @param name the name assigned to the current input if it is a bnode.
- * @param list the list to append to, null for none.
- */
-api.createNodeMap = (input, graphs, graph, issuer, name, list) => {
-  // recurse through array
-  if(types.isArray(input)) {
-    for(const node of input) {
-      api.createNodeMap(node, graphs, graph, issuer, undefined, list);
-    }
-    return;
-  }
-
-  // add non-object to list
-  if(!types.isObject(input)) {
-    if(list) {
-      list.push(input);
-    }
-    return;
-  }
-
-  // add values to list
-  if(graphTypes.isValue(input)) {
-    if('@type' in input) {
-      let type = input['@type'];
-      // rename @type blank node
-      if(type.indexOf('_:') === 0) {
-        input['@type'] = type = issuer.getId(type);
-      }
-    }
-    if(list) {
-      list.push(input);
-    }
-    return;
-  } else if(list && graphTypes.isList(input)) {
-    const _list = [];
-    api.createNodeMap(input['@list'], graphs, graph, issuer, name, _list);
-    list.push({'@list': _list});
-    return;
-  }
-
-  // Note: At this point, input must be a subject.
-
-  // spec requires @type to be named first, so assign names early
-  if('@type' in input) {
-    const types = input['@type'];
-    for(const type of types) {
-      if(type.indexOf('_:') === 0) {
-        issuer.getId(type);
-      }
-    }
-  }
-
-  // get name for subject
-  if(types.isUndefined(name)) {
-    name = graphTypes.isBlankNode(input) ?
-      issuer.getId(input['@id']) : input['@id'];
-  }
-
-  // add subject reference to list
-  if(list) {
-    list.push({'@id': name});
-  }
-
-  // create new subject or merge into existing one
-  const subjects = graphs[graph];
-  const subject = subjects[name] = subjects[name] || {};
-  subject['@id'] = name;
-  const properties = Object.keys(input).sort();
-  for(let property of properties) {
-    // skip @id
-    if(property === '@id') {
-      continue;
-    }
-
-    // handle reverse properties
-    if(property === '@reverse') {
-      const referencedNode = {'@id': name};
-      const reverseMap = input['@reverse'];
-      for(const reverseProperty in reverseMap) {
-        const items = reverseMap[reverseProperty];
-        for(const item of items) {
-          let itemName = item['@id'];
-          if(graphTypes.isBlankNode(item)) {
-            itemName = issuer.getId(itemName);
-          }
-          api.createNodeMap(item, graphs, graph, issuer, itemName);
-          util.addValue(
-            subjects[itemName], reverseProperty, referencedNode,
-            {propertyIsArray: true, allowDuplicate: false});
-        }
-      }
-      continue;
-    }
-
-    // recurse into graph
-    if(property === '@graph') {
-      // add graph subjects map entry
-      if(!(name in graphs)) {
-        graphs[name] = {};
-      }
-      api.createNodeMap(input[property], graphs, name, issuer);
-      continue;
-    }
-
-    // recurse into included
-    if(property === '@included') {
-      api.createNodeMap(input[property], graphs, graph, issuer);
-      continue;
-    }
-
-    // copy non-@type keywords
-    if(property !== '@type' && isKeyword(property)) {
-      if(property === '@index' && property in subject &&
-        (input[property] !== subject[property] ||
-        input[property]['@id'] !== subject[property]['@id'])) {
-        throw new JsonLdError(
-          'Invalid JSON-LD syntax; conflicting @index property detected.',
-          'jsonld.SyntaxError',
-          {code: 'conflicting indexes', subject});
-      }
-      subject[property] = input[property];
-      continue;
-    }
-
-    // iterate over objects
-    const objects = input[property];
-
-    // if property is a bnode, assign it a new id
-    if(property.indexOf('_:') === 0) {
-      property = issuer.getId(property);
-    }
-
-    // ensure property is added for empty arrays
-    if(objects.length === 0) {
-      util.addValue(subject, property, [], {propertyIsArray: true});
-      continue;
-    }
-    for(let o of objects) {
-      if(property === '@type') {
-        // rename @type blank nodes
-        o = (o.indexOf('_:') === 0) ? issuer.getId(o) : o;
-      }
-
-      // handle embedded subject or subject reference
-      if(graphTypes.isSubject(o) || graphTypes.isSubjectReference(o)) {
-        // skip null @id
-        if('@id' in o && !o['@id']) {
-          continue;
-        }
-
-        // relabel blank node @id
-        const id = graphTypes.isBlankNode(o) ?
-          issuer.getId(o['@id']) : o['@id'];
-
-        // add reference and recurse
-        util.addValue(
-          subject, property, {'@id': id},
-          {propertyIsArray: true, allowDuplicate: false});
-        api.createNodeMap(o, graphs, graph, issuer, id);
-      } else if(graphTypes.isValue(o)) {
-        util.addValue(
-          subject, property, o,
-          {propertyIsArray: true, allowDuplicate: false});
-      } else if(graphTypes.isList(o)) {
-        // handle @list
-        const _list = [];
-        api.createNodeMap(o['@list'], graphs, graph, issuer, name, _list);
-        o = {'@list': _list};
-        util.addValue(
-          subject, property, o,
-          {propertyIsArray: true, allowDuplicate: false});
-      } else {
-        // handle @value
-        api.createNodeMap(o, graphs, graph, issuer, name);
-        util.addValue(
-          subject, property, o, {propertyIsArray: true, allowDuplicate: false});
-      }
-    }
-  }
-};
-
-/**
- * Merge separate named graphs into a single merged graph including
- * all nodes from the default graph and named graphs.
- *
- * @param graphs a map of graph name to subject map.
- *
- * @return the merged graph map.
- */
-api.mergeNodeMapGraphs = graphs => {
-  const merged = {};
-  for(const name of Object.keys(graphs).sort()) {
-    for(const id of Object.keys(graphs[name]).sort()) {
-      const node = graphs[name][id];
-      if(!(id in merged)) {
-        merged[id] = {'@id': id};
-      }
-      const mergedNode = merged[id];
-
-      for(const property of Object.keys(node).sort()) {
-        if(isKeyword(property) && property !== '@type') {
-          // copy keywords
-          mergedNode[property] = util.clone(node[property]);
-        } else {
-          // merge objects
-          for(const value of node[property]) {
-            util.addValue(
-              mergedNode, property, util.clone(value),
-              {propertyIsArray: true, allowDuplicate: false});
-          }
-        }
-      }
-    }
-  }
-
-  return merged;
-};
-
-api.mergeNodeMaps = graphs => {
-  // add all non-default graphs to default graph
-  const defaultGraph = graphs['@default'];
-  const graphNames = Object.keys(graphs).sort();
-  for(const graphName of graphNames) {
-    if(graphName === '@default') {
-      continue;
-    }
-    const nodeMap = graphs[graphName];
-    let subject = defaultGraph[graphName];
-    if(!subject) {
-      defaultGraph[graphName] = subject = {
-        '@id': graphName,
-        '@graph': []
-      };
-    } else if(!('@graph' in subject)) {
-      subject['@graph'] = [];
-    }
-    const graph = subject['@graph'];
-    for(const id of Object.keys(nodeMap).sort()) {
-      const node = nodeMap[id];
-      // only add full subjects
-      if(!graphTypes.isSubjectReference(node)) {
-        graph.push(node);
-      }
-    }
-  }
-  return defaultGraph;
-};
-
-},{"./JsonLdError":188,"./context":195,"./graphTypes":201,"./types":206,"./util":208}],204:[function(require,module,exports){
-/*
- * Copyright (c) 2021 Digital Bazaar, Inc. All rights reserved.
- */
-'use strict';
-
-const xhrLoader = require('./documentLoaders/xhr');
-
-const api = {};
-module.exports = api;
-
-/**
- * Setup browser document loaders.
- *
- * @param jsonld the jsonld api.
- */
-api.setupDocumentLoaders = function(jsonld) {
-  if(typeof XMLHttpRequest !== 'undefined') {
-    jsonld.documentLoaders.xhr = xhrLoader;
-    // use xhr document loader by default
-    jsonld.useDocumentLoader('xhr');
-  }
-};
-
-/**
- * Setup browser globals.
- *
- * @param jsonld the jsonld api.
- */
-api.setupGlobals = function(jsonld) {
-  // setup browser global JsonLdProcessor
-  if(typeof globalThis.JsonLdProcessor === 'undefined') {
-    Object.defineProperty(globalThis, 'JsonLdProcessor', {
-      writable: true,
-      enumerable: false,
-      configurable: true,
-      value: jsonld.JsonLdProcessor
-    });
-  }
-};
-
-},{"./documentLoaders/xhr":196}],205:[function(require,module,exports){
-/*
- * Copyright (c) 2017 Digital Bazaar, Inc. All rights reserved.
- */
-'use strict';
-
-const {createNodeMap} = require('./nodeMap');
-const {isKeyword} = require('./context');
-const graphTypes = require('./graphTypes');
-const jsonCanonicalize = require('canonicalize');
-const types = require('./types');
-const util = require('./util');
-
-const {
-  // RDF,
-  // RDF_LIST,
-  RDF_FIRST,
-  RDF_REST,
-  RDF_NIL,
-  RDF_TYPE,
-  // RDF_PLAIN_LITERAL,
-  // RDF_XML_LITERAL,
-  RDF_JSON_LITERAL,
-  // RDF_OBJECT,
-  RDF_LANGSTRING,
-
-  // XSD,
-  XSD_BOOLEAN,
-  XSD_DOUBLE,
-  XSD_INTEGER,
-  XSD_STRING,
-} = require('./constants');
-
-const {
-  isAbsolute: _isAbsoluteIri
-} = require('./url');
-
-const api = {};
-module.exports = api;
-
-/**
- * Outputs an RDF dataset for the expanded JSON-LD input.
- *
- * @param input the expanded JSON-LD input.
- * @param options the RDF serialization options.
- *
- * @return the RDF dataset.
- */
-api.toRDF = (input, options) => {
-  // create node map for default graph (and any named graphs)
-  const issuer = new util.IdentifierIssuer('_:b');
-  const nodeMap = {'@default': {}};
-  createNodeMap(input, nodeMap, '@default', issuer);
-
-  const dataset = [];
-  const graphNames = Object.keys(nodeMap).sort();
-  for(const graphName of graphNames) {
-    let graphTerm;
-    if(graphName === '@default') {
-      graphTerm = {termType: 'DefaultGraph', value: ''};
-    } else if(_isAbsoluteIri(graphName)) {
-      if(graphName.startsWith('_:')) {
-        graphTerm = {termType: 'BlankNode'};
-      } else {
-        graphTerm = {termType: 'NamedNode'};
-      }
-      graphTerm.value = graphName;
-    } else {
-      // skip relative IRIs (not valid RDF)
-      continue;
-    }
-    _graphToRDF(dataset, nodeMap[graphName], graphTerm, issuer, options);
-  }
-
-  return dataset;
-};
-
-/**
- * Adds RDF quads for a particular graph to the given dataset.
- *
- * @param dataset the dataset to append RDF quads to.
- * @param graph the graph to create RDF quads for.
- * @param graphTerm the graph term for each quad.
- * @param issuer a IdentifierIssuer for assigning blank node names.
- * @param options the RDF serialization options.
- *
- * @return the array of RDF triples for the given graph.
- */
-function _graphToRDF(dataset, graph, graphTerm, issuer, options) {
-  const ids = Object.keys(graph).sort();
-  for(const id of ids) {
-    const node = graph[id];
-    const properties = Object.keys(node).sort();
-    for(let property of properties) {
-      const items = node[property];
-      if(property === '@type') {
-        property = RDF_TYPE;
-      } else if(isKeyword(property)) {
-        continue;
-      }
-
-      for(const item of items) {
-        // RDF subject
-        const subject = {
-          termType: id.startsWith('_:') ? 'BlankNode' : 'NamedNode',
-          value: id
-        };
-
-        // skip relative IRI subjects (not valid RDF)
-        if(!_isAbsoluteIri(id)) {
-          continue;
-        }
-
-        // RDF predicate
-        const predicate = {
-          termType: property.startsWith('_:') ? 'BlankNode' : 'NamedNode',
-          value: property
-        };
-
-        // skip relative IRI predicates (not valid RDF)
-        if(!_isAbsoluteIri(property)) {
-          continue;
-        }
-
-        // skip blank node predicates unless producing generalized RDF
-        if(predicate.termType === 'BlankNode' &&
-          !options.produceGeneralizedRdf) {
-          continue;
-        }
-
-        // convert list, value or node object to triple
-        const object =
-          _objectToRDF(item, issuer, dataset, graphTerm, options.rdfDirection);
-        // skip null objects (they are relative IRIs)
-        if(object) {
-          dataset.push({
-            subject,
-            predicate,
-            object,
-            graph: graphTerm
-          });
-        }
-      }
-    }
-  }
-}
-
-/**
- * Converts a @list value into linked list of blank node RDF quads
- * (an RDF collection).
- *
- * @param list the @list value.
- * @param issuer a IdentifierIssuer for assigning blank node names.
- * @param dataset the array of quads to append to.
- * @param graphTerm the graph term for each quad.
- *
- * @return the head of the list.
- */
-function _listToRDF(list, issuer, dataset, graphTerm, rdfDirection) {
-  const first = {termType: 'NamedNode', value: RDF_FIRST};
-  const rest = {termType: 'NamedNode', value: RDF_REST};
-  const nil = {termType: 'NamedNode', value: RDF_NIL};
-
-  const last = list.pop();
-  // Result is the head of the list
-  const result = last ? {termType: 'BlankNode', value: issuer.getId()} : nil;
-  let subject = result;
-
-  for(const item of list) {
-    const object = _objectToRDF(item, issuer, dataset, graphTerm, rdfDirection);
-    const next = {termType: 'BlankNode', value: issuer.getId()};
-    dataset.push({
-      subject,
-      predicate: first,
-      object,
-      graph: graphTerm
-    });
-    dataset.push({
-      subject,
-      predicate: rest,
-      object: next,
-      graph: graphTerm
-    });
-    subject = next;
-  }
-
-  // Tail of list
-  if(last) {
-    const object = _objectToRDF(last, issuer, dataset, graphTerm, rdfDirection);
-    dataset.push({
-      subject,
-      predicate: first,
-      object,
-      graph: graphTerm
-    });
-    dataset.push({
-      subject,
-      predicate: rest,
-      object: nil,
-      graph: graphTerm
-    });
-  }
-
-  return result;
-}
-
-/**
- * Converts a JSON-LD value object to an RDF literal or a JSON-LD string,
- * node object to an RDF resource, or adds a list.
- *
- * @param item the JSON-LD value or node object.
- * @param issuer a IdentifierIssuer for assigning blank node names.
- * @param dataset the dataset to append RDF quads to.
- * @param graphTerm the graph term for each quad.
- *
- * @return the RDF literal or RDF resource.
- */
-function _objectToRDF(item, issuer, dataset, graphTerm, rdfDirection) {
-  const object = {};
-
-  // convert value object to RDF
-  if(graphTypes.isValue(item)) {
-    object.termType = 'Literal';
-    object.value = undefined;
-    object.datatype = {
-      termType: 'NamedNode'
-    };
-    let value = item['@value'];
-    const datatype = item['@type'] || null;
-
-    // convert to XSD/JSON datatypes as appropriate
-    if(datatype === '@json') {
-      object.value = jsonCanonicalize(value);
-      object.datatype.value = RDF_JSON_LITERAL;
-    } else if(types.isBoolean(value)) {
-      object.value = value.toString();
-      object.datatype.value = datatype || XSD_BOOLEAN;
-    } else if(types.isDouble(value) || datatype === XSD_DOUBLE) {
-      if(!types.isDouble(value)) {
-        value = parseFloat(value);
-      }
-      // canonical double representation
-      object.value = value.toExponential(15).replace(/(\d)0*e\+?/, '$1E');
-      object.datatype.value = datatype || XSD_DOUBLE;
-    } else if(types.isNumber(value)) {
-      object.value = value.toFixed(0);
-      object.datatype.value = datatype || XSD_INTEGER;
-    } else if(rdfDirection === 'i18n-datatype' &&
-      '@direction' in item) {
-      const datatype = 'https://www.w3.org/ns/i18n#' +
-        (item['@language'] || '') +
-        `_${item['@direction']}`;
-      object.datatype.value = datatype;
-      object.value = value;
-    } else if('@language' in item) {
-      object.value = value;
-      object.datatype.value = datatype || RDF_LANGSTRING;
-      object.language = item['@language'];
-    } else {
-      object.value = value;
-      object.datatype.value = datatype || XSD_STRING;
-    }
-  } else if(graphTypes.isList(item)) {
-    const _list =
-      _listToRDF(item['@list'], issuer, dataset, graphTerm, rdfDirection);
-    object.termType = _list.termType;
-    object.value = _list.value;
-  } else {
-    // convert string/node object to RDF
-    const id = types.isObject(item) ? item['@id'] : item;
-    object.termType = id.startsWith('_:') ? 'BlankNode' : 'NamedNode';
-    object.value = id;
-  }
-
-  // skip relative IRIs, not valid RDF
-  if(object.termType === 'NamedNode' && !_isAbsoluteIri(object.value)) {
-    return null;
-  }
-
-  return object;
-}
-
-},{"./constants":194,"./context":195,"./graphTypes":201,"./nodeMap":203,"./types":206,"./url":207,"./util":208,"canonicalize":119}],206:[function(require,module,exports){
-/*
- * Copyright (c) 2017 Digital Bazaar, Inc. All rights reserved.
- */
-'use strict';
-
-const api = {};
-module.exports = api;
-
-/**
- * Returns true if the given value is an Array.
- *
- * @param v the value to check.
- *
- * @return true if the value is an Array, false if not.
- */
-api.isArray = Array.isArray;
-
-/**
- * Returns true if the given value is a Boolean.
- *
- * @param v the value to check.
- *
- * @return true if the value is a Boolean, false if not.
- */
-api.isBoolean = v => (typeof v === 'boolean' ||
-  Object.prototype.toString.call(v) === '[object Boolean]');
-
-/**
- * Returns true if the given value is a double.
- *
- * @param v the value to check.
- *
- * @return true if the value is a double, false if not.
- */
-api.isDouble = v => api.isNumber(v) &&
-  (String(v).indexOf('.') !== -1 || Math.abs(v) >= 1e21);
-
-/**
- * Returns true if the given value is an empty Object.
- *
- * @param v the value to check.
- *
- * @return true if the value is an empty Object, false if not.
- */
-api.isEmptyObject = v => api.isObject(v) && Object.keys(v).length === 0;
-
-/**
- * Returns true if the given value is a Number.
- *
- * @param v the value to check.
- *
- * @return true if the value is a Number, false if not.
- */
-api.isNumber = v => (typeof v === 'number' ||
-  Object.prototype.toString.call(v) === '[object Number]');
-
-/**
- * Returns true if the given value is numeric.
- *
- * @param v the value to check.
- *
- * @return true if the value is numeric, false if not.
- */
-api.isNumeric = v => !isNaN(parseFloat(v)) && isFinite(v);
-
-/**
- * Returns true if the given value is an Object.
- *
- * @param v the value to check.
- *
- * @return true if the value is an Object, false if not.
- */
-api.isObject = v => Object.prototype.toString.call(v) === '[object Object]';
-
-/**
- * Returns true if the given value is a String.
- *
- * @param v the value to check.
- *
- * @return true if the value is a String, false if not.
- */
-api.isString = v => (typeof v === 'string' ||
-  Object.prototype.toString.call(v) === '[object String]');
-
-/**
- * Returns true if the given value is undefined.
- *
- * @param v the value to check.
- *
- * @return true if the value is undefined, false if not.
- */
-api.isUndefined = v => typeof v === 'undefined';
-
-},{}],207:[function(require,module,exports){
-/*
- * Copyright (c) 2017 Digital Bazaar, Inc. All rights reserved.
- */
-'use strict';
-
-const types = require('./types');
-
-const api = {};
-module.exports = api;
-
-// define URL parser
-// parseUri 1.2.2
-// (c) Steven Levithan <stevenlevithan.com>
-// MIT License
-// with local jsonld.js modifications
-api.parsers = {
-  simple: {
-    // RFC 3986 basic parts
-    keys: [
-      'href', 'scheme', 'authority', 'path', 'query', 'fragment'
-    ],
-    /* eslint-disable-next-line max-len */
-    regex: /^(?:([^:\/?#]+):)?(?:\/\/([^\/?#]*))?([^?#]*)(?:\?([^#]*))?(?:#(.*))?/
-  },
-  full: {
-    keys: [
-      'href', 'protocol', 'scheme', 'authority', 'auth', 'user', 'password',
-      'hostname', 'port', 'path', 'directory', 'file', 'query', 'fragment'
-    ],
-    /* eslint-disable-next-line max-len */
-    regex: /^(([^:\/?#]+):)?(?:\/\/((?:(([^:@]*)(?::([^:@]*))?)?@)?([^:\/?#]*)(?::(\d*))?))?(?:(((?:[^?#\/]*\/)*)([^?#]*))(?:\?([^#]*))?(?:#(.*))?)/
-  }
-};
-api.parse = (str, parser) => {
-  const parsed = {};
-  const o = api.parsers[parser || 'full'];
-  const m = o.regex.exec(str);
-  let i = o.keys.length;
-  while(i--) {
-    parsed[o.keys[i]] = (m[i] === undefined) ? null : m[i];
-  }
-
-  // remove default ports in found in URLs
-  if((parsed.scheme === 'https' && parsed.port === '443') ||
-    (parsed.scheme === 'http' && parsed.port === '80')) {
-    parsed.href = parsed.href.replace(':' + parsed.port, '');
-    parsed.authority = parsed.authority.replace(':' + parsed.port, '');
-    parsed.port = null;
-  }
-
-  parsed.normalizedPath = api.removeDotSegments(parsed.path);
-  return parsed;
-};
-
-/**
- * Prepends a base IRI to the given relative IRI.
- *
- * @param base the base IRI.
- * @param iri the relative IRI.
- *
- * @return the absolute IRI.
- */
-api.prependBase = (base, iri) => {
-  // skip IRI processing
-  if(base === null) {
-    return iri;
-  }
-  // already an absolute IRI
-  if(api.isAbsolute(iri)) {
-    return iri;
-  }
-
-  // parse base if it is a string
-  if(!base || types.isString(base)) {
-    base = api.parse(base || '');
-  }
-
-  // parse given IRI
-  const rel = api.parse(iri);
-
-  // per RFC3986 5.2.2
-  const transform = {
-    protocol: base.protocol || ''
-  };
-
-  if(rel.authority !== null) {
-    transform.authority = rel.authority;
-    transform.path = rel.path;
-    transform.query = rel.query;
-  } else {
-    transform.authority = base.authority;
-
-    if(rel.path === '') {
-      transform.path = base.path;
-      if(rel.query !== null) {
-        transform.query = rel.query;
-      } else {
-        transform.query = base.query;
-      }
-    } else {
-      if(rel.path.indexOf('/') === 0) {
-        // IRI represents an absolute path
-        transform.path = rel.path;
-      } else {
-        // merge paths
-        let path = base.path;
-
-        // append relative path to the end of the last directory from base
-        path = path.substr(0, path.lastIndexOf('/') + 1);
-        if((path.length > 0 || base.authority) && path.substr(-1) !== '/') {
-          path += '/';
-        }
-        path += rel.path;
-
-        transform.path = path;
-      }
-      transform.query = rel.query;
-    }
-  }
-
-  if(rel.path !== '') {
-    // remove slashes and dots in path
-    transform.path = api.removeDotSegments(transform.path);
-  }
-
-  // construct URL
-  let rval = transform.protocol;
-  if(transform.authority !== null) {
-    rval += '//' + transform.authority;
-  }
-  rval += transform.path;
-  if(transform.query !== null) {
-    rval += '?' + transform.query;
-  }
-  if(rel.fragment !== null) {
-    rval += '#' + rel.fragment;
-  }
-
-  // handle empty base
-  if(rval === '') {
-    rval = './';
-  }
-
-  return rval;
-};
-
-/**
- * Removes a base IRI from the given absolute IRI.
- *
- * @param base the base IRI.
- * @param iri the absolute IRI.
- *
- * @return the relative IRI if relative to base, otherwise the absolute IRI.
- */
-api.removeBase = (base, iri) => {
-  // skip IRI processing
-  if(base === null) {
-    return iri;
-  }
-
-  if(!base || types.isString(base)) {
-    base = api.parse(base || '');
-  }
-
-  // establish base root
-  let root = '';
-  if(base.href !== '') {
-    root += (base.protocol || '') + '//' + (base.authority || '');
-  } else if(iri.indexOf('//')) {
-    // support network-path reference with empty base
-    root += '//';
-  }
-
-  // IRI not relative to base
-  if(iri.indexOf(root) !== 0) {
-    return iri;
-  }
-
-  // remove root from IRI and parse remainder
-  const rel = api.parse(iri.substr(root.length));
-
-  // remove path segments that match (do not remove last segment unless there
-  // is a hash or query)
-  const baseSegments = base.normalizedPath.split('/');
-  const iriSegments = rel.normalizedPath.split('/');
-  const last = (rel.fragment || rel.query) ? 0 : 1;
-  while(baseSegments.length > 0 && iriSegments.length > last) {
-    if(baseSegments[0] !== iriSegments[0]) {
-      break;
-    }
-    baseSegments.shift();
-    iriSegments.shift();
-  }
-
-  // use '../' for each non-matching base segment
-  let rval = '';
-  if(baseSegments.length > 0) {
-    // don't count the last segment (if it ends with '/' last path doesn't
-    // count and if it doesn't end with '/' it isn't a path)
-    baseSegments.pop();
-    for(let i = 0; i < baseSegments.length; ++i) {
-      rval += '../';
-    }
-  }
-
-  // prepend remaining segments
-  rval += iriSegments.join('/');
-
-  // add query and hash
-  if(rel.query !== null) {
-    rval += '?' + rel.query;
-  }
-  if(rel.fragment !== null) {
-    rval += '#' + rel.fragment;
-  }
-
-  // handle empty base
-  if(rval === '') {
-    rval = './';
-  }
-
-  return rval;
-};
-
-/**
- * Removes dot segments from a URL path.
- *
- * @param path the path to remove dot segments from.
- */
-api.removeDotSegments = path => {
-  // RFC 3986 5.2.4 (reworked)
-
-  // empty path shortcut
-  if(path.length === 0) {
-    return '';
-  }
-
-  const input = path.split('/');
-  const output = [];
-
-  while(input.length > 0) {
-    const next = input.shift();
-    const done = input.length === 0;
-
-    if(next === '.') {
-      if(done) {
-        // ensure output has trailing /
-        output.push('');
-      }
-      continue;
-    }
-
-    if(next === '..') {
-      output.pop();
-      if(done) {
-        // ensure output has trailing /
-        output.push('');
-      }
-      continue;
-    }
-
-    output.push(next);
-  }
-
-  // if path was absolute, ensure output has leading /
-  if(path[0] === '/' && output.length > 0 && output[0] !== '') {
-    output.unshift('');
-  }
-  if(output.length === 1 && output[0] === '') {
-    return '/';
-  }
-
-  return output.join('/');
-};
-
-// TODO: time better isAbsolute/isRelative checks using full regexes:
-// http://jmrware.com/articles/2009/uri_regexp/URI_regex.html
-
-// regex to check for absolute IRI (starting scheme and ':') or blank node IRI
-const isAbsoluteRegex = /^([A-Za-z][A-Za-z0-9+-.]*|_):[^\s]*$/;
-
-/**
- * Returns true if the given value is an absolute IRI or blank node IRI, false
- * if not.
- * Note: This weak check only checks for a correct starting scheme.
- *
- * @param v the value to check.
- *
- * @return true if the value is an absolute IRI, false if not.
- */
-api.isAbsolute = v => types.isString(v) && isAbsoluteRegex.test(v);
-
-/**
- * Returns true if the given value is a relative IRI, false if not.
- * Note: this is a weak check.
- *
- * @param v the value to check.
- *
- * @return true if the value is a relative IRI, false if not.
- */
-api.isRelative = v => types.isString(v);
-
-},{"./types":206}],208:[function(require,module,exports){
-/*
- * Copyright (c) 2017-2019 Digital Bazaar, Inc. All rights reserved.
- */
-'use strict';
-
-const graphTypes = require('./graphTypes');
-const types = require('./types');
-// TODO: move `IdentifierIssuer` to its own package
-const IdentifierIssuer = require('rdf-canonize').IdentifierIssuer;
-const JsonLdError = require('./JsonLdError');
-
-// constants
-const REGEX_LINK_HEADERS = /(?:<[^>]*?>|"[^"]*?"|[^,])+/g;
-const REGEX_LINK_HEADER = /\s*<([^>]*?)>\s*(?:;\s*(.*))?/;
-const REGEX_LINK_HEADER_PARAMS =
-  /(.*?)=(?:(?:"([^"]*?)")|([^"]*?))\s*(?:(?:;\s*)|$)/g;
-
-const DEFAULTS = {
-  headers: {
-    accept: 'application/ld+json, application/json'
-  }
-};
-
-const api = {};
-module.exports = api;
-api.IdentifierIssuer = IdentifierIssuer;
-
-/**
- * Clones an object, array, Map, Set, or string/number. If a typed JavaScript
- * object is given, such as a Date, it will be converted to a string.
- *
- * @param value the value to clone.
- *
- * @return the cloned value.
- */
-api.clone = function(value) {
-  if(value && typeof value === 'object') {
-    let rval;
-    if(types.isArray(value)) {
-      rval = [];
-      for(let i = 0; i < value.length; ++i) {
-        rval[i] = api.clone(value[i]);
-      }
-    } else if(value instanceof Map) {
-      rval = new Map();
-      for(const [k, v] of value) {
-        rval.set(k, api.clone(v));
-      }
-    } else if(value instanceof Set) {
-      rval = new Set();
-      for(const v of value) {
-        rval.add(api.clone(v));
-      }
-    } else if(types.isObject(value)) {
-      rval = {};
-      for(const key in value) {
-        rval[key] = api.clone(value[key]);
-      }
-    } else {
-      rval = value.toString();
-    }
-    return rval;
-  }
-  return value;
-};
-
-/**
- * Ensure a value is an array. If the value is an array, it is returned.
- * Otherwise, it is wrapped in an array.
- *
- * @param value the value to return as an array.
- *
- * @return the value as an array.
- */
-api.asArray = function(value) {
-  return Array.isArray(value) ? value : [value];
-};
-
-/**
- * Builds an HTTP headers object for making a JSON-LD request from custom
- * headers and asserts the `accept` header isn't overridden.
- *
- * @param headers an object of headers with keys as header names and values
- *          as header values.
- *
- * @return an object of headers with a valid `accept` header.
- */
-api.buildHeaders = (headers = {}) => {
-  const hasAccept = Object.keys(headers).some(
-    h => h.toLowerCase() === 'accept');
-
-  if(hasAccept) {
-    throw new RangeError(
-      'Accept header may not be specified; only "' +
-      DEFAULTS.headers.accept + '" is supported.');
-  }
-
-  return Object.assign({Accept: DEFAULTS.headers.accept}, headers);
-};
-
-/**
- * Parses a link header. The results will be key'd by the value of "rel".
- *
- * Link: <http://json-ld.org/contexts/person.jsonld>;
- * rel="http://www.w3.org/ns/json-ld#context"; type="application/ld+json"
- *
- * Parses as: {
- *   'http://www.w3.org/ns/json-ld#context': {
- *     target: http://json-ld.org/contexts/person.jsonld,
- *     type: 'application/ld+json'
- *   }
- * }
- *
- * If there is more than one "rel" with the same IRI, then entries in the
- * resulting map for that "rel" will be arrays.
- *
- * @param header the link header to parse.
- */
-api.parseLinkHeader = header => {
-  const rval = {};
-  // split on unbracketed/unquoted commas
-  const entries = header.match(REGEX_LINK_HEADERS);
-  for(let i = 0; i < entries.length; ++i) {
-    let match = entries[i].match(REGEX_LINK_HEADER);
-    if(!match) {
-      continue;
-    }
-    const result = {target: match[1]};
-    const params = match[2];
-    while((match = REGEX_LINK_HEADER_PARAMS.exec(params))) {
-      result[match[1]] = (match[2] === undefined) ? match[3] : match[2];
-    }
-    const rel = result.rel || '';
-    if(Array.isArray(rval[rel])) {
-      rval[rel].push(result);
-    } else if(rval.hasOwnProperty(rel)) {
-      rval[rel] = [rval[rel], result];
-    } else {
-      rval[rel] = result;
-    }
-  }
-  return rval;
-};
-
-/**
- * Throws an exception if the given value is not a valid @type value.
- *
- * @param v the value to check.
- */
-api.validateTypeValue = (v, isFrame) => {
-  if(types.isString(v)) {
-    return;
-  }
-
-  if(types.isArray(v) && v.every(vv => types.isString(vv))) {
-    return;
-  }
-  if(isFrame && types.isObject(v)) {
-    switch(Object.keys(v).length) {
-      case 0:
-        // empty object is wildcard
-        return;
-      case 1:
-        // default entry is all strings
-        if('@default' in v &&
-          api.asArray(v['@default']).every(vv => types.isString(vv))) {
-          return;
-        }
-    }
-  }
-
-  throw new JsonLdError(
-    'Invalid JSON-LD syntax; "@type" value must a string, an array of ' +
-    'strings, an empty object, ' +
-    'or a default object.', 'jsonld.SyntaxError',
-    {code: 'invalid type value', value: v});
-};
-
-/**
- * Returns true if the given subject has the given property.
- *
- * @param subject the subject to check.
- * @param property the property to look for.
- *
- * @return true if the subject has the given property, false if not.
- */
-api.hasProperty = (subject, property) => {
-  if(subject.hasOwnProperty(property)) {
-    const value = subject[property];
-    return (!types.isArray(value) || value.length > 0);
-  }
-  return false;
-};
-
-/**
- * Determines if the given value is a property of the given subject.
- *
- * @param subject the subject to check.
- * @param property the property to check.
- * @param value the value to check.
- *
- * @return true if the value exists, false if not.
- */
-api.hasValue = (subject, property, value) => {
-  if(api.hasProperty(subject, property)) {
-    let val = subject[property];
-    const isList = graphTypes.isList(val);
-    if(types.isArray(val) || isList) {
-      if(isList) {
-        val = val['@list'];
-      }
-      for(let i = 0; i < val.length; ++i) {
-        if(api.compareValues(value, val[i])) {
-          return true;
-        }
-      }
-    } else if(!types.isArray(value)) {
-      // avoid matching the set of values with an array value parameter
-      return api.compareValues(value, val);
-    }
-  }
-  return false;
-};
-
-/**
- * Adds a value to a subject. If the value is an array, all values in the
- * array will be added.
- *
- * @param subject the subject to add the value to.
- * @param property the property that relates the value to the subject.
- * @param value the value to add.
- * @param [options] the options to use:
- *        [propertyIsArray] true if the property is always an array, false
- *          if not (default: false).
- *        [valueIsArray] true if the value to be added should be preserved as
- *          an array (lists) (default: false).
- *        [allowDuplicate] true to allow duplicates, false not to (uses a
- *          simple shallow comparison of subject ID or value) (default: true).
- *        [prependValue] false to prepend value to any existing values.
- *          (default: false)
- */
-api.addValue = (subject, property, value, options) => {
-  options = options || {};
-  if(!('propertyIsArray' in options)) {
-    options.propertyIsArray = false;
-  }
-  if(!('valueIsArray' in options)) {
-    options.valueIsArray = false;
-  }
-  if(!('allowDuplicate' in options)) {
-    options.allowDuplicate = true;
-  }
-  if(!('prependValue' in options)) {
-    options.prependValue = false;
-  }
-
-  if(options.valueIsArray) {
-    subject[property] = value;
-  } else if(types.isArray(value)) {
-    if(value.length === 0 && options.propertyIsArray &&
-      !subject.hasOwnProperty(property)) {
-      subject[property] = [];
-    }
-    if(options.prependValue) {
-      value = value.concat(subject[property]);
-      subject[property] = [];
-    }
-    for(let i = 0; i < value.length; ++i) {
-      api.addValue(subject, property, value[i], options);
-    }
-  } else if(subject.hasOwnProperty(property)) {
-    // check if subject already has value if duplicates not allowed
-    const hasValue = (!options.allowDuplicate &&
-      api.hasValue(subject, property, value));
-
-    // make property an array if value not present or always an array
-    if(!types.isArray(subject[property]) &&
-      (!hasValue || options.propertyIsArray)) {
-      subject[property] = [subject[property]];
-    }
-
-    // add new value
-    if(!hasValue) {
-      if(options.prependValue) {
-        subject[property].unshift(value);
-      } else {
-        subject[property].push(value);
-      }
-    }
-  } else {
-    // add new value as set or single value
-    subject[property] = options.propertyIsArray ? [value] : value;
-  }
-};
-
-/**
- * Gets all of the values for a subject's property as an array.
- *
- * @param subject the subject.
- * @param property the property.
- *
- * @return all of the values for a subject's property as an array.
- */
-api.getValues = (subject, property) => [].concat(subject[property] || []);
-
-/**
- * Removes a property from a subject.
- *
- * @param subject the subject.
- * @param property the property.
- */
-api.removeProperty = (subject, property) => {
-  delete subject[property];
-};
-
-/**
- * Removes a value from a subject.
- *
- * @param subject the subject.
- * @param property the property that relates the value to the subject.
- * @param value the value to remove.
- * @param [options] the options to use:
- *          [propertyIsArray] true if the property is always an array, false
- *            if not (default: false).
- */
-api.removeValue = (subject, property, value, options) => {
-  options = options || {};
-  if(!('propertyIsArray' in options)) {
-    options.propertyIsArray = false;
-  }
-
-  // filter out value
-  const values = api.getValues(subject, property).filter(
-    e => !api.compareValues(e, value));
-
-  if(values.length === 0) {
-    api.removeProperty(subject, property);
-  } else if(values.length === 1 && !options.propertyIsArray) {
-    subject[property] = values[0];
-  } else {
-    subject[property] = values;
-  }
-};
-
-/**
- * Relabels all blank nodes in the given JSON-LD input.
- *
- * @param input the JSON-LD input.
- * @param [options] the options to use:
- *          [issuer] an IdentifierIssuer to use to label blank nodes.
- */
-api.relabelBlankNodes = (input, options) => {
-  options = options || {};
-  const issuer = options.issuer || new IdentifierIssuer('_:b');
-  return _labelBlankNodes(issuer, input);
-};
-
-/**
- * Compares two JSON-LD values for equality. Two JSON-LD values will be
- * considered equal if:
- *
- * 1. They are both primitives of the same type and value.
- * 2. They are both @values with the same @value, @type, @language,
- *   and @index, OR
- * 3. They both have @ids they are the same.
- *
- * @param v1 the first value.
- * @param v2 the second value.
- *
- * @return true if v1 and v2 are considered equal, false if not.
- */
-api.compareValues = (v1, v2) => {
-  // 1. equal primitives
-  if(v1 === v2) {
-    return true;
-  }
-
-  // 2. equal @values
-  if(graphTypes.isValue(v1) && graphTypes.isValue(v2) &&
-    v1['@value'] === v2['@value'] &&
-    v1['@type'] === v2['@type'] &&
-    v1['@language'] === v2['@language'] &&
-    v1['@index'] === v2['@index']) {
-    return true;
-  }
-
-  // 3. equal @ids
-  if(types.isObject(v1) &&
-    ('@id' in v1) &&
-    types.isObject(v2) &&
-    ('@id' in v2)) {
-    return v1['@id'] === v2['@id'];
-  }
-
-  return false;
-};
-
-/**
- * Compares two strings first based on length and then lexicographically.
- *
- * @param a the first string.
- * @param b the second string.
- *
- * @return -1 if a < b, 1 if a > b, 0 if a === b.
- */
-api.compareShortestLeast = (a, b) => {
-  if(a.length < b.length) {
-    return -1;
-  }
-  if(b.length < a.length) {
-    return 1;
-  }
-  if(a === b) {
-    return 0;
-  }
-  return (a < b) ? -1 : 1;
-};
-
-/**
- * Labels the blank nodes in the given value using the given IdentifierIssuer.
- *
- * @param issuer the IdentifierIssuer to use.
- * @param element the element with blank nodes to rename.
- *
- * @return the element.
- */
-function _labelBlankNodes(issuer, element) {
-  if(types.isArray(element)) {
-    for(let i = 0; i < element.length; ++i) {
-      element[i] = _labelBlankNodes(issuer, element[i]);
-    }
-  } else if(graphTypes.isList(element)) {
-    element['@list'] = _labelBlankNodes(issuer, element['@list']);
-  } else if(types.isObject(element)) {
-    // relabel blank node
-    if(graphTypes.isBlankNode(element)) {
-      element['@id'] = issuer.getId(element['@id']);
-    }
-
-    // recursively apply to all keys
-    const keys = Object.keys(element).sort();
-    for(let ki = 0; ki < keys.length; ++ki) {
-      const key = keys[ki];
-      if(key !== '@id') {
-        element[key] = _labelBlankNodes(issuer, element[key]);
-      }
-    }
-  }
-
-  return element;
-}
-
-},{"./JsonLdError":188,"./graphTypes":201,"./types":206,"rdf-canonize":244}],209:[function(require,module,exports){
+},{"jsonld-context-parser":161}],195:[function(require,module,exports){
 (function (Buffer){(function (){
 /*global Buffer*/
 // Named constants with unique integer values
@@ -34936,343 +26912,7 @@ Parser.C = C;
 module.exports = Parser;
 
 }).call(this)}).call(this,require("buffer").Buffer)
-},{"buffer":4}],210:[function(require,module,exports){
-'use strict'
-
-// A linked list to keep track of recently-used-ness
-const Yallist = require('yallist')
-
-const MAX = Symbol('max')
-const LENGTH = Symbol('length')
-const LENGTH_CALCULATOR = Symbol('lengthCalculator')
-const ALLOW_STALE = Symbol('allowStale')
-const MAX_AGE = Symbol('maxAge')
-const DISPOSE = Symbol('dispose')
-const NO_DISPOSE_ON_SET = Symbol('noDisposeOnSet')
-const LRU_LIST = Symbol('lruList')
-const CACHE = Symbol('cache')
-const UPDATE_AGE_ON_GET = Symbol('updateAgeOnGet')
-
-const naiveLength = () => 1
-
-// lruList is a yallist where the head is the youngest
-// item, and the tail is the oldest.  the list contains the Hit
-// objects as the entries.
-// Each Hit object has a reference to its Yallist.Node.  This
-// never changes.
-//
-// cache is a Map (or PseudoMap) that matches the keys to
-// the Yallist.Node object.
-class LRUCache {
-  constructor (options) {
-    if (typeof options === 'number')
-      options = { max: options }
-
-    if (!options)
-      options = {}
-
-    if (options.max && (typeof options.max !== 'number' || options.max < 0))
-      throw new TypeError('max must be a non-negative number')
-    // Kind of weird to have a default max of Infinity, but oh well.
-    const max = this[MAX] = options.max || Infinity
-
-    const lc = options.length || naiveLength
-    this[LENGTH_CALCULATOR] = (typeof lc !== 'function') ? naiveLength : lc
-    this[ALLOW_STALE] = options.stale || false
-    if (options.maxAge && typeof options.maxAge !== 'number')
-      throw new TypeError('maxAge must be a number')
-    this[MAX_AGE] = options.maxAge || 0
-    this[DISPOSE] = options.dispose
-    this[NO_DISPOSE_ON_SET] = options.noDisposeOnSet || false
-    this[UPDATE_AGE_ON_GET] = options.updateAgeOnGet || false
-    this.reset()
-  }
-
-  // resize the cache when the max changes.
-  set max (mL) {
-    if (typeof mL !== 'number' || mL < 0)
-      throw new TypeError('max must be a non-negative number')
-
-    this[MAX] = mL || Infinity
-    trim(this)
-  }
-  get max () {
-    return this[MAX]
-  }
-
-  set allowStale (allowStale) {
-    this[ALLOW_STALE] = !!allowStale
-  }
-  get allowStale () {
-    return this[ALLOW_STALE]
-  }
-
-  set maxAge (mA) {
-    if (typeof mA !== 'number')
-      throw new TypeError('maxAge must be a non-negative number')
-
-    this[MAX_AGE] = mA
-    trim(this)
-  }
-  get maxAge () {
-    return this[MAX_AGE]
-  }
-
-  // resize the cache when the lengthCalculator changes.
-  set lengthCalculator (lC) {
-    if (typeof lC !== 'function')
-      lC = naiveLength
-
-    if (lC !== this[LENGTH_CALCULATOR]) {
-      this[LENGTH_CALCULATOR] = lC
-      this[LENGTH] = 0
-      this[LRU_LIST].forEach(hit => {
-        hit.length = this[LENGTH_CALCULATOR](hit.value, hit.key)
-        this[LENGTH] += hit.length
-      })
-    }
-    trim(this)
-  }
-  get lengthCalculator () { return this[LENGTH_CALCULATOR] }
-
-  get length () { return this[LENGTH] }
-  get itemCount () { return this[LRU_LIST].length }
-
-  rforEach (fn, thisp) {
-    thisp = thisp || this
-    for (let walker = this[LRU_LIST].tail; walker !== null;) {
-      const prev = walker.prev
-      forEachStep(this, fn, walker, thisp)
-      walker = prev
-    }
-  }
-
-  forEach (fn, thisp) {
-    thisp = thisp || this
-    for (let walker = this[LRU_LIST].head; walker !== null;) {
-      const next = walker.next
-      forEachStep(this, fn, walker, thisp)
-      walker = next
-    }
-  }
-
-  keys () {
-    return this[LRU_LIST].toArray().map(k => k.key)
-  }
-
-  values () {
-    return this[LRU_LIST].toArray().map(k => k.value)
-  }
-
-  reset () {
-    if (this[DISPOSE] &&
-        this[LRU_LIST] &&
-        this[LRU_LIST].length) {
-      this[LRU_LIST].forEach(hit => this[DISPOSE](hit.key, hit.value))
-    }
-
-    this[CACHE] = new Map() // hash of items by key
-    this[LRU_LIST] = new Yallist() // list of items in order of use recency
-    this[LENGTH] = 0 // length of items in the list
-  }
-
-  dump () {
-    return this[LRU_LIST].map(hit =>
-      isStale(this, hit) ? false : {
-        k: hit.key,
-        v: hit.value,
-        e: hit.now + (hit.maxAge || 0)
-      }).toArray().filter(h => h)
-  }
-
-  dumpLru () {
-    return this[LRU_LIST]
-  }
-
-  set (key, value, maxAge) {
-    maxAge = maxAge || this[MAX_AGE]
-
-    if (maxAge && typeof maxAge !== 'number')
-      throw new TypeError('maxAge must be a number')
-
-    const now = maxAge ? Date.now() : 0
-    const len = this[LENGTH_CALCULATOR](value, key)
-
-    if (this[CACHE].has(key)) {
-      if (len > this[MAX]) {
-        del(this, this[CACHE].get(key))
-        return false
-      }
-
-      const node = this[CACHE].get(key)
-      const item = node.value
-
-      // dispose of the old one before overwriting
-      // split out into 2 ifs for better coverage tracking
-      if (this[DISPOSE]) {
-        if (!this[NO_DISPOSE_ON_SET])
-          this[DISPOSE](key, item.value)
-      }
-
-      item.now = now
-      item.maxAge = maxAge
-      item.value = value
-      this[LENGTH] += len - item.length
-      item.length = len
-      this.get(key)
-      trim(this)
-      return true
-    }
-
-    const hit = new Entry(key, value, len, now, maxAge)
-
-    // oversized objects fall out of cache automatically.
-    if (hit.length > this[MAX]) {
-      if (this[DISPOSE])
-        this[DISPOSE](key, value)
-
-      return false
-    }
-
-    this[LENGTH] += hit.length
-    this[LRU_LIST].unshift(hit)
-    this[CACHE].set(key, this[LRU_LIST].head)
-    trim(this)
-    return true
-  }
-
-  has (key) {
-    if (!this[CACHE].has(key)) return false
-    const hit = this[CACHE].get(key).value
-    return !isStale(this, hit)
-  }
-
-  get (key) {
-    return get(this, key, true)
-  }
-
-  peek (key) {
-    return get(this, key, false)
-  }
-
-  pop () {
-    const node = this[LRU_LIST].tail
-    if (!node)
-      return null
-
-    del(this, node)
-    return node.value
-  }
-
-  del (key) {
-    del(this, this[CACHE].get(key))
-  }
-
-  load (arr) {
-    // reset the cache
-    this.reset()
-
-    const now = Date.now()
-    // A previous serialized cache has the most recent items first
-    for (let l = arr.length - 1; l >= 0; l--) {
-      const hit = arr[l]
-      const expiresAt = hit.e || 0
-      if (expiresAt === 0)
-        // the item was created without expiration in a non aged cache
-        this.set(hit.k, hit.v)
-      else {
-        const maxAge = expiresAt - now
-        // dont add already expired items
-        if (maxAge > 0) {
-          this.set(hit.k, hit.v, maxAge)
-        }
-      }
-    }
-  }
-
-  prune () {
-    this[CACHE].forEach((value, key) => get(this, key, false))
-  }
-}
-
-const get = (self, key, doUse) => {
-  const node = self[CACHE].get(key)
-  if (node) {
-    const hit = node.value
-    if (isStale(self, hit)) {
-      del(self, node)
-      if (!self[ALLOW_STALE])
-        return undefined
-    } else {
-      if (doUse) {
-        if (self[UPDATE_AGE_ON_GET])
-          node.value.now = Date.now()
-        self[LRU_LIST].unshiftNode(node)
-      }
-    }
-    return hit.value
-  }
-}
-
-const isStale = (self, hit) => {
-  if (!hit || (!hit.maxAge && !self[MAX_AGE]))
-    return false
-
-  const diff = Date.now() - hit.now
-  return hit.maxAge ? diff > hit.maxAge
-    : self[MAX_AGE] && (diff > self[MAX_AGE])
-}
-
-const trim = self => {
-  if (self[LENGTH] > self[MAX]) {
-    for (let walker = self[LRU_LIST].tail;
-      self[LENGTH] > self[MAX] && walker !== null;) {
-      // We know that we're about to delete this one, and also
-      // what the next least recently used key will be, so just
-      // go ahead and set it now.
-      const prev = walker.prev
-      del(self, walker)
-      walker = prev
-    }
-  }
-}
-
-const del = (self, node) => {
-  if (node) {
-    const hit = node.value
-    if (self[DISPOSE])
-      self[DISPOSE](hit.key, hit.value)
-
-    self[LENGTH] -= hit.length
-    self[CACHE].delete(hit.key)
-    self[LRU_LIST].removeNode(node)
-  }
-}
-
-class Entry {
-  constructor (key, value, length, now, maxAge) {
-    this.key = key
-    this.value = value
-    this.length = length
-    this.now = now
-    this.maxAge = maxAge || 0
-  }
-}
-
-const forEachStep = (self, fn, node, thisp) => {
-  let hit = node.value
-  if (isStale(self, hit)) {
-    del(self, node)
-    if (!self[ALLOW_STALE])
-      hit = undefined
-  }
-  if (hit)
-    fn.call(thisp, hit.value, hit.key, self)
-}
-
-module.exports = LRUCache
-
-},{"yallist":320}],211:[function(require,module,exports){
+},{"buffer":4}],196:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -35296,19 +26936,19 @@ __exportStar(require("./lib/IVocabRegistry"), exports);
 __exportStar(require("./lib/MicrodataRdfParser"), exports);
 __exportStar(require("./lib/Util"), exports);
 
-},{"./lib/IHtmlParseListener":212,"./lib/IItemScope":213,"./lib/IVocabRegistry":214,"./lib/MicrodataRdfParser":215,"./lib/Util":216,"./lib/propertyhandler/IItemPropertyHandler":217,"./lib/propertyhandler/ItemPropertyHandlerContent":218,"./lib/propertyhandler/ItemPropertyHandlerNumber":219,"./lib/propertyhandler/ItemPropertyHandlerTime":220,"./lib/propertyhandler/ItemPropertyHandlerUrl":221}],212:[function(require,module,exports){
+},{"./lib/IHtmlParseListener":197,"./lib/IItemScope":198,"./lib/IVocabRegistry":199,"./lib/MicrodataRdfParser":200,"./lib/Util":201,"./lib/propertyhandler/IItemPropertyHandler":202,"./lib/propertyhandler/ItemPropertyHandlerContent":203,"./lib/propertyhandler/ItemPropertyHandlerNumber":204,"./lib/propertyhandler/ItemPropertyHandlerTime":205,"./lib/propertyhandler/ItemPropertyHandlerUrl":206}],197:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 
-},{}],213:[function(require,module,exports){
+},{}],198:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 
-},{}],214:[function(require,module,exports){
+},{}],199:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 
-},{}],215:[function(require,module,exports){
+},{}],200:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MicrodataRdfParser = void 0;
@@ -35747,7 +27387,7 @@ MicrodataRdfParser.ITEM_PROPERTY_HANDLERS = [
     new ItemPropertyHandlerTime_1.ItemPropertyHandlerTime(),
 ];
 
-},{"./Util":216,"./propertyhandler/ItemPropertyHandlerContent":218,"./propertyhandler/ItemPropertyHandlerNumber":219,"./propertyhandler/ItemPropertyHandlerTime":220,"./propertyhandler/ItemPropertyHandlerUrl":221,"./vocab-registry-default.json":222,"htmlparser2":231,"stream":26}],216:[function(require,module,exports){
+},{"./Util":201,"./propertyhandler/ItemPropertyHandlerContent":203,"./propertyhandler/ItemPropertyHandlerNumber":204,"./propertyhandler/ItemPropertyHandlerTime":205,"./propertyhandler/ItemPropertyHandlerUrl":206,"./vocab-registry-default.json":207,"htmlparser2":216,"stream":26}],201:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Util = void 0;
@@ -35881,11 +27521,11 @@ Util.XSD = 'http://www.w3.org/2001/XMLSchema#';
 Util.RDFA = 'http://www.w3.org/ns/rdfa#';
 Util.IRI_REGEX = /^([A-Za-z][\d+-.A-Za-z]*|_):[^ "<>[\\\]`{|}]*$/u;
 
-},{"rdf-data-factory":254,"relative-to-absolute-iri":306}],217:[function(require,module,exports){
+},{"rdf-data-factory":244,"relative-to-absolute-iri":297}],202:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 
-},{}],218:[function(require,module,exports){
+},{}],203:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ItemPropertyHandlerContent = void 0;
@@ -35902,7 +27542,7 @@ class ItemPropertyHandlerContent {
 }
 exports.ItemPropertyHandlerContent = ItemPropertyHandlerContent;
 
-},{}],219:[function(require,module,exports){
+},{}],204:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ItemPropertyHandlerNumber = void 0;
@@ -35932,7 +27572,7 @@ class ItemPropertyHandlerNumber {
 }
 exports.ItemPropertyHandlerNumber = ItemPropertyHandlerNumber;
 
-},{"../Util":216}],220:[function(require,module,exports){
+},{"../Util":201}],205:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ItemPropertyHandlerTime = void 0;
@@ -35972,7 +27612,7 @@ ItemPropertyHandlerTime.TIME_REGEXES = [
     { regex: /^\d+$/u, type: 'gYear' },
 ];
 
-},{"../Util":216}],221:[function(require,module,exports){
+},{"../Util":201}],206:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ItemPropertyHandlerUrl = void 0;
@@ -35994,7 +27634,7 @@ class ItemPropertyHandlerUrl {
 }
 exports.ItemPropertyHandlerUrl = ItemPropertyHandlerUrl;
 
-},{"relative-to-absolute-iri":306}],222:[function(require,module,exports){
+},{"relative-to-absolute-iri":297}],207:[function(require,module,exports){
 module.exports={
   "http://schema.org/": {
     "properties": {
@@ -36004,17 +27644,17 @@ module.exports={
   "http://microformats.org/profile/hcard": {}
 }
 
-},{}],223:[function(require,module,exports){
-arguments[4][124][0].apply(exports,arguments)
-},{"./maps/decode.json":224,"dup":124}],224:[function(require,module,exports){
-arguments[4][127][0].apply(exports,arguments)
-},{"dup":127}],225:[function(require,module,exports){
-arguments[4][128][0].apply(exports,arguments)
-},{"dup":128}],226:[function(require,module,exports){
-arguments[4][129][0].apply(exports,arguments)
-},{"dup":129}],227:[function(require,module,exports){
-arguments[4][130][0].apply(exports,arguments)
-},{"dup":130}],228:[function(require,module,exports){
+},{}],208:[function(require,module,exports){
+arguments[4][132][0].apply(exports,arguments)
+},{"./maps/decode.json":209,"dup":132}],209:[function(require,module,exports){
+arguments[4][135][0].apply(exports,arguments)
+},{"dup":135}],210:[function(require,module,exports){
+arguments[4][136][0].apply(exports,arguments)
+},{"dup":136}],211:[function(require,module,exports){
+arguments[4][137][0].apply(exports,arguments)
+},{"dup":137}],212:[function(require,module,exports){
+arguments[4][138][0].apply(exports,arguments)
+},{"dup":138}],213:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -36251,7 +27891,7 @@ function parseFeed(feed, options) {
 }
 exports.parseFeed = parseFeed;
 
-},{"./Parser":229,"domhandler":132,"domutils":136}],229:[function(require,module,exports){
+},{"./Parser":214,"domhandler":140,"domutils":144}],214:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -36634,7 +28274,7 @@ var Parser = /** @class */ (function () {
 }());
 exports.Parser = Parser;
 
-},{"./Tokenizer":230}],230:[function(require,module,exports){
+},{"./Tokenizer":215}],215:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -37545,7 +29185,7 @@ var Tokenizer = /** @class */ (function () {
 }());
 exports.default = Tokenizer;
 
-},{"entities/lib/decode_codepoint":223,"entities/lib/maps/entities.json":225,"entities/lib/maps/legacy.json":226,"entities/lib/maps/xml.json":227}],231:[function(require,module,exports){
+},{"entities/lib/decode_codepoint":208,"entities/lib/maps/entities.json":210,"entities/lib/maps/legacy.json":211,"entities/lib/maps/xml.json":212}],216:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -37631,7 +29271,7 @@ exports.DomUtils = __importStar(require("domutils"));
 var FeedHandler_1 = require("./FeedHandler");
 Object.defineProperty(exports, "RssHandler", { enumerable: true, get: function () { return FeedHandler_1.FeedHandler; } });
 
-},{"./FeedHandler":228,"./Parser":229,"./Tokenizer":230,"domelementtype":131,"domhandler":132,"domutils":136}],232:[function(require,module,exports){
+},{"./FeedHandler":213,"./Parser":214,"./Tokenizer":215,"domelementtype":139,"domhandler":140,"domutils":144}],217:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -37668,7 +29308,7 @@ var _default = {
   }
 };
 exports.default = _default;
-},{}],233:[function(require,module,exports){
+},{}],218:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -38055,7 +29695,7 @@ function defaultGraph() {
 function quad(subject, predicate, object, graph) {
   return new Quad(subject, predicate, object, graph);
 }
-},{"./IRIs":232,"./N3Util":239}],234:[function(require,module,exports){
+},{"./IRIs":217,"./N3Util":224}],219:[function(require,module,exports){
 (function (Buffer){(function (){
 "use strict";
 
@@ -38590,7 +30230,7 @@ class N3Lexer {
 
 exports.default = N3Lexer;
 }).call(this)}).call(this,require("buffer").Buffer)
-},{"./IRIs":232,"buffer":4,"queue-microtask":243}],235:[function(require,module,exports){
+},{"./IRIs":217,"buffer":4,"queue-microtask":243}],220:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -39710,7 +31350,7 @@ function initDataFactory(parser, factory) {
 }
 
 initDataFactory(N3Parser.prototype, _N3DataFactory.default);
-},{"./IRIs":232,"./N3DataFactory":233,"./N3Lexer":234}],236:[function(require,module,exports){
+},{"./IRIs":217,"./N3DataFactory":218,"./N3Lexer":219}],221:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -40521,7 +32161,7 @@ class DatasetCoreAndReadableStream extends _readableStream.Readable {
   }
 
 }
-},{"./IRIs":232,"./N3DataFactory":233,"readable-stream":304}],237:[function(require,module,exports){
+},{"./IRIs":217,"./N3DataFactory":218,"readable-stream":241}],222:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -40594,7 +32234,7 @@ class N3StreamParser extends _readableStream.Transform {
 }
 
 exports.default = N3StreamParser;
-},{"./N3Parser":235,"readable-stream":304}],238:[function(require,module,exports){
+},{"./N3Parser":220,"readable-stream":241}],223:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -40657,7 +32297,7 @@ class N3StreamWriter extends _readableStream.Transform {
 }
 
 exports.default = N3StreamWriter;
-},{"./N3Writer":240,"readable-stream":304}],239:[function(require,module,exports){
+},{"./N3Writer":225,"readable-stream":241}],224:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -40743,7 +32383,7 @@ function prefixes(defaultPrefixes, factory) {
 
   return processPrefix;
 }
-},{"./N3DataFactory":233}],240:[function(require,module,exports){
+},{"./N3DataFactory":218}],225:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -41159,7 +32799,7 @@ function characterReplacer(character) {
 function escapeRegex(regex) {
   return regex.replace(/[\]\/\(\)\*\+\?\.\\\$]/g, '\\$&');
 }
-},{"./IRIs":232,"./N3DataFactory":233,"./N3Util":239}],241:[function(require,module,exports){
+},{"./IRIs":217,"./N3DataFactory":218,"./N3Util":224}],226:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -41317,7 +32957,46 @@ var _default = {
   termToId: _N3DataFactory.termToId
 };
 exports.default = _default;
-},{"./N3DataFactory":233,"./N3Lexer":234,"./N3Parser":235,"./N3Store":236,"./N3StreamParser":237,"./N3StreamWriter":238,"./N3Util":239,"./N3Writer":240}],242:[function(require,module,exports){
+},{"./N3DataFactory":218,"./N3Lexer":219,"./N3Parser":220,"./N3Store":221,"./N3StreamParser":222,"./N3StreamWriter":223,"./N3Util":224,"./N3Writer":225}],227:[function(require,module,exports){
+arguments[4][27][0].apply(exports,arguments)
+},{"dup":27}],228:[function(require,module,exports){
+arguments[4][28][0].apply(exports,arguments)
+},{"./_stream_readable":230,"./_stream_writable":232,"_process":24,"dup":28,"inherits":159}],229:[function(require,module,exports){
+arguments[4][29][0].apply(exports,arguments)
+},{"./_stream_transform":231,"dup":29,"inherits":159}],230:[function(require,module,exports){
+arguments[4][30][0].apply(exports,arguments)
+},{"../errors":227,"./_stream_duplex":228,"./internal/streams/async_iterator":233,"./internal/streams/buffer_list":234,"./internal/streams/destroy":235,"./internal/streams/from":237,"./internal/streams/state":239,"./internal/streams/stream":240,"_process":24,"buffer":4,"dup":30,"events":8,"inherits":159,"string_decoder/":303,"util":3}],231:[function(require,module,exports){
+arguments[4][31][0].apply(exports,arguments)
+},{"../errors":227,"./_stream_duplex":228,"dup":31,"inherits":159}],232:[function(require,module,exports){
+arguments[4][32][0].apply(exports,arguments)
+},{"../errors":227,"./_stream_duplex":228,"./internal/streams/destroy":235,"./internal/streams/state":239,"./internal/streams/stream":240,"_process":24,"buffer":4,"dup":32,"inherits":159,"util-deprecate":304}],233:[function(require,module,exports){
+arguments[4][33][0].apply(exports,arguments)
+},{"./end-of-stream":236,"_process":24,"dup":33}],234:[function(require,module,exports){
+arguments[4][34][0].apply(exports,arguments)
+},{"buffer":4,"dup":34,"util":3}],235:[function(require,module,exports){
+arguments[4][35][0].apply(exports,arguments)
+},{"_process":24,"dup":35}],236:[function(require,module,exports){
+arguments[4][36][0].apply(exports,arguments)
+},{"../../../errors":227,"dup":36}],237:[function(require,module,exports){
+arguments[4][37][0].apply(exports,arguments)
+},{"dup":37}],238:[function(require,module,exports){
+arguments[4][38][0].apply(exports,arguments)
+},{"../../../errors":227,"./end-of-stream":236,"dup":38}],239:[function(require,module,exports){
+arguments[4][39][0].apply(exports,arguments)
+},{"../../../errors":227,"dup":39}],240:[function(require,module,exports){
+arguments[4][40][0].apply(exports,arguments)
+},{"dup":40,"events":8}],241:[function(require,module,exports){
+exports = module.exports = require('./lib/_stream_readable.js');
+exports.Stream = exports;
+exports.Readable = exports;
+exports.Writable = require('./lib/_stream_writable.js');
+exports.Duplex = require('./lib/_stream_duplex.js');
+exports.Transform = require('./lib/_stream_transform.js');
+exports.PassThrough = require('./lib/_stream_passthrough.js');
+exports.finished = require('./lib/internal/streams/end-of-stream.js');
+exports.pipeline = require('./lib/internal/streams/pipeline.js');
+
+},{"./lib/_stream_duplex.js":228,"./lib/_stream_passthrough.js":229,"./lib/_stream_readable.js":230,"./lib/_stream_transform.js":231,"./lib/_stream_writable.js":232,"./lib/internal/streams/end-of-stream.js":236,"./lib/internal/streams/pipeline.js":238}],242:[function(require,module,exports){
 (function (global){(function (){
 (function() {
     var root;
@@ -41520,1960 +33199,6 @@ module.exports = typeof queueMicrotask === 'function'
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],244:[function(require,module,exports){
-/**
- * An implementation of the RDF Dataset Normalization specification.
- *
- * @author Dave Longley
- *
- * Copyright 2010-2021 Digital Bazaar, Inc.
- */
-module.exports = require('./lib');
-
-},{"./lib":253}],245:[function(require,module,exports){
-/*
- * Copyright (c) 2016-2021 Digital Bazaar, Inc. All rights reserved.
- */
-'use strict';
-
-module.exports = class IdentifierIssuer {
-  /**
-   * Creates a new IdentifierIssuer. A IdentifierIssuer issues unique
-   * identifiers, keeping track of any previously issued identifiers.
-   *
-   * @param prefix the prefix to use ('<prefix><counter>').
-   * @param existing an existing Map to use.
-   * @param counter the counter to use.
-   */
-  constructor(prefix, existing = new Map(), counter = 0) {
-    this.prefix = prefix;
-    this._existing = existing;
-    this.counter = counter;
-  }
-
-  /**
-   * Copies this IdentifierIssuer.
-   *
-   * @return a copy of this IdentifierIssuer.
-   */
-  clone() {
-    const {prefix, _existing, counter} = this;
-    return new IdentifierIssuer(prefix, new Map(_existing), counter);
-  }
-
-  /**
-   * Gets the new identifier for the given old identifier, where if no old
-   * identifier is given a new identifier will be generated.
-   *
-   * @param [old] the old identifier to get the new identifier for.
-   *
-   * @return the new identifier.
-   */
-  getId(old) {
-    // return existing old identifier
-    const existing = old && this._existing.get(old);
-    if(existing) {
-      return existing;
-    }
-
-    // get next identifier
-    const identifier = this.prefix + this.counter;
-    this.counter++;
-
-    // save mapping
-    if(old) {
-      this._existing.set(old, identifier);
-    }
-
-    return identifier;
-  }
-
-  /**
-   * Returns true if the given old identifer has already been assigned a new
-   * identifier.
-   *
-   * @param old the old identifier to check.
-   *
-   * @return true if the old identifier has been assigned a new identifier,
-   *   false if not.
-   */
-  hasId(old) {
-    return this._existing.has(old);
-  }
-
-  /**
-   * Returns all of the IDs that have been issued new IDs in the order in
-   * which they were issued new IDs.
-   *
-   * @return the list of old IDs that has been issued new IDs in order.
-   */
-  getOldIds() {
-    return [...this._existing.keys()];
-  }
-};
-
-},{}],246:[function(require,module,exports){
-/*
- * Copyright (c) 2016-2021 Digital Bazaar, Inc. All rights reserved.
- */
-'use strict';
-
-require('setimmediate');
-
-const crypto = self.crypto || self.msCrypto;
-
-// TODO: synchronous version no longer supported in browser
-
-module.exports = class MessageDigest {
-  /**
-   * Creates a new MessageDigest.
-   *
-   * @param algorithm the algorithm to use.
-   */
-  constructor(algorithm) {
-    // check if crypto.subtle is available
-    // check is here rather than top-level to only fail if class is used
-    if(!(crypto && crypto.subtle)) {
-      throw new Error('crypto.subtle not found.');
-    }
-    if(algorithm === 'sha256') {
-      this.algorithm = {name: 'SHA-256'};
-    } else if(algorithm === 'sha1') {
-      this.algorithm = {name: 'SHA-1'};
-    } else {
-      throw new Error(`Unsupport algorithm "${algorithm}".`);
-    }
-    this._content = '';
-  }
-
-  update(msg) {
-    this._content += msg;
-  }
-
-  async digest() {
-    const data = new TextEncoder().encode(this._content);
-    const buffer = new Uint8Array(
-      await crypto.subtle.digest(this.algorithm, data));
-    // return digest in hex
-    let hex = '';
-    for(let i = 0; i < buffer.length; ++i) {
-      hex += buffer[i].toString(16).padStart(2, '0');
-    }
-    return hex;
-  }
-};
-
-},{"setimmediate":310}],247:[function(require,module,exports){
-/*
- * Copyright (c) 2016-2021 Digital Bazaar, Inc. All rights reserved.
- */
-'use strict';
-
-// eslint-disable-next-line no-unused-vars
-const TERMS = ['subject', 'predicate', 'object', 'graph'];
-const RDF = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#';
-const RDF_LANGSTRING = RDF + 'langString';
-const XSD_STRING = 'http://www.w3.org/2001/XMLSchema#string';
-
-const TYPE_NAMED_NODE = 'NamedNode';
-const TYPE_BLANK_NODE = 'BlankNode';
-const TYPE_LITERAL = 'Literal';
-const TYPE_DEFAULT_GRAPH = 'DefaultGraph';
-
-// build regexes
-const REGEX = {};
-(() => {
-  const iri = '(?:<([^:]+:[^>]*)>)';
-  // https://www.w3.org/TR/turtle/#grammar-production-BLANK_NODE_LABEL
-  const PN_CHARS_BASE =
-    'A-Z' + 'a-z' +
-    '\u00C0-\u00D6' +
-    '\u00D8-\u00F6' +
-    '\u00F8-\u02FF' +
-    '\u0370-\u037D' +
-    '\u037F-\u1FFF' +
-    '\u200C-\u200D' +
-    '\u2070-\u218F' +
-    '\u2C00-\u2FEF' +
-    '\u3001-\uD7FF' +
-    '\uF900-\uFDCF' +
-    '\uFDF0-\uFFFD';
-    // TODO:
-    //'\u10000-\uEFFFF';
-  const PN_CHARS_U =
-    PN_CHARS_BASE +
-    '_';
-  const PN_CHARS =
-    PN_CHARS_U +
-    '0-9' +
-    '-' +
-    '\u00B7' +
-    '\u0300-\u036F' +
-    '\u203F-\u2040';
-  const BLANK_NODE_LABEL =
-    '(_:' +
-      '(?:[' + PN_CHARS_U + '0-9])' +
-      '(?:(?:[' + PN_CHARS + '.])*(?:[' + PN_CHARS + ']))?' +
-    ')';
-  const bnode = BLANK_NODE_LABEL;
-  const plain = '"([^"\\\\]*(?:\\\\.[^"\\\\]*)*)"';
-  const datatype = '(?:\\^\\^' + iri + ')';
-  const language = '(?:@([a-zA-Z]+(?:-[a-zA-Z0-9]+)*))';
-  const literal = '(?:' + plain + '(?:' + datatype + '|' + language + ')?)';
-  const ws = '[ \\t]+';
-  const wso = '[ \\t]*';
-
-  // define quad part regexes
-  const subject = '(?:' + iri + '|' + bnode + ')' + ws;
-  const property = iri + ws;
-  const object = '(?:' + iri + '|' + bnode + '|' + literal + ')' + wso;
-  const graphName = '(?:\\.|(?:(?:' + iri + '|' + bnode + ')' + wso + '\\.))';
-
-  // end of line and empty regexes
-  REGEX.eoln = /(?:\r\n)|(?:\n)|(?:\r)/g;
-  REGEX.empty = new RegExp('^' + wso + '$');
-
-  // full quad regex
-  REGEX.quad = new RegExp(
-    '^' + wso + subject + property + object + graphName + wso + '$');
-})();
-
-module.exports = class NQuads {
-  /**
-   * Parses RDF in the form of N-Quads.
-   *
-   * @param input the N-Quads input to parse.
-   *
-   * @return an RDF dataset (an array of quads per http://rdf.js.org/).
-   */
-  static parse(input) {
-    // build RDF dataset
-    const dataset = [];
-
-    const graphs = {};
-
-    // split N-Quad input into lines
-    const lines = input.split(REGEX.eoln);
-    let lineNumber = 0;
-    for(const line of lines) {
-      lineNumber++;
-
-      // skip empty lines
-      if(REGEX.empty.test(line)) {
-        continue;
-      }
-
-      // parse quad
-      const match = line.match(REGEX.quad);
-      if(match === null) {
-        throw new Error('N-Quads parse error on line ' + lineNumber + '.');
-      }
-
-      // create RDF quad
-      const quad = {subject: null, predicate: null, object: null, graph: null};
-
-      // get subject
-      if(match[1] !== undefined) {
-        quad.subject = {termType: TYPE_NAMED_NODE, value: match[1]};
-      } else {
-        quad.subject = {termType: TYPE_BLANK_NODE, value: match[2]};
-      }
-
-      // get predicate
-      quad.predicate = {termType: TYPE_NAMED_NODE, value: match[3]};
-
-      // get object
-      if(match[4] !== undefined) {
-        quad.object = {termType: TYPE_NAMED_NODE, value: match[4]};
-      } else if(match[5] !== undefined) {
-        quad.object = {termType: TYPE_BLANK_NODE, value: match[5]};
-      } else {
-        quad.object = {
-          termType: TYPE_LITERAL,
-          value: undefined,
-          datatype: {
-            termType: TYPE_NAMED_NODE
-          }
-        };
-        if(match[7] !== undefined) {
-          quad.object.datatype.value = match[7];
-        } else if(match[8] !== undefined) {
-          quad.object.datatype.value = RDF_LANGSTRING;
-          quad.object.language = match[8];
-        } else {
-          quad.object.datatype.value = XSD_STRING;
-        }
-        quad.object.value = _unescape(match[6]);
-      }
-
-      // get graph
-      if(match[9] !== undefined) {
-        quad.graph = {
-          termType: TYPE_NAMED_NODE,
-          value: match[9]
-        };
-      } else if(match[10] !== undefined) {
-        quad.graph = {
-          termType: TYPE_BLANK_NODE,
-          value: match[10]
-        };
-      } else {
-        quad.graph = {
-          termType: TYPE_DEFAULT_GRAPH,
-          value: ''
-        };
-      }
-
-      // only add quad if it is unique in its graph
-      if(!(quad.graph.value in graphs)) {
-        graphs[quad.graph.value] = [quad];
-        dataset.push(quad);
-      } else {
-        let unique = true;
-        const quads = graphs[quad.graph.value];
-        for(const q of quads) {
-          if(_compareTriples(q, quad)) {
-            unique = false;
-            break;
-          }
-        }
-        if(unique) {
-          quads.push(quad);
-          dataset.push(quad);
-        }
-      }
-    }
-
-    return dataset;
-  }
-
-  /**
-   * Converts an RDF dataset to N-Quads.
-   *
-   * @param dataset (array of quads) the RDF dataset to convert.
-   *
-   * @return the N-Quads string.
-   */
-  static serialize(dataset) {
-    if(!Array.isArray(dataset)) {
-      dataset = NQuads.legacyDatasetToQuads(dataset);
-    }
-    const quads = [];
-    for(const quad of dataset) {
-      quads.push(NQuads.serializeQuad(quad));
-    }
-    return quads.sort().join('');
-  }
-
-  /**
-   * Converts an RDF quad to an N-Quad string (a single quad).
-   *
-   * @param quad the RDF quad convert.
-   *
-   * @return the N-Quad string.
-   */
-  static serializeQuad(quad) {
-    const s = quad.subject;
-    const p = quad.predicate;
-    const o = quad.object;
-    const g = quad.graph;
-
-    let nquad = '';
-
-    // subject can only be NamedNode or BlankNode
-    if(s.termType === TYPE_NAMED_NODE) {
-      nquad += `<${s.value}>`;
-    } else {
-      nquad += `${s.value}`;
-    }
-
-    // predicate can only be NamedNode
-    nquad += ` <${p.value}> `;
-
-    // object is NamedNode, BlankNode, or Literal
-    if(o.termType === TYPE_NAMED_NODE) {
-      nquad += `<${o.value}>`;
-    } else if(o.termType === TYPE_BLANK_NODE) {
-      nquad += o.value;
-    } else {
-      nquad += `"${_escape(o.value)}"`;
-      if(o.datatype.value === RDF_LANGSTRING) {
-        if(o.language) {
-          nquad += `@${o.language}`;
-        }
-      } else if(o.datatype.value !== XSD_STRING) {
-        nquad += `^^<${o.datatype.value}>`;
-      }
-    }
-
-    // graph can only be NamedNode or BlankNode (or DefaultGraph, but that
-    // does not add to `nquad`)
-    if(g.termType === TYPE_NAMED_NODE) {
-      nquad += ` <${g.value}>`;
-    } else if(g.termType === TYPE_BLANK_NODE) {
-      nquad += ` ${g.value}`;
-    }
-
-    nquad += ' .\n';
-    return nquad;
-  }
-
-  /**
-   * Converts a legacy-formatted dataset to an array of quads dataset per
-   * http://rdf.js.org/.
-   *
-   * @param dataset the legacy dataset to convert.
-   *
-   * @return the array of quads dataset.
-   */
-  static legacyDatasetToQuads(dataset) {
-    const quads = [];
-
-    const termTypeMap = {
-      'blank node': TYPE_BLANK_NODE,
-      IRI: TYPE_NAMED_NODE,
-      literal: TYPE_LITERAL
-    };
-
-    for(const graphName in dataset) {
-      const triples = dataset[graphName];
-      triples.forEach(triple => {
-        const quad = {};
-        for(const componentName in triple) {
-          const oldComponent = triple[componentName];
-          const newComponent = {
-            termType: termTypeMap[oldComponent.type],
-            value: oldComponent.value
-          };
-          if(newComponent.termType === TYPE_LITERAL) {
-            newComponent.datatype = {
-              termType: TYPE_NAMED_NODE
-            };
-            if('datatype' in oldComponent) {
-              newComponent.datatype.value = oldComponent.datatype;
-            }
-            if('language' in oldComponent) {
-              if(!('datatype' in oldComponent)) {
-                newComponent.datatype.value = RDF_LANGSTRING;
-              }
-              newComponent.language = oldComponent.language;
-            } else if(!('datatype' in oldComponent)) {
-              newComponent.datatype.value = XSD_STRING;
-            }
-          }
-          quad[componentName] = newComponent;
-        }
-        if(graphName === '@default') {
-          quad.graph = {
-            termType: TYPE_DEFAULT_GRAPH,
-            value: ''
-          };
-        } else {
-          quad.graph = {
-            termType: graphName.startsWith('_:') ?
-              TYPE_BLANK_NODE : TYPE_NAMED_NODE,
-            value: graphName
-          };
-        }
-        quads.push(quad);
-      });
-    }
-
-    return quads;
-  }
-};
-
-/**
- * Compares two RDF triples for equality.
- *
- * @param t1 the first triple.
- * @param t2 the second triple.
- *
- * @return true if the triples are the same, false if not.
- */
-function _compareTriples(t1, t2) {
-  // compare subject and object types first as it is the quickest check
-  if(!(t1.subject.termType === t2.subject.termType &&
-    t1.object.termType === t2.object.termType)) {
-    return false;
-  }
-  // compare values
-  if(!(t1.subject.value === t2.subject.value &&
-    t1.predicate.value === t2.predicate.value &&
-    t1.object.value === t2.object.value)) {
-    return false;
-  }
-  if(t1.object.termType !== TYPE_LITERAL) {
-    // no `datatype` or `language` to check
-    return true;
-  }
-  return (
-    (t1.object.datatype.termType === t2.object.datatype.termType) &&
-    (t1.object.language === t2.object.language) &&
-    (t1.object.datatype.value === t2.object.datatype.value)
-  );
-}
-
-const _escapeRegex = /["\\\n\r]/g;
-/**
- * Escape string to N-Quads literal
- */
-function _escape(s) {
-  return s.replace(_escapeRegex, function(match) {
-    switch(match) {
-      case '"': return '\\"';
-      case '\\': return '\\\\';
-      case '\n': return '\\n';
-      case '\r': return '\\r';
-    }
-  });
-}
-
-const _unescapeRegex =
-  /(?:\\([tbnrf"'\\]))|(?:\\u([0-9A-Fa-f]{4}))|(?:\\U([0-9A-Fa-f]{8}))/g;
-/**
- * Unescape N-Quads literal to string
- */
-function _unescape(s) {
-  return s.replace(_unescapeRegex, function(match, code, u, U) {
-    if(code) {
-      switch(code) {
-        case 't': return '\t';
-        case 'b': return '\b';
-        case 'n': return '\n';
-        case 'r': return '\r';
-        case 'f': return '\f';
-        case '"': return '"';
-        case '\'': return '\'';
-        case '\\': return '\\';
-      }
-    }
-    if(u) {
-      return String.fromCharCode(parseInt(u, 16));
-    }
-    if(U) {
-      // FIXME: support larger values
-      throw new Error('Unsupported U escape');
-    }
-  });
-}
-
-},{}],248:[function(require,module,exports){
-/*
- * Copyright (c) 2016-2021 Digital Bazaar, Inc. All rights reserved.
- */
-'use strict';
-
-// TODO: convert to ES6 iterable?
-
-module.exports = class Permuter {
-  /**
-   * A Permuter iterates over all possible permutations of the given array
-   * of elements.
-   *
-   * @param list the array of elements to iterate over.
-   */
-  constructor(list) {
-    // original array
-    this.current = list.sort();
-    // indicates whether there are more permutations
-    this.done = false;
-    // directional info for permutation algorithm
-    this.dir = new Map();
-    for(let i = 0; i < list.length; ++i) {
-      this.dir.set(list[i], true);
-    }
-  }
-
-  /**
-   * Returns true if there is another permutation.
-   *
-   * @return true if there is another permutation, false if not.
-   */
-  hasNext() {
-    return !this.done;
-  }
-
-  /**
-   * Gets the next permutation. Call hasNext() to ensure there is another one
-   * first.
-   *
-   * @return the next permutation.
-   */
-  next() {
-    // copy current permutation to return it
-    const {current, dir} = this;
-    const rval = current.slice();
-
-    /* Calculate the next permutation using the Steinhaus-Johnson-Trotter
-     permutation algorithm. */
-
-    // get largest mobile element k
-    // (mobile: element is greater than the one it is looking at)
-    let k = null;
-    let pos = 0;
-    const length = current.length;
-    for(let i = 0; i < length; ++i) {
-      const element = current[i];
-      const left = dir.get(element);
-      if((k === null || element > k) &&
-        ((left && i > 0 && element > current[i - 1]) ||
-        (!left && i < (length - 1) && element > current[i + 1]))) {
-        k = element;
-        pos = i;
-      }
-    }
-
-    // no more permutations
-    if(k === null) {
-      this.done = true;
-    } else {
-      // swap k and the element it is looking at
-      const swap = dir.get(k) ? pos - 1 : pos + 1;
-      current[pos] = current[swap];
-      current[swap] = k;
-
-      // reverse the direction of all elements larger than k
-      for(const element of current) {
-        if(element > k) {
-          dir.set(element, !dir.get(element));
-        }
-      }
-    }
-
-    return rval;
-  }
-};
-
-},{}],249:[function(require,module,exports){
-(function (setImmediate){(function (){
-/*
- * Copyright (c) 2016-2021 Digital Bazaar, Inc. All rights reserved.
- */
-'use strict';
-
-const IdentifierIssuer = require('./IdentifierIssuer');
-const MessageDigest = require('./MessageDigest');
-const Permuter = require('./Permuter');
-const NQuads = require('./NQuads');
-
-module.exports = class URDNA2015 {
-  constructor() {
-    this.name = 'URDNA2015';
-    this.blankNodeInfo = new Map();
-    this.canonicalIssuer = new IdentifierIssuer('_:c14n');
-    this.hashAlgorithm = 'sha256';
-    this.quads = null;
-  }
-
-  // 4.4) Normalization Algorithm
-  async main(dataset) {
-    this.quads = dataset;
-
-    // 1) Create the normalization state.
-    // 2) For every quad in input dataset:
-    for(const quad of dataset) {
-      // 2.1) For each blank node that occurs in the quad, add a reference
-      // to the quad using the blank node identifier in the blank node to
-      // quads map, creating a new entry if necessary.
-      this._addBlankNodeQuadInfo({quad, component: quad.subject});
-      this._addBlankNodeQuadInfo({quad, component: quad.object});
-      this._addBlankNodeQuadInfo({quad, component: quad.graph});
-    }
-
-    // 3) Create a list of non-normalized blank node identifiers
-    // non-normalized identifiers and populate it using the keys from the
-    // blank node to quads map.
-    // Note: We use a map here and it was generated during step 2.
-
-    // 4) `simple` flag is skipped -- loop is optimized away. This optimization
-    // is permitted because there was a typo in the hash first degree quads
-    // algorithm in the URDNA2015 spec that was implemented widely making it
-    // such that it could not be fixed; the result was that the loop only
-    // needs to be run once and the first degree quad hashes will never change.
-    // 5.1-5.2 are skipped; first degree quad hashes are generated just once
-    // for all non-normalized blank nodes.
-
-    // 5.3) For each blank node identifier identifier in non-normalized
-    // identifiers:
-    const hashToBlankNodes = new Map();
-    const nonNormalized = [...this.blankNodeInfo.keys()];
-    let i = 0;
-    for(const id of nonNormalized) {
-      // Note: batch hashing first degree quads 100 at a time
-      if(++i % 100 === 0) {
-        await this._yield();
-      }
-      // steps 5.3.1 and 5.3.2:
-      await this._hashAndTrackBlankNode({id, hashToBlankNodes});
-    }
-
-    // 5.4) For each hash to identifier list mapping in hash to blank
-    // nodes map, lexicographically-sorted by hash:
-    const hashes = [...hashToBlankNodes.keys()].sort();
-    // optimize away second sort, gather non-unique hashes in order as we go
-    const nonUnique = [];
-    for(const hash of hashes) {
-      // 5.4.1) If the length of identifier list is greater than 1,
-      // continue to the next mapping.
-      const idList = hashToBlankNodes.get(hash);
-      if(idList.length > 1) {
-        nonUnique.push(idList);
-        continue;
-      }
-
-      // 5.4.2) Use the Issue Identifier algorithm, passing canonical
-      // issuer and the single blank node identifier in identifier
-      // list, identifier, to issue a canonical replacement identifier
-      // for identifier.
-      const id = idList[0];
-      this.canonicalIssuer.getId(id);
-
-      // Note: These steps are skipped, optimized away since the loop
-      // only needs to be run once.
-      // 5.4.3) Remove identifier from non-normalized identifiers.
-      // 5.4.4) Remove hash from the hash to blank nodes map.
-      // 5.4.5) Set simple to true.
-    }
-
-    // 6) For each hash to identifier list mapping in hash to blank nodes map,
-    // lexicographically-sorted by hash:
-    // Note: sort optimized away, use `nonUnique`.
-    for(const idList of nonUnique) {
-      // 6.1) Create hash path list where each item will be a result of
-      // running the Hash N-Degree Quads algorithm.
-      const hashPathList = [];
-
-      // 6.2) For each blank node identifier identifier in identifier list:
-      for(const id of idList) {
-        // 6.2.1) If a canonical identifier has already been issued for
-        // identifier, continue to the next identifier.
-        if(this.canonicalIssuer.hasId(id)) {
-          continue;
-        }
-
-        // 6.2.2) Create temporary issuer, an identifier issuer
-        // initialized with the prefix _:b.
-        const issuer = new IdentifierIssuer('_:b');
-
-        // 6.2.3) Use the Issue Identifier algorithm, passing temporary
-        // issuer and identifier, to issue a new temporary blank node
-        // identifier for identifier.
-        issuer.getId(id);
-
-        // 6.2.4) Run the Hash N-Degree Quads algorithm, passing
-        // temporary issuer, and append the result to the hash path list.
-        const result = await this.hashNDegreeQuads(id, issuer);
-        hashPathList.push(result);
-      }
-
-      // 6.3) For each result in the hash path list,
-      // lexicographically-sorted by the hash in result:
-      hashPathList.sort(_stringHashCompare);
-      for(const result of hashPathList) {
-        // 6.3.1) For each blank node identifier, existing identifier,
-        // that was issued a temporary identifier by identifier issuer
-        // in result, issue a canonical identifier, in the same order,
-        // using the Issue Identifier algorithm, passing canonical
-        // issuer and existing identifier.
-        const oldIds = result.issuer.getOldIds();
-        for(const id of oldIds) {
-          this.canonicalIssuer.getId(id);
-        }
-      }
-    }
-
-    /* Note: At this point all blank nodes in the set of RDF quads have been
-    assigned canonical identifiers, which have been stored in the canonical
-    issuer. Here each quad is updated by assigning each of its blank nodes
-    its new identifier. */
-
-    // 7) For each quad, quad, in input dataset:
-    const normalized = [];
-    for(const quad of this.quads) {
-      // 7.1) Create a copy, quad copy, of quad and replace any existing
-      // blank node identifiers using the canonical identifiers
-      // previously issued by canonical issuer.
-      // Note: We optimize with shallow copies here.
-      const q = {...quad};
-      q.subject = this._useCanonicalId({component: q.subject});
-      q.object = this._useCanonicalId({component: q.object});
-      q.graph = this._useCanonicalId({component: q.graph});
-      // 7.2) Add quad copy to the normalized dataset.
-      normalized.push(NQuads.serializeQuad(q));
-    }
-
-    // sort normalized output
-    normalized.sort();
-
-    // 8) Return the normalized dataset.
-    return normalized.join('');
-  }
-
-  // 4.6) Hash First Degree Quads
-  async hashFirstDegreeQuads(id) {
-    // 1) Initialize nquads to an empty list. It will be used to store quads in
-    // N-Quads format.
-    const nquads = [];
-
-    // 2) Get the list of quads `quads` associated with the reference blank node
-    // identifier in the blank node to quads map.
-    const info = this.blankNodeInfo.get(id);
-    const quads = info.quads;
-
-    // 3) For each quad `quad` in `quads`:
-    for(const quad of quads) {
-      // 3.1) Serialize the quad in N-Quads format with the following special
-      // rule:
-
-      // 3.1.1) If any component in quad is an blank node, then serialize it
-      // using a special identifier as follows:
-      const copy = {
-        subject: null, predicate: quad.predicate, object: null, graph: null
-      };
-      // 3.1.2) If the blank node's existing blank node identifier matches
-      // the reference blank node identifier then use the blank node
-      // identifier _:a, otherwise, use the blank node identifier _:z.
-      copy.subject = this.modifyFirstDegreeComponent(
-        id, quad.subject, 'subject');
-      copy.object = this.modifyFirstDegreeComponent(
-        id, quad.object, 'object');
-      copy.graph = this.modifyFirstDegreeComponent(
-        id, quad.graph, 'graph');
-      nquads.push(NQuads.serializeQuad(copy));
-    }
-
-    // 4) Sort nquads in lexicographical order.
-    nquads.sort();
-
-    // 5) Return the hash that results from passing the sorted, joined nquads
-    // through the hash algorithm.
-    const md = new MessageDigest(this.hashAlgorithm);
-    for(const nquad of nquads) {
-      md.update(nquad);
-    }
-    info.hash = await md.digest();
-    return info.hash;
-  }
-
-  // 4.7) Hash Related Blank Node
-  async hashRelatedBlankNode(related, quad, issuer, position) {
-    // 1) Set the identifier to use for related, preferring first the canonical
-    // identifier for related if issued, second the identifier issued by issuer
-    // if issued, and last, if necessary, the result of the Hash First Degree
-    // Quads algorithm, passing related.
-    let id;
-    if(this.canonicalIssuer.hasId(related)) {
-      id = this.canonicalIssuer.getId(related);
-    } else if(issuer.hasId(related)) {
-      id = issuer.getId(related);
-    } else {
-      id = this.blankNodeInfo.get(related).hash;
-    }
-
-    // 2) Initialize a string input to the value of position.
-    // Note: We use a hash object instead.
-    const md = new MessageDigest(this.hashAlgorithm);
-    md.update(position);
-
-    // 3) If position is not g, append <, the value of the predicate in quad,
-    // and > to input.
-    if(position !== 'g') {
-      md.update(this.getRelatedPredicate(quad));
-    }
-
-    // 4) Append identifier to input.
-    md.update(id);
-
-    // 5) Return the hash that results from passing input through the hash
-    // algorithm.
-    return md.digest();
-  }
-
-  // 4.8) Hash N-Degree Quads
-  async hashNDegreeQuads(id, issuer) {
-    // 1) Create a hash to related blank nodes map for storing hashes that
-    // identify related blank nodes.
-    // Note: 2) and 3) handled within `createHashToRelated`
-    const md = new MessageDigest(this.hashAlgorithm);
-    const hashToRelated = await this.createHashToRelated(id, issuer);
-
-    // 4) Create an empty string, data to hash.
-    // Note: We created a hash object `md` above instead.
-
-    // 5) For each related hash to blank node list mapping in hash to related
-    // blank nodes map, sorted lexicographically by related hash:
-    const hashes = [...hashToRelated.keys()].sort();
-    for(const hash of hashes) {
-      // 5.1) Append the related hash to the data to hash.
-      md.update(hash);
-
-      // 5.2) Create a string chosen path.
-      let chosenPath = '';
-
-      // 5.3) Create an unset chosen issuer variable.
-      let chosenIssuer;
-
-      // 5.4) For each permutation of blank node list:
-      const permuter = new Permuter(hashToRelated.get(hash));
-      let i = 0;
-      while(permuter.hasNext()) {
-        const permutation = permuter.next();
-        // Note: batch permutations 3 at a time
-        if(++i % 3 === 0) {
-          await this._yield();
-        }
-
-        // 5.4.1) Create a copy of issuer, issuer copy.
-        let issuerCopy = issuer.clone();
-
-        // 5.4.2) Create a string path.
-        let path = '';
-
-        // 5.4.3) Create a recursion list, to store blank node identifiers
-        // that must be recursively processed by this algorithm.
-        const recursionList = [];
-
-        // 5.4.4) For each related in permutation:
-        let nextPermutation = false;
-        for(const related of permutation) {
-          // 5.4.4.1) If a canonical identifier has been issued for
-          // related, append it to path.
-          if(this.canonicalIssuer.hasId(related)) {
-            path += this.canonicalIssuer.getId(related);
-          } else {
-            // 5.4.4.2) Otherwise:
-            // 5.4.4.2.1) If issuer copy has not issued an identifier for
-            // related, append related to recursion list.
-            if(!issuerCopy.hasId(related)) {
-              recursionList.push(related);
-            }
-            // 5.4.4.2.2) Use the Issue Identifier algorithm, passing
-            // issuer copy and related and append the result to path.
-            path += issuerCopy.getId(related);
-          }
-
-          // 5.4.4.3) If chosen path is not empty and the length of path
-          // is greater than or equal to the length of chosen path and
-          // path is lexicographically greater than chosen path, then
-          // skip to the next permutation.
-          // Note: Comparing path length to chosen path length can be optimized
-          // away; only compare lexicographically.
-          if(chosenPath.length !== 0 && path > chosenPath) {
-            nextPermutation = true;
-            break;
-          }
-        }
-
-        if(nextPermutation) {
-          continue;
-        }
-
-        // 5.4.5) For each related in recursion list:
-        for(const related of recursionList) {
-          // 5.4.5.1) Set result to the result of recursively executing
-          // the Hash N-Degree Quads algorithm, passing related for
-          // identifier and issuer copy for path identifier issuer.
-          const result = await this.hashNDegreeQuads(related, issuerCopy);
-
-          // 5.4.5.2) Use the Issue Identifier algorithm, passing issuer
-          // copy and related and append the result to path.
-          path += issuerCopy.getId(related);
-
-          // 5.4.5.3) Append <, the hash in result, and > to path.
-          path += `<${result.hash}>`;
-
-          // 5.4.5.4) Set issuer copy to the identifier issuer in
-          // result.
-          issuerCopy = result.issuer;
-
-          // 5.4.5.5) If chosen path is not empty and the length of path
-          // is greater than or equal to the length of chosen path and
-          // path is lexicographically greater than chosen path, then
-          // skip to the next permutation.
-          // Note: Comparing path length to chosen path length can be optimized
-          // away; only compare lexicographically.
-          if(chosenPath.length !== 0 && path > chosenPath) {
-            nextPermutation = true;
-            break;
-          }
-        }
-
-        if(nextPermutation) {
-          continue;
-        }
-
-        // 5.4.6) If chosen path is empty or path is lexicographically
-        // less than chosen path, set chosen path to path and chosen
-        // issuer to issuer copy.
-        if(chosenPath.length === 0 || path < chosenPath) {
-          chosenPath = path;
-          chosenIssuer = issuerCopy;
-        }
-      }
-
-      // 5.5) Append chosen path to data to hash.
-      md.update(chosenPath);
-
-      // 5.6) Replace issuer, by reference, with chosen issuer.
-      issuer = chosenIssuer;
-    }
-
-    // 6) Return issuer and the hash that results from passing data to hash
-    // through the hash algorithm.
-    return {hash: await md.digest(), issuer};
-  }
-
-  // helper for modifying component during Hash First Degree Quads
-  modifyFirstDegreeComponent(id, component) {
-    if(component.termType !== 'BlankNode') {
-      return component;
-    }
-    /* Note: A mistake in the URDNA2015 spec that made its way into
-    implementations (and therefore must stay to avoid interop breakage)
-    resulted in an assigned canonical ID, if available for
-    `component.value`, not being used in place of `_:a`/`_:z`, so
-    we don't use it here. */
-    return {
-      termType: 'BlankNode',
-      value: component.value === id ? '_:a' : '_:z'
-    };
-  }
-
-  // helper for getting a related predicate
-  getRelatedPredicate(quad) {
-    return `<${quad.predicate.value}>`;
-  }
-
-  // helper for creating hash to related blank nodes map
-  async createHashToRelated(id, issuer) {
-    // 1) Create a hash to related blank nodes map for storing hashes that
-    // identify related blank nodes.
-    const hashToRelated = new Map();
-
-    // 2) Get a reference, quads, to the list of quads in the blank node to
-    // quads map for the key identifier.
-    const quads = this.blankNodeInfo.get(id).quads;
-
-    // 3) For each quad in quads:
-    let i = 0;
-    for(const quad of quads) {
-      // Note: batch hashing related blank node quads 100 at a time
-      if(++i % 100 === 0) {
-        await this._yield();
-      }
-      // 3.1) For each component in quad, if component is the subject, object,
-      // and graph name and it is a blank node that is not identified by
-      // identifier:
-      // steps 3.1.1 and 3.1.2 occur in helpers:
-      await Promise.all([
-        this._addRelatedBlankNodeHash({
-          quad, component: quad.subject, position: 's',
-          id, issuer, hashToRelated
-        }),
-        this._addRelatedBlankNodeHash({
-          quad, component: quad.object, position: 'o',
-          id, issuer, hashToRelated
-        }),
-        this._addRelatedBlankNodeHash({
-          quad, component: quad.graph, position: 'g',
-          id, issuer, hashToRelated
-        })
-      ]);
-    }
-
-    return hashToRelated;
-  }
-
-  async _hashAndTrackBlankNode({id, hashToBlankNodes}) {
-    // 5.3.1) Create a hash, hash, according to the Hash First Degree
-    // Quads algorithm.
-    const hash = await this.hashFirstDegreeQuads(id);
-
-    // 5.3.2) Add hash and identifier to hash to blank nodes map,
-    // creating a new entry if necessary.
-    const idList = hashToBlankNodes.get(hash);
-    if(!idList) {
-      hashToBlankNodes.set(hash, [id]);
-    } else {
-      idList.push(id);
-    }
-  }
-
-  _addBlankNodeQuadInfo({quad, component}) {
-    if(component.termType !== 'BlankNode') {
-      return;
-    }
-    const id = component.value;
-    const info = this.blankNodeInfo.get(id);
-    if(info) {
-      info.quads.add(quad);
-    } else {
-      this.blankNodeInfo.set(id, {quads: new Set([quad]), hash: null});
-    }
-  }
-
-  async _addRelatedBlankNodeHash(
-    {quad, component, position, id, issuer, hashToRelated}) {
-    if(!(component.termType === 'BlankNode' && component.value !== id)) {
-      return;
-    }
-    // 3.1.1) Set hash to the result of the Hash Related Blank Node
-    // algorithm, passing the blank node identifier for component as
-    // related, quad, path identifier issuer as issuer, and position as
-    // either s, o, or g based on whether component is a subject, object,
-    // graph name, respectively.
-    const related = component.value;
-    const hash = await this.hashRelatedBlankNode(
-      related, quad, issuer, position);
-
-    // 3.1.2) Add a mapping of hash to the blank node identifier for
-    // component to hash to related blank nodes map, adding an entry as
-    // necessary.
-    const entries = hashToRelated.get(hash);
-    if(entries) {
-      entries.push(related);
-    } else {
-      hashToRelated.set(hash, [related]);
-    }
-  }
-
-  _useCanonicalId({component}) {
-    if(component.termType === 'BlankNode' &&
-      !component.value.startsWith(this.canonicalIssuer.prefix)) {
-      return {
-        termType: 'BlankNode',
-        value: this.canonicalIssuer.getId(component.value)
-      };
-    }
-    return component;
-  }
-
-  async _yield() {
-    return new Promise(resolve => setImmediate(resolve));
-  }
-};
-
-function _stringHashCompare(a, b) {
-  return a.hash < b.hash ? -1 : a.hash > b.hash ? 1 : 0;
-}
-
-}).call(this)}).call(this,require("timers").setImmediate)
-},{"./IdentifierIssuer":245,"./MessageDigest":246,"./NQuads":247,"./Permuter":248,"timers":42}],250:[function(require,module,exports){
-/*
- * Copyright (c) 2016-2021 Digital Bazaar, Inc. All rights reserved.
- */
-'use strict';
-
-const IdentifierIssuer = require('./IdentifierIssuer');
-const MessageDigest = require('./MessageDigest');
-const Permuter = require('./Permuter');
-const NQuads = require('./NQuads');
-
-module.exports = class URDNA2015Sync {
-  constructor() {
-    this.name = 'URDNA2015';
-    this.blankNodeInfo = new Map();
-    this.canonicalIssuer = new IdentifierIssuer('_:c14n');
-    this.hashAlgorithm = 'sha256';
-    this.quads = null;
-  }
-
-  // 4.4) Normalization Algorithm
-  main(dataset) {
-    this.quads = dataset;
-
-    // 1) Create the normalization state.
-    // 2) For every quad in input dataset:
-    for(const quad of dataset) {
-      // 2.1) For each blank node that occurs in the quad, add a reference
-      // to the quad using the blank node identifier in the blank node to
-      // quads map, creating a new entry if necessary.
-      this._addBlankNodeQuadInfo({quad, component: quad.subject});
-      this._addBlankNodeQuadInfo({quad, component: quad.object});
-      this._addBlankNodeQuadInfo({quad, component: quad.graph});
-    }
-
-    // 3) Create a list of non-normalized blank node identifiers
-    // non-normalized identifiers and populate it using the keys from the
-    // blank node to quads map.
-    // Note: We use a map here and it was generated during step 2.
-
-    // 4) `simple` flag is skipped -- loop is optimized away. This optimization
-    // is permitted because there was a typo in the hash first degree quads
-    // algorithm in the URDNA2015 spec that was implemented widely making it
-    // such that it could not be fixed; the result was that the loop only
-    // needs to be run once and the first degree quad hashes will never change.
-    // 5.1-5.2 are skipped; first degree quad hashes are generated just once
-    // for all non-normalized blank nodes.
-
-    // 5.3) For each blank node identifier identifier in non-normalized
-    // identifiers:
-    const hashToBlankNodes = new Map();
-    const nonNormalized = [...this.blankNodeInfo.keys()];
-    for(const id of nonNormalized) {
-      // steps 5.3.1 and 5.3.2:
-      this._hashAndTrackBlankNode({id, hashToBlankNodes});
-    }
-
-    // 5.4) For each hash to identifier list mapping in hash to blank
-    // nodes map, lexicographically-sorted by hash:
-    const hashes = [...hashToBlankNodes.keys()].sort();
-    // optimize away second sort, gather non-unique hashes in order as we go
-    const nonUnique = [];
-    for(const hash of hashes) {
-      // 5.4.1) If the length of identifier list is greater than 1,
-      // continue to the next mapping.
-      const idList = hashToBlankNodes.get(hash);
-      if(idList.length > 1) {
-        nonUnique.push(idList);
-        continue;
-      }
-
-      // 5.4.2) Use the Issue Identifier algorithm, passing canonical
-      // issuer and the single blank node identifier in identifier
-      // list, identifier, to issue a canonical replacement identifier
-      // for identifier.
-      const id = idList[0];
-      this.canonicalIssuer.getId(id);
-
-      // Note: These steps are skipped, optimized away since the loop
-      // only needs to be run once.
-      // 5.4.3) Remove identifier from non-normalized identifiers.
-      // 5.4.4) Remove hash from the hash to blank nodes map.
-      // 5.4.5) Set simple to true.
-    }
-
-    // 6) For each hash to identifier list mapping in hash to blank nodes map,
-    // lexicographically-sorted by hash:
-    // Note: sort optimized away, use `nonUnique`.
-    for(const idList of nonUnique) {
-      // 6.1) Create hash path list where each item will be a result of
-      // running the Hash N-Degree Quads algorithm.
-      const hashPathList = [];
-
-      // 6.2) For each blank node identifier identifier in identifier list:
-      for(const id of idList) {
-        // 6.2.1) If a canonical identifier has already been issued for
-        // identifier, continue to the next identifier.
-        if(this.canonicalIssuer.hasId(id)) {
-          continue;
-        }
-
-        // 6.2.2) Create temporary issuer, an identifier issuer
-        // initialized with the prefix _:b.
-        const issuer = new IdentifierIssuer('_:b');
-
-        // 6.2.3) Use the Issue Identifier algorithm, passing temporary
-        // issuer and identifier, to issue a new temporary blank node
-        // identifier for identifier.
-        issuer.getId(id);
-
-        // 6.2.4) Run the Hash N-Degree Quads algorithm, passing
-        // temporary issuer, and append the result to the hash path list.
-        const result = this.hashNDegreeQuads(id, issuer);
-        hashPathList.push(result);
-      }
-
-      // 6.3) For each result in the hash path list,
-      // lexicographically-sorted by the hash in result:
-      hashPathList.sort(_stringHashCompare);
-      for(const result of hashPathList) {
-        // 6.3.1) For each blank node identifier, existing identifier,
-        // that was issued a temporary identifier by identifier issuer
-        // in result, issue a canonical identifier, in the same order,
-        // using the Issue Identifier algorithm, passing canonical
-        // issuer and existing identifier.
-        const oldIds = result.issuer.getOldIds();
-        for(const id of oldIds) {
-          this.canonicalIssuer.getId(id);
-        }
-      }
-    }
-
-    /* Note: At this point all blank nodes in the set of RDF quads have been
-    assigned canonical identifiers, which have been stored in the canonical
-    issuer. Here each quad is updated by assigning each of its blank nodes
-    its new identifier. */
-
-    // 7) For each quad, quad, in input dataset:
-    const normalized = [];
-    for(const quad of this.quads) {
-      // 7.1) Create a copy, quad copy, of quad and replace any existing
-      // blank node identifiers using the canonical identifiers
-      // previously issued by canonical issuer.
-      // Note: We optimize with shallow copies here.
-      const q = {...quad};
-      q.subject = this._useCanonicalId({component: q.subject});
-      q.object = this._useCanonicalId({component: q.object});
-      q.graph = this._useCanonicalId({component: q.graph});
-      // 7.2) Add quad copy to the normalized dataset.
-      normalized.push(NQuads.serializeQuad(q));
-    }
-
-    // sort normalized output
-    normalized.sort();
-
-    // 8) Return the normalized dataset.
-    return normalized.join('');
-  }
-
-  // 4.6) Hash First Degree Quads
-  hashFirstDegreeQuads(id) {
-    // 1) Initialize nquads to an empty list. It will be used to store quads in
-    // N-Quads format.
-    const nquads = [];
-
-    // 2) Get the list of quads `quads` associated with the reference blank node
-    // identifier in the blank node to quads map.
-    const info = this.blankNodeInfo.get(id);
-    const quads = info.quads;
-
-    // 3) For each quad `quad` in `quads`:
-    for(const quad of quads) {
-      // 3.1) Serialize the quad in N-Quads format with the following special
-      // rule:
-
-      // 3.1.1) If any component in quad is an blank node, then serialize it
-      // using a special identifier as follows:
-      const copy = {
-        subject: null, predicate: quad.predicate, object: null, graph: null
-      };
-      // 3.1.2) If the blank node's existing blank node identifier matches
-      // the reference blank node identifier then use the blank node
-      // identifier _:a, otherwise, use the blank node identifier _:z.
-      copy.subject = this.modifyFirstDegreeComponent(
-        id, quad.subject, 'subject');
-      copy.object = this.modifyFirstDegreeComponent(
-        id, quad.object, 'object');
-      copy.graph = this.modifyFirstDegreeComponent(
-        id, quad.graph, 'graph');
-      nquads.push(NQuads.serializeQuad(copy));
-    }
-
-    // 4) Sort nquads in lexicographical order.
-    nquads.sort();
-
-    // 5) Return the hash that results from passing the sorted, joined nquads
-    // through the hash algorithm.
-    const md = new MessageDigest(this.hashAlgorithm);
-    for(const nquad of nquads) {
-      md.update(nquad);
-    }
-    info.hash = md.digest();
-    return info.hash;
-  }
-
-  // 4.7) Hash Related Blank Node
-  hashRelatedBlankNode(related, quad, issuer, position) {
-    // 1) Set the identifier to use for related, preferring first the canonical
-    // identifier for related if issued, second the identifier issued by issuer
-    // if issued, and last, if necessary, the result of the Hash First Degree
-    // Quads algorithm, passing related.
-    let id;
-    if(this.canonicalIssuer.hasId(related)) {
-      id = this.canonicalIssuer.getId(related);
-    } else if(issuer.hasId(related)) {
-      id = issuer.getId(related);
-    } else {
-      id = this.blankNodeInfo.get(related).hash;
-    }
-
-    // 2) Initialize a string input to the value of position.
-    // Note: We use a hash object instead.
-    const md = new MessageDigest(this.hashAlgorithm);
-    md.update(position);
-
-    // 3) If position is not g, append <, the value of the predicate in quad,
-    // and > to input.
-    if(position !== 'g') {
-      md.update(this.getRelatedPredicate(quad));
-    }
-
-    // 4) Append identifier to input.
-    md.update(id);
-
-    // 5) Return the hash that results from passing input through the hash
-    // algorithm.
-    return md.digest();
-  }
-
-  // 4.8) Hash N-Degree Quads
-  hashNDegreeQuads(id, issuer) {
-    // 1) Create a hash to related blank nodes map for storing hashes that
-    // identify related blank nodes.
-    // Note: 2) and 3) handled within `createHashToRelated`
-    const md = new MessageDigest(this.hashAlgorithm);
-    const hashToRelated = this.createHashToRelated(id, issuer);
-
-    // 4) Create an empty string, data to hash.
-    // Note: We created a hash object `md` above instead.
-
-    // 5) For each related hash to blank node list mapping in hash to related
-    // blank nodes map, sorted lexicographically by related hash:
-    const hashes = [...hashToRelated.keys()].sort();
-    for(const hash of hashes) {
-      // 5.1) Append the related hash to the data to hash.
-      md.update(hash);
-
-      // 5.2) Create a string chosen path.
-      let chosenPath = '';
-
-      // 5.3) Create an unset chosen issuer variable.
-      let chosenIssuer;
-
-      // 5.4) For each permutation of blank node list:
-      const permuter = new Permuter(hashToRelated.get(hash));
-      while(permuter.hasNext()) {
-        const permutation = permuter.next();
-
-        // 5.4.1) Create a copy of issuer, issuer copy.
-        let issuerCopy = issuer.clone();
-
-        // 5.4.2) Create a string path.
-        let path = '';
-
-        // 5.4.3) Create a recursion list, to store blank node identifiers
-        // that must be recursively processed by this algorithm.
-        const recursionList = [];
-
-        // 5.4.4) For each related in permutation:
-        let nextPermutation = false;
-        for(const related of permutation) {
-          // 5.4.4.1) If a canonical identifier has been issued for
-          // related, append it to path.
-          if(this.canonicalIssuer.hasId(related)) {
-            path += this.canonicalIssuer.getId(related);
-          } else {
-            // 5.4.4.2) Otherwise:
-            // 5.4.4.2.1) If issuer copy has not issued an identifier for
-            // related, append related to recursion list.
-            if(!issuerCopy.hasId(related)) {
-              recursionList.push(related);
-            }
-            // 5.4.4.2.2) Use the Issue Identifier algorithm, passing
-            // issuer copy and related and append the result to path.
-            path += issuerCopy.getId(related);
-          }
-
-          // 5.4.4.3) If chosen path is not empty and the length of path
-          // is greater than or equal to the length of chosen path and
-          // path is lexicographically greater than chosen path, then
-          // skip to the next permutation.
-          // Note: Comparing path length to chosen path length can be optimized
-          // away; only compare lexicographically.
-          if(chosenPath.length !== 0 && path > chosenPath) {
-            nextPermutation = true;
-            break;
-          }
-        }
-
-        if(nextPermutation) {
-          continue;
-        }
-
-        // 5.4.5) For each related in recursion list:
-        for(const related of recursionList) {
-          // 5.4.5.1) Set result to the result of recursively executing
-          // the Hash N-Degree Quads algorithm, passing related for
-          // identifier and issuer copy for path identifier issuer.
-          const result = this.hashNDegreeQuads(related, issuerCopy);
-
-          // 5.4.5.2) Use the Issue Identifier algorithm, passing issuer
-          // copy and related and append the result to path.
-          path += issuerCopy.getId(related);
-
-          // 5.4.5.3) Append <, the hash in result, and > to path.
-          path += `<${result.hash}>`;
-
-          // 5.4.5.4) Set issuer copy to the identifier issuer in
-          // result.
-          issuerCopy = result.issuer;
-
-          // 5.4.5.5) If chosen path is not empty and the length of path
-          // is greater than or equal to the length of chosen path and
-          // path is lexicographically greater than chosen path, then
-          // skip to the next permutation.
-          // Note: Comparing path length to chosen path length can be optimized
-          // away; only compare lexicographically.
-          if(chosenPath.length !== 0 && path > chosenPath) {
-            nextPermutation = true;
-            break;
-          }
-        }
-
-        if(nextPermutation) {
-          continue;
-        }
-
-        // 5.4.6) If chosen path is empty or path is lexicographically
-        // less than chosen path, set chosen path to path and chosen
-        // issuer to issuer copy.
-        if(chosenPath.length === 0 || path < chosenPath) {
-          chosenPath = path;
-          chosenIssuer = issuerCopy;
-        }
-      }
-
-      // 5.5) Append chosen path to data to hash.
-      md.update(chosenPath);
-
-      // 5.6) Replace issuer, by reference, with chosen issuer.
-      issuer = chosenIssuer;
-    }
-
-    // 6) Return issuer and the hash that results from passing data to hash
-    // through the hash algorithm.
-    return {hash: md.digest(), issuer};
-  }
-
-  // helper for modifying component during Hash First Degree Quads
-  modifyFirstDegreeComponent(id, component) {
-    if(component.termType !== 'BlankNode') {
-      return component;
-    }
-    /* Note: A mistake in the URDNA2015 spec that made its way into
-    implementations (and therefore must stay to avoid interop breakage)
-    resulted in an assigned canonical ID, if available for
-    `component.value`, not being used in place of `_:a`/`_:z`, so
-    we don't use it here. */
-    return {
-      termType: 'BlankNode',
-      value: component.value === id ? '_:a' : '_:z'
-    };
-  }
-
-  // helper for getting a related predicate
-  getRelatedPredicate(quad) {
-    return `<${quad.predicate.value}>`;
-  }
-
-  // helper for creating hash to related blank nodes map
-  createHashToRelated(id, issuer) {
-    // 1) Create a hash to related blank nodes map for storing hashes that
-    // identify related blank nodes.
-    const hashToRelated = new Map();
-
-    // 2) Get a reference, quads, to the list of quads in the blank node to
-    // quads map for the key identifier.
-    const quads = this.blankNodeInfo.get(id).quads;
-
-    // 3) For each quad in quads:
-    for(const quad of quads) {
-      // 3.1) For each component in quad, if component is the subject, object,
-      // or graph name and it is a blank node that is not identified by
-      // identifier:
-      // steps 3.1.1 and 3.1.2 occur in helpers:
-      this._addRelatedBlankNodeHash({
-        quad, component: quad.subject, position: 's',
-        id, issuer, hashToRelated
-      });
-      this._addRelatedBlankNodeHash({
-        quad, component: quad.object, position: 'o',
-        id, issuer, hashToRelated
-      });
-      this._addRelatedBlankNodeHash({
-        quad, component: quad.graph, position: 'g',
-        id, issuer, hashToRelated
-      });
-    }
-
-    return hashToRelated;
-  }
-
-  _hashAndTrackBlankNode({id, hashToBlankNodes}) {
-    // 5.3.1) Create a hash, hash, according to the Hash First Degree
-    // Quads algorithm.
-    const hash = this.hashFirstDegreeQuads(id);
-
-    // 5.3.2) Add hash and identifier to hash to blank nodes map,
-    // creating a new entry if necessary.
-    const idList = hashToBlankNodes.get(hash);
-    if(!idList) {
-      hashToBlankNodes.set(hash, [id]);
-    } else {
-      idList.push(id);
-    }
-  }
-
-  _addBlankNodeQuadInfo({quad, component}) {
-    if(component.termType !== 'BlankNode') {
-      return;
-    }
-    const id = component.value;
-    const info = this.blankNodeInfo.get(id);
-    if(info) {
-      info.quads.add(quad);
-    } else {
-      this.blankNodeInfo.set(id, {quads: new Set([quad]), hash: null});
-    }
-  }
-
-  _addRelatedBlankNodeHash(
-    {quad, component, position, id, issuer, hashToRelated}) {
-    if(!(component.termType === 'BlankNode' && component.value !== id)) {
-      return;
-    }
-    // 3.1.1) Set hash to the result of the Hash Related Blank Node
-    // algorithm, passing the blank node identifier for component as
-    // related, quad, path identifier issuer as issuer, and position as
-    // either s, o, or g based on whether component is a subject, object,
-    // graph name, respectively.
-    const related = component.value;
-    const hash = this.hashRelatedBlankNode(related, quad, issuer, position);
-
-    // 3.1.2) Add a mapping of hash to the blank node identifier for
-    // component to hash to related blank nodes map, adding an entry as
-    // necessary.
-    const entries = hashToRelated.get(hash);
-    if(entries) {
-      entries.push(related);
-    } else {
-      hashToRelated.set(hash, [related]);
-    }
-  }
-
-  _useCanonicalId({component}) {
-    if(component.termType === 'BlankNode' &&
-      !component.value.startsWith(this.canonicalIssuer.prefix)) {
-      return {
-        termType: 'BlankNode',
-        value: this.canonicalIssuer.getId(component.value)
-      };
-    }
-    return component;
-  }
-};
-
-function _stringHashCompare(a, b) {
-  return a.hash < b.hash ? -1 : a.hash > b.hash ? 1 : 0;
-}
-
-},{"./IdentifierIssuer":245,"./MessageDigest":246,"./NQuads":247,"./Permuter":248}],251:[function(require,module,exports){
-/*
- * Copyright (c) 2016-2021 Digital Bazaar, Inc. All rights reserved.
- */
-'use strict';
-
-const URDNA2015 = require('./URDNA2015');
-
-module.exports = class URDNA2012 extends URDNA2015 {
-  constructor() {
-    super();
-    this.name = 'URGNA2012';
-    this.hashAlgorithm = 'sha1';
-  }
-
-  // helper for modifying component during Hash First Degree Quads
-  modifyFirstDegreeComponent(id, component, key) {
-    if(component.termType !== 'BlankNode') {
-      return component;
-    }
-    if(key === 'graph') {
-      return {
-        termType: 'BlankNode',
-        value: '_:g'
-      };
-    }
-    return {
-      termType: 'BlankNode',
-      value: (component.value === id ? '_:a' : '_:z')
-    };
-  }
-
-  // helper for getting a related predicate
-  getRelatedPredicate(quad) {
-    return quad.predicate.value;
-  }
-
-  // helper for creating hash to related blank nodes map
-  async createHashToRelated(id, issuer) {
-    // 1) Create a hash to related blank nodes map for storing hashes that
-    // identify related blank nodes.
-    const hashToRelated = new Map();
-
-    // 2) Get a reference, quads, to the list of quads in the blank node to
-    // quads map for the key identifier.
-    const quads = this.blankNodeInfo.get(id).quads;
-
-    // 3) For each quad in quads:
-    let i = 0;
-    for(const quad of quads) {
-      // 3.1) If the quad's subject is a blank node that does not match
-      // identifier, set hash to the result of the Hash Related Blank Node
-      // algorithm, passing the blank node identifier for subject as related,
-      // quad, path identifier issuer as issuer, and p as position.
-      let position;
-      let related;
-      if(quad.subject.termType === 'BlankNode' && quad.subject.value !== id) {
-        related = quad.subject.value;
-        position = 'p';
-      } else if(
-        quad.object.termType === 'BlankNode' && quad.object.value !== id) {
-        // 3.2) Otherwise, if quad's object is a blank node that does not match
-        // identifier, to the result of the Hash Related Blank Node algorithm,
-        // passing the blank node identifier for object as related, quad, path
-        // identifier issuer as issuer, and r as position.
-        related = quad.object.value;
-        position = 'r';
-      } else {
-        // 3.3) Otherwise, continue to the next quad.
-        continue;
-      }
-      // Note: batch hashing related blank nodes 100 at a time
-      if(++i % 100 === 0) {
-        await this._yield();
-      }
-      // 3.4) Add a mapping of hash to the blank node identifier for the
-      // component that matched (subject or object) to hash to related blank
-      // nodes map, adding an entry as necessary.
-      const hash = await this.hashRelatedBlankNode(
-        related, quad, issuer, position);
-      const entries = hashToRelated.get(hash);
-      if(entries) {
-        entries.push(related);
-      } else {
-        hashToRelated.set(hash, [related]);
-      }
-    }
-
-    return hashToRelated;
-  }
-};
-
-},{"./URDNA2015":249}],252:[function(require,module,exports){
-/*
- * Copyright (c) 2016-2021 Digital Bazaar, Inc. All rights reserved.
- */
-'use strict';
-
-const URDNA2015Sync = require('./URDNA2015Sync');
-
-module.exports = class URDNA2012Sync extends URDNA2015Sync {
-  constructor() {
-    super();
-    this.name = 'URGNA2012';
-    this.hashAlgorithm = 'sha1';
-  }
-
-  // helper for modifying component during Hash First Degree Quads
-  modifyFirstDegreeComponent(id, component, key) {
-    if(component.termType !== 'BlankNode') {
-      return component;
-    }
-    if(key === 'graph') {
-      return {
-        termType: 'BlankNode',
-        value: '_:g'
-      };
-    }
-    return {
-      termType: 'BlankNode',
-      value: (component.value === id ? '_:a' : '_:z')
-    };
-  }
-
-  // helper for getting a related predicate
-  getRelatedPredicate(quad) {
-    return quad.predicate.value;
-  }
-
-  // helper for creating hash to related blank nodes map
-  createHashToRelated(id, issuer) {
-    // 1) Create a hash to related blank nodes map for storing hashes that
-    // identify related blank nodes.
-    const hashToRelated = new Map();
-
-    // 2) Get a reference, quads, to the list of quads in the blank node to
-    // quads map for the key identifier.
-    const quads = this.blankNodeInfo.get(id).quads;
-
-    // 3) For each quad in quads:
-    for(const quad of quads) {
-      // 3.1) If the quad's subject is a blank node that does not match
-      // identifier, set hash to the result of the Hash Related Blank Node
-      // algorithm, passing the blank node identifier for subject as related,
-      // quad, path identifier issuer as issuer, and p as position.
-      let position;
-      let related;
-      if(quad.subject.termType === 'BlankNode' && quad.subject.value !== id) {
-        related = quad.subject.value;
-        position = 'p';
-      } else if(
-        quad.object.termType === 'BlankNode' && quad.object.value !== id) {
-        // 3.2) Otherwise, if quad's object is a blank node that does not match
-        // identifier, to the result of the Hash Related Blank Node algorithm,
-        // passing the blank node identifier for object as related, quad, path
-        // identifier issuer as issuer, and r as position.
-        related = quad.object.value;
-        position = 'r';
-      } else {
-        // 3.3) Otherwise, continue to the next quad.
-        continue;
-      }
-      // 3.4) Add a mapping of hash to the blank node identifier for the
-      // component that matched (subject or object) to hash to related blank
-      // nodes map, adding an entry as necessary.
-      const hash = this.hashRelatedBlankNode(related, quad, issuer, position);
-      const entries = hashToRelated.get(hash);
-      if(entries) {
-        entries.push(related);
-      } else {
-        hashToRelated.set(hash, [related]);
-      }
-    }
-
-    return hashToRelated;
-  }
-};
-
-},{"./URDNA2015Sync":250}],253:[function(require,module,exports){
-/**
- * An implementation of the RDF Dataset Normalization specification.
- * This library works in the browser and node.js.
- *
- * BSD 3-Clause License
- * Copyright (c) 2016-2021 Digital Bazaar, Inc.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer.
- *
- * Redistributions in binary form must reproduce the above copyright
- * notice, this list of conditions and the following disclaimer in the
- * documentation and/or other materials provided with the distribution.
- *
- * Neither the name of the Digital Bazaar, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from
- * this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
- * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
- * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
- * PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
- * HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
- * TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
- * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
- * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-'use strict';
-
-const URDNA2015 = require('./URDNA2015');
-const URGNA2012 = require('./URGNA2012');
-const URDNA2015Sync = require('./URDNA2015Sync');
-const URGNA2012Sync = require('./URGNA2012Sync');
-
-// optional native support
-let rdfCanonizeNative;
-try {
-  rdfCanonizeNative = require('rdf-canonize-native');
-} catch(e) {}
-
-const api = {};
-module.exports = api;
-
-// expose helpers
-api.NQuads = require('./NQuads');
-api.IdentifierIssuer = require('./IdentifierIssuer');
-
-/**
- * Get or set native API.
- *
- * @param api the native API.
- *
- * @return the currently set native API.
- */
-api._rdfCanonizeNative = function(api) {
-  if(api) {
-    rdfCanonizeNative = api;
-  }
-  return rdfCanonizeNative;
-};
-
-/**
- * Asynchronously canonizes an RDF dataset.
- *
- * @param dataset the dataset to canonize.
- * @param options the options to use:
- *          algorithm the canonicalization algorithm to use, `URDNA2015` or
- *            `URGNA2012`.
- *          [useNative] use native implementation (default: false).
- *
- * @return a Promise that resolves to the canonicalized RDF Dataset.
- */
-api.canonize = async function(dataset, options) {
-  // back-compat with legacy dataset
-  if(!Array.isArray(dataset)) {
-    dataset = api.NQuads.legacyDatasetToQuads(dataset);
-  }
-
-  if(options.useNative) {
-    if(!rdfCanonizeNative) {
-      throw new Error('rdf-canonize-native not available');
-    }
-    // TODO: convert native algorithm to Promise-based async
-    return new Promise((resolve, reject) =>
-      rdfCanonizeNative.canonize(dataset, options, (err, canonical) =>
-        err ? reject(err) : resolve(canonical)));
-  }
-
-  if(options.algorithm === 'URDNA2015') {
-    return new URDNA2015(options).main(dataset);
-  }
-  if(options.algorithm === 'URGNA2012') {
-    return new URGNA2012(options).main(dataset);
-  }
-  if(!('algorithm' in options)) {
-    throw new Error('No RDF Dataset Canonicalization algorithm specified.');
-  }
-  throw new Error(
-    'Invalid RDF Dataset Canonicalization algorithm: ' + options.algorithm);
-};
-
-/**
- * This method is no longer available in the public API, it is for testing
- * only. It synchronously canonizes an RDF dataset and does not work in the
- * browser.
- *
- * @param dataset the dataset to canonize.
- * @param options the options to use:
- *          algorithm the canonicalization algorithm to use, `URDNA2015` or
- *            `URGNA2012`.
- *          [useNative] use native implementation (default: false).
- *
- * @return the RDF dataset in canonical form.
- */
-api._canonizeSync = function(dataset, options) {
-  // back-compat with legacy dataset
-  if(!Array.isArray(dataset)) {
-    dataset = api.NQuads.legacyDatasetToQuads(dataset);
-  }
-
-  if(options.useNative) {
-    if(rdfCanonizeNative) {
-      return rdfCanonizeNative.canonizeSync(dataset, options);
-    }
-    throw new Error('rdf-canonize-native not available');
-  }
-  if(options.algorithm === 'URDNA2015') {
-    return new URDNA2015Sync(options).main(dataset);
-  }
-  if(options.algorithm === 'URGNA2012') {
-    return new URGNA2012Sync(options).main(dataset);
-  }
-  if(!('algorithm' in options)) {
-    throw new Error('No RDF Dataset Canonicalization algorithm specified.');
-  }
-  throw new Error(
-    'Invalid RDF Dataset Canonicalization algorithm: ' + options.algorithm);
-};
-
-},{"./IdentifierIssuer":245,"./NQuads":247,"./URDNA2015":249,"./URDNA2015Sync":250,"./URGNA2012":251,"./URGNA2012Sync":252,"rdf-canonize-native":3}],254:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -43494,7 +33219,7 @@ __exportStar(require("./lib/NamedNode"), exports);
 __exportStar(require("./lib/Quad"), exports);
 __exportStar(require("./lib/Variable"), exports);
 
-},{"./lib/BlankNode":255,"./lib/DataFactory":256,"./lib/DefaultGraph":257,"./lib/Literal":258,"./lib/NamedNode":259,"./lib/Quad":260,"./lib/Variable":261}],255:[function(require,module,exports){
+},{"./lib/BlankNode":245,"./lib/DataFactory":246,"./lib/DefaultGraph":247,"./lib/Literal":248,"./lib/NamedNode":249,"./lib/Quad":250,"./lib/Variable":251}],245:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BlankNode = void 0;
@@ -43512,7 +33237,7 @@ class BlankNode {
 }
 exports.BlankNode = BlankNode;
 
-},{}],256:[function(require,module,exports){
+},{}],246:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DataFactory = void 0;
@@ -43635,7 +33360,7 @@ class DataFactory {
 }
 exports.DataFactory = DataFactory;
 
-},{"./BlankNode":255,"./DefaultGraph":257,"./Literal":258,"./NamedNode":259,"./Quad":260,"./Variable":261}],257:[function(require,module,exports){
+},{"./BlankNode":245,"./DefaultGraph":247,"./Literal":248,"./NamedNode":249,"./Quad":250,"./Variable":251}],247:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DefaultGraph = void 0;
@@ -43656,7 +33381,7 @@ class DefaultGraph {
 exports.DefaultGraph = DefaultGraph;
 DefaultGraph.INSTANCE = new DefaultGraph();
 
-},{}],258:[function(require,module,exports){
+},{}],248:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Literal = void 0;
@@ -43690,7 +33415,7 @@ exports.Literal = Literal;
 Literal.RDF_LANGUAGE_STRING = new NamedNode_1.NamedNode('http://www.w3.org/1999/02/22-rdf-syntax-ns#langString');
 Literal.XSD_STRING = new NamedNode_1.NamedNode('http://www.w3.org/2001/XMLSchema#string');
 
-},{"./NamedNode":259}],259:[function(require,module,exports){
+},{"./NamedNode":249}],249:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.NamedNode = void 0;
@@ -43708,7 +33433,7 @@ class NamedNode {
 }
 exports.NamedNode = NamedNode;
 
-},{}],260:[function(require,module,exports){
+},{}],250:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Quad = void 0;
@@ -43736,7 +33461,7 @@ class Quad {
 }
 exports.Quad = Quad;
 
-},{}],261:[function(require,module,exports){
+},{}],251:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Variable = void 0;
@@ -43754,7 +33479,7 @@ class Variable {
 }
 exports.Variable = Variable;
 
-},{}],262:[function(require,module,exports){
+},{}],252:[function(require,module,exports){
 const https___linkedsoftwaredependencies_org_bundles_npm__comunica_bus_rdf_parse__2_0_0_components_ActorRdfParse_jsonld_ActorRdfParse_default_bus = new (require('@comunica/core').Bus)({
   'name': 'https://linkedsoftwaredependencies.org/bundles/npm/@comunica/bus-rdf-parse/^2.0.0/components/ActorRdfParse.jsonld#ActorRdfParse_default_bus'
 });
@@ -43863,7 +33588,7 @@ const urn_comunica_default_Runner = new (require('./lib/index.js').RdfParser)({
 module.exports = urn_comunica_default_Runner;
 
 
-},{"./lib/index.js":264,"@comunica/actor-http-fetch":53,"@comunica/actor-http-proxy":56,"@comunica/actor-rdf-parse-html":65,"@comunica/actor-rdf-parse-html-microdata":58,"@comunica/actor-rdf-parse-html-rdfa":60,"@comunica/actor-rdf-parse-html-script":63,"@comunica/actor-rdf-parse-jsonld":68,"@comunica/actor-rdf-parse-n3":70,"@comunica/actor-rdf-parse-rdfxml":72,"@comunica/actor-rdf-parse-xml-rdfa":74,"@comunica/core":98,"@comunica/mediator-combine-union":100,"@comunica/mediator-number":102,"@comunica/mediator-race":104}],263:[function(require,module,exports){
+},{"./lib/index.js":254,"@comunica/actor-http-fetch":52,"@comunica/actor-http-proxy":55,"@comunica/actor-rdf-parse-html":64,"@comunica/actor-rdf-parse-html-microdata":57,"@comunica/actor-rdf-parse-html-rdfa":59,"@comunica/actor-rdf-parse-html-script":62,"@comunica/actor-rdf-parse-jsonld":67,"@comunica/actor-rdf-parse-n3":69,"@comunica/actor-rdf-parse-rdfxml":71,"@comunica/actor-rdf-parse-xml-rdfa":73,"@comunica/core":97,"@comunica/mediator-combine-union":99,"@comunica/mediator-number":101,"@comunica/mediator-race":103}],253:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RdfParser = void 0;
@@ -43964,7 +33689,7 @@ RdfParser.CONTENT_MAPPINGS = {
     json: "application/ld+json",
 };
 
-},{"@comunica/core":98,"stream":26}],264:[function(require,module,exports){
+},{"@comunica/core":97,"stream":26}],254:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -43985,7 +33710,7 @@ __exportStar(require("./RdfParser"), exports);
 // tslint:disable:no-var-requires
 exports.default = require('../engine-default');
 
-},{"../engine-default":262,"./RdfParser":263}],265:[function(require,module,exports){
+},{"../engine-default":252,"./RdfParser":253}],255:[function(require,module,exports){
 const https___linkedsoftwaredependencies_org_bundles_npm__comunica_bus_rdf_serialize__2_0_0_components_ActorRdfSerialize_jsonld_ActorRdfSerialize_default_bus = new (require('@comunica/core').Bus)({
   'name': 'https://linkedsoftwaredependencies.org/bundles/npm/@comunica/bus-rdf-serialize/^2.0.0/components/ActorRdfSerialize.jsonld#ActorRdfSerialize_default_bus'
 });
@@ -44023,7 +33748,7 @@ const urn_comunica_default_Runner = new (require('./lib/index.js').RdfSerializer
 module.exports = urn_comunica_default_Runner;
 
 
-},{"./lib/index.js":267,"@comunica/actor-rdf-serialize-jsonld":76,"@comunica/actor-rdf-serialize-n3":78,"@comunica/core":98,"@comunica/mediator-combine-union":100,"@comunica/mediator-race":104}],266:[function(require,module,exports){
+},{"./lib/index.js":257,"@comunica/actor-rdf-serialize-jsonld":75,"@comunica/actor-rdf-serialize-n3":77,"@comunica/core":97,"@comunica/mediator-combine-union":99,"@comunica/mediator-race":103}],256:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RdfSerializer = void 0;
@@ -44119,7 +33844,7 @@ RdfSerializer.CONTENT_MAPPINGS = {
     json: "application/ld+json",
 };
 
-},{"@comunica/core":98,"stream":26}],267:[function(require,module,exports){
+},{"@comunica/core":97,"stream":26}],257:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -44140,7 +33865,29 @@ __exportStar(require("./RdfSerializer"), exports);
 // tslint:disable:no-var-requires
 exports.default = require('../engine-default');
 
-},{"../engine-default":265,"./RdfSerializer":266}],268:[function(require,module,exports){
+},{"../engine-default":255,"./RdfSerializer":256}],258:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.storeStream = void 0;
+const n3_1 = require("n3");
+/**
+ * Import all quads in the given stream into a new RDF store.
+ *
+ * The whole stream will be consumed for this,
+ * and the promise will resolve once the stream's end event is emitted.
+ *
+ * @param {Stream<Q extends BaseQuad>} stream An RDF stream containing the quads to import into the store.
+ * @return {Promise<Store<Q extends BaseQuad>>} A promise resolving to an RDF store.
+ */
+function storeStream(stream) {
+    const store = new n3_1.Store();
+    return new Promise((resolve, reject) => store.import(stream)
+        .on('error', reject)
+        .once('end', () => resolve(store)));
+}
+exports.storeStream = storeStream;
+
+},{"n3":226}],259:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -44160,17 +33907,17 @@ __exportStar(require("./lib/RdfaParser"), exports);
 __exportStar(require("./lib/RdfaProfile"), exports);
 __exportStar(require("./lib/Util"), exports);
 
-},{"./lib/IActiveTag":269,"./lib/IHtmlParseListener":270,"./lib/IRdfaPattern":271,"./lib/RdfaParser":272,"./lib/RdfaProfile":273,"./lib/Util":274}],269:[function(require,module,exports){
+},{"./lib/IActiveTag":260,"./lib/IHtmlParseListener":261,"./lib/IRdfaPattern":262,"./lib/RdfaParser":263,"./lib/RdfaProfile":264,"./lib/Util":265}],260:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 
-},{}],270:[function(require,module,exports){
-arguments[4][212][0].apply(exports,arguments)
-},{"dup":212}],271:[function(require,module,exports){
+},{}],261:[function(require,module,exports){
+arguments[4][197][0].apply(exports,arguments)
+},{"dup":197}],262:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 
-},{}],272:[function(require,module,exports){
+},{}],263:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RdfaParser = void 0;
@@ -44963,7 +34710,7 @@ class RdfaParser extends stream_1.Transform {
 }
 exports.RdfaParser = RdfaParser;
 
-},{"./RdfaProfile":273,"./Util":274,"./initial-context-xhtml.json":275,"./initial-context.json":276,"htmlparser2":285,"stream":26}],273:[function(require,module,exports){
+},{"./RdfaProfile":264,"./Util":265,"./initial-context-xhtml.json":266,"./initial-context.json":267,"htmlparser2":276,"stream":26}],264:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RDFA_CONTENTTYPES = exports.RDFA_FEATURES = void 0;
@@ -45057,7 +34804,7 @@ exports.RDFA_CONTENTTYPES = {
 };
 // tslint:enable:object-literal-sort-keys
 
-},{}],274:[function(require,module,exports){
+},{}],265:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Util = void 0;
@@ -45284,7 +35031,7 @@ Util.TIME_REGEXES = [
 ];
 Util.IRI_REGEX = /^([A-Za-z][A-Za-z0-9+-.]*|_):[^ "<>{}|\\\[\]`]*$/;
 
-},{"./RdfaProfile":273,"rdf-data-factory":254,"relative-to-absolute-iri":306}],275:[function(require,module,exports){
+},{"./RdfaProfile":264,"rdf-data-factory":244,"relative-to-absolute-iri":297}],266:[function(require,module,exports){
 module.exports={
   "@context": {
     "alternate": "http://www.w3.org/1999/xhtml/vocab#alternate",
@@ -45315,7 +35062,7 @@ module.exports={
   }
 }
 
-},{}],276:[function(require,module,exports){
+},{}],267:[function(require,module,exports){
 module.exports={
   "@context": {
     "as": "https://www.w3.org/ns/activitystreams#",
@@ -45375,25 +35122,25 @@ module.exports={
   }
 }
 
-},{}],277:[function(require,module,exports){
-arguments[4][124][0].apply(exports,arguments)
-},{"./maps/decode.json":278,"dup":124}],278:[function(require,module,exports){
-arguments[4][127][0].apply(exports,arguments)
-},{"dup":127}],279:[function(require,module,exports){
-arguments[4][128][0].apply(exports,arguments)
-},{"dup":128}],280:[function(require,module,exports){
-arguments[4][129][0].apply(exports,arguments)
-},{"dup":129}],281:[function(require,module,exports){
-arguments[4][130][0].apply(exports,arguments)
-},{"dup":130}],282:[function(require,module,exports){
-arguments[4][228][0].apply(exports,arguments)
-},{"./Parser":283,"domhandler":132,"domutils":136,"dup":228}],283:[function(require,module,exports){
-arguments[4][229][0].apply(exports,arguments)
-},{"./Tokenizer":284,"dup":229}],284:[function(require,module,exports){
-arguments[4][230][0].apply(exports,arguments)
-},{"dup":230,"entities/lib/decode_codepoint":277,"entities/lib/maps/entities.json":279,"entities/lib/maps/legacy.json":280,"entities/lib/maps/xml.json":281}],285:[function(require,module,exports){
-arguments[4][231][0].apply(exports,arguments)
-},{"./FeedHandler":282,"./Parser":283,"./Tokenizer":284,"domelementtype":131,"domhandler":132,"domutils":136,"dup":231}],286:[function(require,module,exports){
+},{}],268:[function(require,module,exports){
+arguments[4][132][0].apply(exports,arguments)
+},{"./maps/decode.json":269,"dup":132}],269:[function(require,module,exports){
+arguments[4][135][0].apply(exports,arguments)
+},{"dup":135}],270:[function(require,module,exports){
+arguments[4][136][0].apply(exports,arguments)
+},{"dup":136}],271:[function(require,module,exports){
+arguments[4][137][0].apply(exports,arguments)
+},{"dup":137}],272:[function(require,module,exports){
+arguments[4][138][0].apply(exports,arguments)
+},{"dup":138}],273:[function(require,module,exports){
+arguments[4][213][0].apply(exports,arguments)
+},{"./Parser":274,"domhandler":140,"domutils":144,"dup":213}],274:[function(require,module,exports){
+arguments[4][214][0].apply(exports,arguments)
+},{"./Tokenizer":275,"dup":214}],275:[function(require,module,exports){
+arguments[4][215][0].apply(exports,arguments)
+},{"dup":215,"entities/lib/decode_codepoint":268,"entities/lib/maps/entities.json":270,"entities/lib/maps/legacy.json":271,"entities/lib/maps/xml.json":272}],276:[function(require,module,exports){
+arguments[4][216][0].apply(exports,arguments)
+},{"./FeedHandler":273,"./Parser":274,"./Tokenizer":275,"domelementtype":139,"domhandler":140,"domutils":144,"dup":216}],277:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -45408,7 +35155,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./lib/RdfXmlParser"), exports);
 
-},{"./lib/RdfXmlParser":288}],287:[function(require,module,exports){
+},{"./lib/RdfXmlParser":279}],278:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ParseError = void 0;
@@ -45423,7 +35170,7 @@ class ParseError extends Error {
 }
 exports.ParseError = ParseError;
 
-},{}],288:[function(require,module,exports){
+},{}],279:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ParseType = exports.RdfXmlParser = void 0;
@@ -46107,7 +35854,7 @@ var ParseType;
     ParseType[ParseType["PROPERTY"] = 1] = "PROPERTY";
 })(ParseType = exports.ParseType || (exports.ParseType = {}));
 
-},{"./ParseError":287,"rdf-data-factory":254,"relative-to-absolute-iri":306,"sax":309,"stream":26}],289:[function(require,module,exports){
+},{"./ParseError":278,"rdf-data-factory":244,"relative-to-absolute-iri":297,"sax":300,"stream":26}],280:[function(require,module,exports){
 
 /* global ReadableStream */
 
@@ -46167,46 +35914,7 @@ function nodeToWeb (nodeStream) {
   return new ReadableStream({start: start, pull: pull, cancel: cancel})
 }
 
-},{}],290:[function(require,module,exports){
-arguments[4][27][0].apply(exports,arguments)
-},{"dup":27}],291:[function(require,module,exports){
-arguments[4][28][0].apply(exports,arguments)
-},{"./_stream_readable":293,"./_stream_writable":295,"_process":24,"dup":28,"inherits":151}],292:[function(require,module,exports){
-arguments[4][29][0].apply(exports,arguments)
-},{"./_stream_transform":294,"dup":29,"inherits":151}],293:[function(require,module,exports){
-arguments[4][30][0].apply(exports,arguments)
-},{"../errors":290,"./_stream_duplex":291,"./internal/streams/async_iterator":296,"./internal/streams/buffer_list":297,"./internal/streams/destroy":298,"./internal/streams/from":300,"./internal/streams/state":302,"./internal/streams/stream":303,"_process":24,"buffer":4,"dup":30,"events":8,"inherits":151,"string_decoder/":313,"util":3}],294:[function(require,module,exports){
-arguments[4][31][0].apply(exports,arguments)
-},{"../errors":290,"./_stream_duplex":291,"dup":31,"inherits":151}],295:[function(require,module,exports){
-arguments[4][32][0].apply(exports,arguments)
-},{"../errors":290,"./_stream_duplex":291,"./internal/streams/destroy":298,"./internal/streams/state":302,"./internal/streams/stream":303,"_process":24,"buffer":4,"dup":32,"inherits":151,"util-deprecate":314}],296:[function(require,module,exports){
-arguments[4][33][0].apply(exports,arguments)
-},{"./end-of-stream":299,"_process":24,"dup":33}],297:[function(require,module,exports){
-arguments[4][34][0].apply(exports,arguments)
-},{"buffer":4,"dup":34,"util":3}],298:[function(require,module,exports){
-arguments[4][35][0].apply(exports,arguments)
-},{"_process":24,"dup":35}],299:[function(require,module,exports){
-arguments[4][36][0].apply(exports,arguments)
-},{"../../../errors":290,"dup":36}],300:[function(require,module,exports){
-arguments[4][37][0].apply(exports,arguments)
-},{"dup":37}],301:[function(require,module,exports){
-arguments[4][38][0].apply(exports,arguments)
-},{"../../../errors":290,"./end-of-stream":299,"dup":38}],302:[function(require,module,exports){
-arguments[4][39][0].apply(exports,arguments)
-},{"../../../errors":290,"dup":39}],303:[function(require,module,exports){
-arguments[4][40][0].apply(exports,arguments)
-},{"dup":40,"events":8}],304:[function(require,module,exports){
-exports = module.exports = require('./lib/_stream_readable.js');
-exports.Stream = exports;
-exports.Readable = exports;
-exports.Writable = require('./lib/_stream_writable.js');
-exports.Duplex = require('./lib/_stream_duplex.js');
-exports.Transform = require('./lib/_stream_transform.js');
-exports.PassThrough = require('./lib/_stream_passthrough.js');
-exports.finished = require('./lib/internal/streams/end-of-stream.js');
-exports.pipeline = require('./lib/internal/streams/pipeline.js');
-
-},{"./lib/_stream_duplex.js":291,"./lib/_stream_passthrough.js":292,"./lib/_stream_readable.js":293,"./lib/_stream_transform.js":294,"./lib/_stream_writable.js":295,"./lib/internal/streams/end-of-stream.js":299,"./lib/internal/streams/pipeline.js":301}],305:[function(require,module,exports){
+},{}],281:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ReadableWebToNodeStream = void 0;
@@ -46276,7 +35984,37 @@ class ReadableWebToNodeStream extends readable_stream_1.Readable {
 }
 exports.ReadableWebToNodeStream = ReadableWebToNodeStream;
 
-},{"readable-stream":304}],306:[function(require,module,exports){
+},{"readable-stream":296}],282:[function(require,module,exports){
+arguments[4][27][0].apply(exports,arguments)
+},{"dup":27}],283:[function(require,module,exports){
+arguments[4][28][0].apply(exports,arguments)
+},{"./_stream_readable":285,"./_stream_writable":287,"_process":24,"dup":28,"inherits":159}],284:[function(require,module,exports){
+arguments[4][29][0].apply(exports,arguments)
+},{"./_stream_transform":286,"dup":29,"inherits":159}],285:[function(require,module,exports){
+arguments[4][30][0].apply(exports,arguments)
+},{"../errors":282,"./_stream_duplex":283,"./internal/streams/async_iterator":288,"./internal/streams/buffer_list":289,"./internal/streams/destroy":290,"./internal/streams/from":292,"./internal/streams/state":294,"./internal/streams/stream":295,"_process":24,"buffer":4,"dup":30,"events":8,"inherits":159,"string_decoder/":303,"util":3}],286:[function(require,module,exports){
+arguments[4][31][0].apply(exports,arguments)
+},{"../errors":282,"./_stream_duplex":283,"dup":31,"inherits":159}],287:[function(require,module,exports){
+arguments[4][32][0].apply(exports,arguments)
+},{"../errors":282,"./_stream_duplex":283,"./internal/streams/destroy":290,"./internal/streams/state":294,"./internal/streams/stream":295,"_process":24,"buffer":4,"dup":32,"inherits":159,"util-deprecate":304}],288:[function(require,module,exports){
+arguments[4][33][0].apply(exports,arguments)
+},{"./end-of-stream":291,"_process":24,"dup":33}],289:[function(require,module,exports){
+arguments[4][34][0].apply(exports,arguments)
+},{"buffer":4,"dup":34,"util":3}],290:[function(require,module,exports){
+arguments[4][35][0].apply(exports,arguments)
+},{"_process":24,"dup":35}],291:[function(require,module,exports){
+arguments[4][36][0].apply(exports,arguments)
+},{"../../../errors":282,"dup":36}],292:[function(require,module,exports){
+arguments[4][37][0].apply(exports,arguments)
+},{"dup":37}],293:[function(require,module,exports){
+arguments[4][38][0].apply(exports,arguments)
+},{"../../../errors":282,"./end-of-stream":291,"dup":38}],294:[function(require,module,exports){
+arguments[4][39][0].apply(exports,arguments)
+},{"../../../errors":282,"dup":39}],295:[function(require,module,exports){
+arguments[4][40][0].apply(exports,arguments)
+},{"dup":40,"events":8}],296:[function(require,module,exports){
+arguments[4][241][0].apply(exports,arguments)
+},{"./lib/_stream_duplex.js":283,"./lib/_stream_passthrough.js":284,"./lib/_stream_readable.js":285,"./lib/_stream_transform.js":286,"./lib/_stream_writable.js":287,"./lib/internal/streams/end-of-stream.js":291,"./lib/internal/streams/pipeline.js":293,"dup":241}],297:[function(require,module,exports){
 "use strict";
 function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
@@ -46284,7 +36022,7 @@ function __export(m) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(require("./lib/Resolve"));
 
-},{"./lib/Resolve":307}],307:[function(require,module,exports){
+},{"./lib/Resolve":298}],298:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
@@ -46504,9 +36242,9 @@ function isCharacterAllowedAfterRelativePathSegment(character) {
     return !character || character === '#' || character === '?' || character === '/';
 }
 
-},{}],308:[function(require,module,exports){
+},{}],299:[function(require,module,exports){
 arguments[4][25][0].apply(exports,arguments)
-},{"buffer":4,"dup":25}],309:[function(require,module,exports){
+},{"buffer":4,"dup":25}],300:[function(require,module,exports){
 (function (Buffer){(function (){
 ;(function (sax) { // wrapper for non-node envs
   sax.parser = function (strict, opt) { return new SAXParser(strict, opt) }
@@ -48075,197 +37813,7 @@ arguments[4][25][0].apply(exports,arguments)
 })(typeof exports === 'undefined' ? this.sax = {} : exports)
 
 }).call(this)}).call(this,require("buffer").Buffer)
-},{"buffer":4,"stream":26,"string_decoder":41}],310:[function(require,module,exports){
-(function (process,global){(function (){
-(function (global, undefined) {
-    "use strict";
-
-    if (global.setImmediate) {
-        return;
-    }
-
-    var nextHandle = 1; // Spec says greater than zero
-    var tasksByHandle = {};
-    var currentlyRunningATask = false;
-    var doc = global.document;
-    var registerImmediate;
-
-    function setImmediate(callback) {
-      // Callback can either be a function or a string
-      if (typeof callback !== "function") {
-        callback = new Function("" + callback);
-      }
-      // Copy function arguments
-      var args = new Array(arguments.length - 1);
-      for (var i = 0; i < args.length; i++) {
-          args[i] = arguments[i + 1];
-      }
-      // Store and register the task
-      var task = { callback: callback, args: args };
-      tasksByHandle[nextHandle] = task;
-      registerImmediate(nextHandle);
-      return nextHandle++;
-    }
-
-    function clearImmediate(handle) {
-        delete tasksByHandle[handle];
-    }
-
-    function run(task) {
-        var callback = task.callback;
-        var args = task.args;
-        switch (args.length) {
-        case 0:
-            callback();
-            break;
-        case 1:
-            callback(args[0]);
-            break;
-        case 2:
-            callback(args[0], args[1]);
-            break;
-        case 3:
-            callback(args[0], args[1], args[2]);
-            break;
-        default:
-            callback.apply(undefined, args);
-            break;
-        }
-    }
-
-    function runIfPresent(handle) {
-        // From the spec: "Wait until any invocations of this algorithm started before this one have completed."
-        // So if we're currently running a task, we'll need to delay this invocation.
-        if (currentlyRunningATask) {
-            // Delay by doing a setTimeout. setImmediate was tried instead, but in Firefox 7 it generated a
-            // "too much recursion" error.
-            setTimeout(runIfPresent, 0, handle);
-        } else {
-            var task = tasksByHandle[handle];
-            if (task) {
-                currentlyRunningATask = true;
-                try {
-                    run(task);
-                } finally {
-                    clearImmediate(handle);
-                    currentlyRunningATask = false;
-                }
-            }
-        }
-    }
-
-    function installNextTickImplementation() {
-        registerImmediate = function(handle) {
-            process.nextTick(function () { runIfPresent(handle); });
-        };
-    }
-
-    function canUsePostMessage() {
-        // The test against `importScripts` prevents this implementation from being installed inside a web worker,
-        // where `global.postMessage` means something completely different and can't be used for this purpose.
-        if (global.postMessage && !global.importScripts) {
-            var postMessageIsAsynchronous = true;
-            var oldOnMessage = global.onmessage;
-            global.onmessage = function() {
-                postMessageIsAsynchronous = false;
-            };
-            global.postMessage("", "*");
-            global.onmessage = oldOnMessage;
-            return postMessageIsAsynchronous;
-        }
-    }
-
-    function installPostMessageImplementation() {
-        // Installs an event handler on `global` for the `message` event: see
-        // * https://developer.mozilla.org/en/DOM/window.postMessage
-        // * http://www.whatwg.org/specs/web-apps/current-work/multipage/comms.html#crossDocumentMessages
-
-        var messagePrefix = "setImmediate$" + Math.random() + "$";
-        var onGlobalMessage = function(event) {
-            if (event.source === global &&
-                typeof event.data === "string" &&
-                event.data.indexOf(messagePrefix) === 0) {
-                runIfPresent(+event.data.slice(messagePrefix.length));
-            }
-        };
-
-        if (global.addEventListener) {
-            global.addEventListener("message", onGlobalMessage, false);
-        } else {
-            global.attachEvent("onmessage", onGlobalMessage);
-        }
-
-        registerImmediate = function(handle) {
-            global.postMessage(messagePrefix + handle, "*");
-        };
-    }
-
-    function installMessageChannelImplementation() {
-        var channel = new MessageChannel();
-        channel.port1.onmessage = function(event) {
-            var handle = event.data;
-            runIfPresent(handle);
-        };
-
-        registerImmediate = function(handle) {
-            channel.port2.postMessage(handle);
-        };
-    }
-
-    function installReadyStateChangeImplementation() {
-        var html = doc.documentElement;
-        registerImmediate = function(handle) {
-            // Create a <script> element; its readystatechange event will be fired asynchronously once it is inserted
-            // into the document. Do so, thus queuing up the task. Remember to clean up once it's been called.
-            var script = doc.createElement("script");
-            script.onreadystatechange = function () {
-                runIfPresent(handle);
-                script.onreadystatechange = null;
-                html.removeChild(script);
-                script = null;
-            };
-            html.appendChild(script);
-        };
-    }
-
-    function installSetTimeoutImplementation() {
-        registerImmediate = function(handle) {
-            setTimeout(runIfPresent, 0, handle);
-        };
-    }
-
-    // If supported, we should attach to the prototype of global, since that is where setTimeout et al. live.
-    var attachTo = Object.getPrototypeOf && Object.getPrototypeOf(global);
-    attachTo = attachTo && attachTo.setTimeout ? attachTo : global;
-
-    // Don't get fooled by e.g. browserify environments.
-    if ({}.toString.call(global.process) === "[object process]") {
-        // For Node.js before 0.9
-        installNextTickImplementation();
-
-    } else if (canUsePostMessage()) {
-        // For non-IE10 modern browsers
-        installPostMessageImplementation();
-
-    } else if (global.MessageChannel) {
-        // For web workers, where supported
-        installMessageChannelImplementation();
-
-    } else if (doc && "onreadystatechange" in doc.createElement("script")) {
-        // For IE 6–8
-        installReadyStateChangeImplementation();
-
-    } else {
-        // For older browsers
-        installSetTimeoutImplementation();
-    }
-
-    attachTo.setImmediate = setImmediate;
-    attachTo.clearImmediate = clearImmediate;
-}(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
-
-}).call(this)}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":24}],311:[function(require,module,exports){
+},{"buffer":4,"stream":26,"string_decoder":41}],301:[function(require,module,exports){
 var Promise = require('promise-polyfill')
 
 module.exports = function (stream, enc, cb) {
@@ -48292,7 +37840,7 @@ module.exports = function (stream, enc, cb) {
     })
 }
 
-},{"promise-polyfill":242}],312:[function(require,module,exports){
+},{"promise-polyfill":242}],302:[function(require,module,exports){
 const Readable = require('stream').Readable;
 const util     = require('util');
 
@@ -48325,11 +37873,11 @@ Streamify.prototype._read = function (size) {
 
 module.exports = Streamify;
 
-},{"stream":26,"util":46}],313:[function(require,module,exports){
+},{"stream":26,"util":45}],303:[function(require,module,exports){
 arguments[4][41][0].apply(exports,arguments)
-},{"dup":41,"safe-buffer":308}],314:[function(require,module,exports){
-arguments[4][43][0].apply(exports,arguments)
-},{"dup":43}],315:[function(require,module,exports){
+},{"dup":41,"safe-buffer":299}],304:[function(require,module,exports){
+arguments[4][42][0].apply(exports,arguments)
+},{"dup":42}],305:[function(require,module,exports){
 (function (Buffer){(function (){
 'use strict';
 const nodeStream = require('stream');
@@ -48374,8 +37922,8 @@ module.exports.toWebReadableStream = function(stream) {
     }
 };
 
-}).call(this)}).call(this,{"isBuffer":require("../../../../../../../../home/olaf/.nvm/versions/node/v16.13.0/lib/node_modules/browserify/node_modules/is-buffer/index.js")})
-},{"../../../../../../../../home/olaf/.nvm/versions/node/v16.13.0/lib/node_modules/browserify/node_modules/is-buffer/index.js":20,"./lib/conversions":316,"is-stream":317,"stream":26,"web-streams-ponyfill":318}],316:[function(require,module,exports){
+}).call(this)}).call(this,{"isBuffer":require("../../../../../.nvm/versions/node/v18.7.0/lib/node_modules/browserify/node_modules/is-buffer/index.js")})
+},{"../../../../../.nvm/versions/node/v18.7.0/lib/node_modules/browserify/node_modules/is-buffer/index.js":20,"./lib/conversions":306,"is-stream":307,"stream":26,"web-streams-ponyfill":308}],306:[function(require,module,exports){
 (function (global){(function (){
 'use strict';
 
@@ -48475,7 +38023,7 @@ module.exports = {
 };
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"readable-stream-node-to-web":289,"stream":26,"web-streams-ponyfill":318}],317:[function(require,module,exports){
+},{"readable-stream-node-to-web":280,"stream":26,"web-streams-ponyfill":308}],307:[function(require,module,exports){
 'use strict';
 
 var isStream = module.exports = function (stream) {
@@ -48498,7 +38046,7 @@ isStream.transform = function (stream) {
 	return isStream.duplex(stream) && typeof stream._transform === 'function' && typeof stream._transformState === 'object';
 };
 
-},{}],318:[function(require,module,exports){
+},{}],308:[function(require,module,exports){
 (function (global){(function (){
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.default = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
 "use strict";Object.defineProperty(exports,"__esModule",{value:!0});var _require=_dereq_("./spec/reference-implementation/lib/readable-stream"),ReadableStream=_require.ReadableStream,_require2=_dereq_("./spec/reference-implementation/lib/writable-stream"),WritableStream=_require2.WritableStream,ByteLengthQueuingStrategy=_dereq_("./spec/reference-implementation/lib/byte-length-queuing-strategy"),CountQueuingStrategy=_dereq_("./spec/reference-implementation/lib/count-queuing-strategy"),_require3=_dereq_("./spec/reference-implementation/lib/transform-stream"),TransformStream=_require3.TransformStream;exports.ByteLengthQueuingStrategy=ByteLengthQueuingStrategy,exports.CountQueuingStrategy=CountQueuingStrategy,exports.ReadableStream=ReadableStream,exports.WritableStream=WritableStream,exports.TransformStream=TransformStream;var interfaces={ReadableStream:ReadableStream,WritableStream:WritableStream,ByteLengthQueuingStrategy:ByteLengthQueuingStrategy,CountQueuingStrategy:CountQueuingStrategy,TransformStream:TransformStream};exports.default=interfaces;
@@ -48576,474 +38124,49 @@ function parse(e){if(!((e=String(e)).length>100)){var r=/^((?:\d+)?\.?\d+) *(mil
 
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],319:[function(require,module,exports){
-'use strict'
-module.exports = function (Yallist) {
-  Yallist.prototype[Symbol.iterator] = function* () {
-    for (let walker = this.head; walker; walker = walker.next) {
-      yield walker.value
-    }
-  }
-}
-
-},{}],320:[function(require,module,exports){
-'use strict'
-module.exports = Yallist
-
-Yallist.Node = Node
-Yallist.create = Yallist
-
-function Yallist (list) {
-  var self = this
-  if (!(self instanceof Yallist)) {
-    self = new Yallist()
-  }
-
-  self.tail = null
-  self.head = null
-  self.length = 0
-
-  if (list && typeof list.forEach === 'function') {
-    list.forEach(function (item) {
-      self.push(item)
-    })
-  } else if (arguments.length > 0) {
-    for (var i = 0, l = arguments.length; i < l; i++) {
-      self.push(arguments[i])
-    }
-  }
-
-  return self
-}
-
-Yallist.prototype.removeNode = function (node) {
-  if (node.list !== this) {
-    throw new Error('removing node which does not belong to this list')
-  }
-
-  var next = node.next
-  var prev = node.prev
-
-  if (next) {
-    next.prev = prev
-  }
-
-  if (prev) {
-    prev.next = next
-  }
-
-  if (node === this.head) {
-    this.head = next
-  }
-  if (node === this.tail) {
-    this.tail = prev
-  }
-
-  node.list.length--
-  node.next = null
-  node.prev = null
-  node.list = null
-
-  return next
-}
-
-Yallist.prototype.unshiftNode = function (node) {
-  if (node === this.head) {
-    return
-  }
-
-  if (node.list) {
-    node.list.removeNode(node)
-  }
-
-  var head = this.head
-  node.list = this
-  node.next = head
-  if (head) {
-    head.prev = node
-  }
-
-  this.head = node
-  if (!this.tail) {
-    this.tail = node
-  }
-  this.length++
-}
-
-Yallist.prototype.pushNode = function (node) {
-  if (node === this.tail) {
-    return
-  }
-
-  if (node.list) {
-    node.list.removeNode(node)
-  }
-
-  var tail = this.tail
-  node.list = this
-  node.prev = tail
-  if (tail) {
-    tail.next = node
-  }
-
-  this.tail = node
-  if (!this.head) {
-    this.head = node
-  }
-  this.length++
-}
-
-Yallist.prototype.push = function () {
-  for (var i = 0, l = arguments.length; i < l; i++) {
-    push(this, arguments[i])
-  }
-  return this.length
-}
-
-Yallist.prototype.unshift = function () {
-  for (var i = 0, l = arguments.length; i < l; i++) {
-    unshift(this, arguments[i])
-  }
-  return this.length
-}
-
-Yallist.prototype.pop = function () {
-  if (!this.tail) {
-    return undefined
-  }
-
-  var res = this.tail.value
-  this.tail = this.tail.prev
-  if (this.tail) {
-    this.tail.next = null
-  } else {
-    this.head = null
-  }
-  this.length--
-  return res
-}
-
-Yallist.prototype.shift = function () {
-  if (!this.head) {
-    return undefined
-  }
-
-  var res = this.head.value
-  this.head = this.head.next
-  if (this.head) {
-    this.head.prev = null
-  } else {
-    this.tail = null
-  }
-  this.length--
-  return res
-}
-
-Yallist.prototype.forEach = function (fn, thisp) {
-  thisp = thisp || this
-  for (var walker = this.head, i = 0; walker !== null; i++) {
-    fn.call(thisp, walker.value, i, this)
-    walker = walker.next
-  }
-}
-
-Yallist.prototype.forEachReverse = function (fn, thisp) {
-  thisp = thisp || this
-  for (var walker = this.tail, i = this.length - 1; walker !== null; i--) {
-    fn.call(thisp, walker.value, i, this)
-    walker = walker.prev
-  }
-}
-
-Yallist.prototype.get = function (n) {
-  for (var i = 0, walker = this.head; walker !== null && i < n; i++) {
-    // abort out of the list early if we hit a cycle
-    walker = walker.next
-  }
-  if (i === n && walker !== null) {
-    return walker.value
-  }
-}
-
-Yallist.prototype.getReverse = function (n) {
-  for (var i = 0, walker = this.tail; walker !== null && i < n; i++) {
-    // abort out of the list early if we hit a cycle
-    walker = walker.prev
-  }
-  if (i === n && walker !== null) {
-    return walker.value
-  }
-}
-
-Yallist.prototype.map = function (fn, thisp) {
-  thisp = thisp || this
-  var res = new Yallist()
-  for (var walker = this.head; walker !== null;) {
-    res.push(fn.call(thisp, walker.value, this))
-    walker = walker.next
-  }
-  return res
-}
-
-Yallist.prototype.mapReverse = function (fn, thisp) {
-  thisp = thisp || this
-  var res = new Yallist()
-  for (var walker = this.tail; walker !== null;) {
-    res.push(fn.call(thisp, walker.value, this))
-    walker = walker.prev
-  }
-  return res
-}
-
-Yallist.prototype.reduce = function (fn, initial) {
-  var acc
-  var walker = this.head
-  if (arguments.length > 1) {
-    acc = initial
-  } else if (this.head) {
-    walker = this.head.next
-    acc = this.head.value
-  } else {
-    throw new TypeError('Reduce of empty list with no initial value')
-  }
-
-  for (var i = 0; walker !== null; i++) {
-    acc = fn(acc, walker.value, i)
-    walker = walker.next
-  }
-
-  return acc
-}
-
-Yallist.prototype.reduceReverse = function (fn, initial) {
-  var acc
-  var walker = this.tail
-  if (arguments.length > 1) {
-    acc = initial
-  } else if (this.tail) {
-    walker = this.tail.prev
-    acc = this.tail.value
-  } else {
-    throw new TypeError('Reduce of empty list with no initial value')
-  }
-
-  for (var i = this.length - 1; walker !== null; i--) {
-    acc = fn(acc, walker.value, i)
-    walker = walker.prev
-  }
-
-  return acc
-}
-
-Yallist.prototype.toArray = function () {
-  var arr = new Array(this.length)
-  for (var i = 0, walker = this.head; walker !== null; i++) {
-    arr[i] = walker.value
-    walker = walker.next
-  }
-  return arr
-}
-
-Yallist.prototype.toArrayReverse = function () {
-  var arr = new Array(this.length)
-  for (var i = 0, walker = this.tail; walker !== null; i++) {
-    arr[i] = walker.value
-    walker = walker.prev
-  }
-  return arr
-}
-
-Yallist.prototype.slice = function (from, to) {
-  to = to || this.length
-  if (to < 0) {
-    to += this.length
-  }
-  from = from || 0
-  if (from < 0) {
-    from += this.length
-  }
-  var ret = new Yallist()
-  if (to < from || to < 0) {
-    return ret
-  }
-  if (from < 0) {
-    from = 0
-  }
-  if (to > this.length) {
-    to = this.length
-  }
-  for (var i = 0, walker = this.head; walker !== null && i < from; i++) {
-    walker = walker.next
-  }
-  for (; walker !== null && i < to; i++, walker = walker.next) {
-    ret.push(walker.value)
-  }
-  return ret
-}
-
-Yallist.prototype.sliceReverse = function (from, to) {
-  to = to || this.length
-  if (to < 0) {
-    to += this.length
-  }
-  from = from || 0
-  if (from < 0) {
-    from += this.length
-  }
-  var ret = new Yallist()
-  if (to < from || to < 0) {
-    return ret
-  }
-  if (from < 0) {
-    from = 0
-  }
-  if (to > this.length) {
-    to = this.length
-  }
-  for (var i = this.length, walker = this.tail; walker !== null && i > to; i--) {
-    walker = walker.prev
-  }
-  for (; walker !== null && i > from; i--, walker = walker.prev) {
-    ret.push(walker.value)
-  }
-  return ret
-}
-
-Yallist.prototype.splice = function (start, deleteCount, ...nodes) {
-  if (start > this.length) {
-    start = this.length - 1
-  }
-  if (start < 0) {
-    start = this.length + start;
-  }
-
-  for (var i = 0, walker = this.head; walker !== null && i < start; i++) {
-    walker = walker.next
-  }
-
-  var ret = []
-  for (var i = 0; walker && i < deleteCount; i++) {
-    ret.push(walker.value)
-    walker = this.removeNode(walker)
-  }
-  if (walker === null) {
-    walker = this.tail
-  }
-
-  if (walker !== this.head && walker !== this.tail) {
-    walker = walker.prev
-  }
-
-  for (var i = 0; i < nodes.length; i++) {
-    walker = insert(this, walker, nodes[i])
-  }
-  return ret;
-}
-
-Yallist.prototype.reverse = function () {
-  var head = this.head
-  var tail = this.tail
-  for (var walker = head; walker !== null; walker = walker.prev) {
-    var p = walker.prev
-    walker.prev = walker.next
-    walker.next = p
-  }
-  this.head = tail
-  this.tail = head
-  return this
-}
-
-function insert (self, node, value) {
-  var inserted = node === self.head ?
-    new Node(value, null, node, self) :
-    new Node(value, node, node.next, self)
-
-  if (inserted.next === null) {
-    self.tail = inserted
-  }
-  if (inserted.prev === null) {
-    self.head = inserted
-  }
-
-  self.length++
-
-  return inserted
-}
-
-function push (self, item) {
-  self.tail = new Node(item, self.tail, null, self)
-  if (!self.head) {
-    self.head = self.tail
-  }
-  self.length++
-}
-
-function unshift (self, item) {
-  self.head = new Node(item, null, self.head, self)
-  if (!self.tail) {
-    self.tail = self.head
-  }
-  self.length++
-}
-
-function Node (value, prev, next, list) {
-  if (!(this instanceof Node)) {
-    return new Node(value, prev, next, list)
-  }
-
-  this.list = list
-  this.value = value
-
-  if (prev) {
-    prev.next = this
-    this.prev = prev
-  } else {
-    this.prev = null
-  }
-
-  if (next) {
-    next.prev = this
-    this.next = next
-  } else {
-    this.next = null
-  }
-}
-
-try {
-  // add if support for Symbol.iterator is present
-  require('./iterator.js')(Yallist)
-} catch (er) {}
-
-},{"./iterator.js":319}],321:[function(require,module,exports){
+},{}],309:[function(require,module,exports){
 (function (Buffer){(function (){
-const jsonld = require("jsonld");
 const rdfParser = require("rdf-parse").default;
+const storeStream = require("rdf-store-stream").storeStream;
 const rdfSerializer = require("rdf-serialize").default;
+const { namedNode } = require('@rdfjs/data-model');
+
 // const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 // const $ = require( "jquery" );
 
-async function rdf2jsonld(rdfStr, contType) {
+async function rdf2jsonld(rdfStr, contType, baseURI) {
 
   // We convert the rdf to an N-Quads string.
-  let quadStream = rdfParser.parse(require('streamify-string')(rdfStr), {contentType: contType, baseIRI: 'http://example.org'})
-  let textStream = rdfSerializer.serialize(quadStream, { contentType: 'application/ld+json' });
+  let quadStream = rdfParser.parse(require('streamify-string')(rdfStr), {contentType: contType, baseIRI: baseURI})
 
+  // Import the stream into a store
+  const store = await storeStream(quadStream);
+
+
+
+  await store.add(
+      namedNode('http://ex.org/Pluto'),
+      namedNode('http://ex.org/type'),
+      namedNode('http://ex.org/Dog')
+    );
+
+      // watch for quads
+  for (const quad of store.match(undefined, undefined, undefined, undefined))
+  console.log(quad);
   
+  // create LD+Json Stream  
+  let textStream = rdfSerializer.serialize(store.match(undefined, namedNode('http://ex.org/type'), undefined, undefined), { contentType: 'application/ld+json' });
+
+  // convert stream to string
   let nQuadsString = await streamToString(textStream);
 
   console.log(nQuadsString)
-  // We convert the RDF JSON-LD, which is JSON with semantics embedded.
-  let doc = await jsonld.fromRDF(nQuadsString, {format: 'application/n-quads'});
+  // // We convert the RDF JSON-LD, which is JSON with semantics embedded.
+  // let doc = await jsonld.fromRDF(nQuadsString, {format: 'application/n-quads'});
 
-  // We define how we want our JSON-LD to look like via a frame. For more info see https://w3c.github.io/json-ld-framing/
-  let frame = {
-    "@context": {"@vocab": "http://schema.org/"},
-    "@type": "Person"
-  };
-
-  // We use the frame and the JSON-LD generated earlier to generate a new JSON-LD document based on the frame.
-  let framed = await jsonld.frame(doc, frame);
-  console.log(framed);
+  // // We use the frame and the JSON-LD generated earlier to generate a new JSON-LD document based on the frame.
+  // let framed = await jsonld.flatten(doc);
+  // console.log(framed);
 }
 
 /**
@@ -49053,12 +38176,24 @@ async function rdf2jsonld(rdfStr, contType) {
  */
 function streamToString (stream) {
 
-  // console.log(new Response(stream).arrayBuffer())
-  // return new Response(stream).arrayBuffer()
-
   const chunks = [];
   return new Promise((resolve, reject) => {
     stream.on('data', (chunk) => chunks.push(Buffer.from(chunk)));
+    stream.on('error', (err) => reject(err));
+    stream.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')));
+  })
+}
+
+/**
+ * turns a stream into a string
+ * @param stream -  The stream that needs to be turned into a string.
+ * @returns {Promise<unknown>}
+ */
+ function printQuads (stream) {
+
+  const chunks = [];
+  return new Promise((resolve, reject) => {
+    stream.on('data', (chunk) => console.log(chunk));
     stream.on('error', (err) => reject(err));
     stream.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')));
   })
@@ -49074,37 +38209,6 @@ async function parseJsonLD(rdfStr) {
   }
 
 }
-
-
-// async function url2jsonld(url){
-
-//   const response = await fetch(url, { headers: {'Accept': ['application/ld+json','application/n-quads','application/n-triples', 'application/rdf+xml', 'text/turtle', 'text/html']} })
-//   let data = await response.text()
-
-//   // let body = data.substring(data.indexOf("<body>")+6,data.indexOf("</body>"));
-
-//   const $ = cheerio.load(data);
-//   let inputs = $.getElementsByTagName('input');
-
-//   for(var i = 0; i < inputs.length; i++) {
-//       if(inputs[i].type.toLowerCase() == 'text') {
-//           alert(inputs[i].value);
-//       }
-//   }
-//   // console.log($('<script type="application/ld+json">').text());
-
-
-//   // let contentType = response.headers.get("Content-Type")
-
-//   // console.log("RAWDATA")
-//   // console.log(data)
-//   // console.log(contentType)
-
-//   // let jsonldStr = await rdf2jsonld(data, contentType)
-//   // console.log(jsonldStr)
-// }
-
-
 
 function turtleTest(){
   let turtleStr= `@prefix schema: <http://schema.org/> .
@@ -49128,11 +38232,8 @@ function turtleTest(){
 
     console.log(turtleStr);
 
-    rdf2jsonld(turtleStr, 'text/turtle');
+    rdf2jsonld(turtleStr, 'text/turtle', "example.org");
 }
-
-
-
 
 async function fetchURL(){
     let url = document.getElementById('myUrl').value
@@ -49154,9 +38255,6 @@ async function fetchURL(){
         // for (let pair of response.headers.entries()) {
         //     console.log(pair[0]+ ': '+ pair[1]);
         //  }
-         
-        // console.log(response.headers.get("Access-Control-Expose-Headers"))
-    
     
         if (contentType.includes("text/html")){
             data = $($($.parseHTML( data )).filter("script")).filter('[type="application/ld+json"]');
@@ -49171,7 +38269,7 @@ async function fetchURL(){
             console.log("handle JSonLD")
             parseJsonLD(data)
           } else {
-            rdf2jsonld(data, contentType)
+            rdf2jsonld(data, contentType, url)
           }
         }
 
@@ -49184,18 +38282,5 @@ document.getElementById('turtleTestButton').addEventListener('click', turtleTest
 
 let button = document.getElementById('myButton'); // add id="my-button" into html
 button.addEventListener('click', fetchURL);
-
-// function serializeURL2JsonLD(){
-//   url2jsonld(document.getElementById('myUrl').value);
-// }
-
-// let button = document.getElementById('myButton'); // add id="my-button" into html
-// button.addEventListener('click', fetchURL);
-
-
-// url2jsonld("https://www.imdb.com/title/tt1751634/")
-// readData("http://dbpedia.org/resource/Berlin")
-
-
 }).call(this)}).call(this,require("buffer").Buffer)
-},{"buffer":4,"jsonld":202,"rdf-parse":264,"rdf-serialize":267,"streamify-string":312}]},{},[321]);
+},{"@rdfjs/data-model":118,"buffer":4,"rdf-parse":254,"rdf-serialize":257,"rdf-store-stream":258,"streamify-string":302}]},{},[309]);
