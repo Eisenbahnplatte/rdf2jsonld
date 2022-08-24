@@ -1,4 +1,5 @@
 {
+  "type": "module",
   "dependencies": {
     "@ldflex/comunica": "^5.0.1",
     "@rdfjs/data-model": "1.3.4",

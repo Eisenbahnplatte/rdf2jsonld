@@ -1,7 +1,8 @@
 const rdfParser = require("rdf-parse").default;
-const storeStream = require("rdf-store-stream").storeStream;
+// const storeStream = require("rdf-store-stream").storeStream;
 const rdfSerializer = require("rdf-serialize").default;
 const { namedNode } = require('@rdfjs/data-model');
+const N3 = require('n3');
 
 // const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 // const $ = require( "jquery" );
@@ -11,26 +12,43 @@ async function rdf2jsonld(rdfStr, contType, baseURI) {
   // We convert the rdf to an N-Quads string.
   let quadStream = rdfParser.parse(require('streamify-string')(rdfStr), {contentType: contType, baseIRI: baseURI})
 
-  // Import the stream into a store
-  const store = await storeStream(quadStream);
+  // // Import the stream into a store
+  // const store = await storeStream(quadStream);
 
-  await store.add(
-      namedNode('http://ex.org/Pluto'),
-      namedNode('http://ex.org/type'),
-      namedNode('http://ex.org/Dog')
-    );
+  const store = new N3.Store();
+  store.add(
+    namedNode('http://ex.org/Pluto'),
+    namedNode('http://ex.org/type'),
+    namedNode('http://ex.org/Dog')
+  );
+  store.add(
+    namedNode('http://ex.org/Mickey'),
+    namedNode('http://ex.org/type'),
+    namedNode('http://ex.org/Mouse')
+  );
+  
+  console.log("QUADS")
+  console.log(store)
+  // Retrieve all quads
+  for (const quad of store.match(null, null, null, null))
+    console.log(quad);
 
+  console.log(store.match(null, null, null, null).size())
+
+
+  // store.import(quadStream)
+  
   // watch for quads
   for (const quad of store.match(undefined, undefined, undefined, undefined))
     console.log(quad);
 
-  // create LD+Json Stream  
-  let textStream = rdfSerializer.serialize(store.match(undefined, undefined, undefined, undefined), { contentType: 'application/ld+json' });
+  // // create LD+Json Stream  
+  // let textStream = rdfSerializer.serialize(store.match(undefined, undefined, undefined, undefined), { contentType: 'application/ld+json' });
 
-  // convert stream to string
-  let nQuadsString = await streamToString(textStream);
+  // // convert stream to string
+  // let nQuadsString = await streamToString(textStream);
 
-  console.log(nQuadsString)
+  // console.log(nQuadsString)
   // // We convert the RDF JSON-LD, which is JSON with semantics embedded.
   // let doc = await jsonld.fromRDF(nQuadsString, {format: 'application/n-quads'});
 
