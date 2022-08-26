@@ -1,29 +1,33 @@
-const rdfParser = require("rdf-parse").default;
-const storeStream = require("rdf-store-stream").storeStream;
-const rdfSerializer = require("rdf-serialize").default;
-const { namedNode } = require('@rdfjs/data-model');
-const { pipeline } = require('stream').promises;
+import rdfParser from 'rdf-parse';
+import { DataFactory, Store } from 'n3';
+const { namedNode, literal, defaultGraph, quad } = DataFactory;
+import rdfSerializer from 'rdf-serialize';
+// import { pipeline } from 'stream/promises'; // --> Doesnt work because browserify doesnt recognize internal node modules
+// import { namedNode } from '@rdfjs/data-model';
+
 // const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 // const $ = require( "jquery" );
+
 
 async function rdf2jsonld(rdfStr, contType, baseURI) {
 
   // We convert the rdf to an N-Quads string.
   let quadStream = rdfParser.parse(require('streamify-string')(rdfStr), {contentType: contType, baseIRI: baseURI})
 
-  // Import the stream into a store
-  const store = await storeStream(quadStream);
+  console.log(quadStream)
+  console.log(typeof quadStream)
+  const store = new Store();
+  await pipeline(store.import(quadStream));
 
-  await pipeline(storeStream(quadStream));
-  await store.add(
+  for (const quad of store)
+      console.log(quad);
+  
+
+  store.add(quad(
       namedNode('http://ex.org/Pluto'),
       namedNode('http://ex.org/type'),
-      namedNode('http://ex.org/Dog')
+      namedNode('http://ex.org/Dog'))
     );
-
-  // watch for quads
-  for (const quad of store.match(undefined, undefined, undefined, undefined))
-    console.log(quad);
 
   // create LD+Json Stream  
   let textStream = rdfSerializer.serialize(store.match(undefined, undefined, undefined, undefined), { contentType: 'application/ld+json' });
@@ -32,6 +36,8 @@ async function rdf2jsonld(rdfStr, contType, baseURI) {
   let nQuadsString = await streamToString(textStream);
 
   console.log(nQuadsString)
+
+
   // // We convert the RDF JSON-LD, which is JSON with semantics embedded.
   // let doc = await jsonld.fromRDF(nQuadsString, {format: 'application/n-quads'});
 

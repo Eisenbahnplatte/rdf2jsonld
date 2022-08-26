@@ -1,13 +1,25 @@
 {
+  "type": "module",
+  "scripts": {
+    "bundle": "browserify store.js app.js url2rdf.js -o bundle.js -t [ babelify — presets [ env ] ]"
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-env"
+    ]
+  },
   "dependencies": {
     "@rdfjs/data-model": "1.3.4",
-    "n3": "^1.16.2"
+    "n3": "^1.16.2",
+    "rdf-parse": "^2.1.0",
+    "rdf-serialize": "^2.0.0",
+    "rdf-store-stream": "^1.3.0",
+    "stream-promise": "^3.2.0",
+    "streamify-string": "1.0.1"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^22.0.2",
-    "@rollup/plugin-json": "^4.1.0",
-    "@rollup/plugin-node-resolve": "^13.3.0",
-    "esmify": "^2.1.1",
-    "rollup-plugin-polyfill-node": "^0.10.2"
+    "@babel/preset-env": "^7.18.10",
+    "babelify": "^10.0.0",
+    "browserify": "16.5.1"
   }
 }

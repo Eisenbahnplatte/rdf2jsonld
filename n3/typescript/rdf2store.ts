@@ -1,25 +1,31 @@
-const rdfParser = require("rdf-parse").default;
-const storeStream = require("rdf-store-stream").storeStream;
-const rdfSerializer = require("rdf-serialize").default;
-const { namedNode } = require('@rdfjs/data-model');
-const { pipeline } = require('stream').promises;
+import rdfParser from 'rdf-parse';
+import { DataFactory, Store } from 'n3';
+const { namedNode, literal, defaultGraph, quad } = DataFactory;
+import { storeStream } from 'rdf-store-stream';
+// const storeStream = require("rdf-store-stream").storeStream;
+// const rdfSerializer = require("rdf-serialize").default;
+import rdfSerializer from 'rdf-serialize'
+// import { namedNode } from '@rdfjs/data-model';
+
 // const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 // const $ = require( "jquery" );
 
-async function rdf2jsonld(rdfStr, contType, baseURI) {
+async function rdf2jsonld(rdfStr: string, contType:string, baseURI:string) {
 
   // We convert the rdf to an N-Quads string.
   let quadStream = rdfParser.parse(require('streamify-string')(rdfStr), {contentType: contType, baseIRI: baseURI})
 
+  console.log(quadStream)
+  const store = new Store();
+  store.import(quadStream)
   // Import the stream into a store
-  const store = await storeStream(quadStream);
+  // const store = await storeStream(quadStream);
 
-  await pipeline(storeStream(quadStream));
-  await store.add(
-      namedNode('http://ex.org/Pluto'),
-      namedNode('http://ex.org/type'),
-      namedNode('http://ex.org/Dog')
-    );
+  // await store.add(
+  //     namedNode('http://ex.org/Pluto'),
+  //     namedNode('http://ex.org/type'),
+  //     namedNode('http://ex.org/Dog')
+  //   );
 
   // watch for quads
   for (const quad of store.match(undefined, undefined, undefined, undefined))
@@ -107,7 +113,7 @@ function turtleTest(){
 }
 
 async function fetchURL(){
-    let url = document.getElementById('myUrl').value
+    let url = (<HTMLInputElement>document.getElementById('myUrl')).value
 
     try{
         const response = await fetch(url, { 
