@@ -8,28 +8,42 @@ import rdfSerializer from 'rdf-serialize';
 // const $ = require( "jquery" );
 
 
-export async function toStore(quadStream) {
+// export async function toStore(quadStream) {
+
+//   const store = new Store();
+//   store.import(quadStream).on('end', ());  
+
+//   store.add(quad(
+//       namedNode('http://ex.org/Pluto'),
+//       namedNode('http://ex.org/type'),
+//       namedNode('http://ex.org/Dog'))
+//   );
+
+//   for (const myquad of store)
+//     console.log(myquad);
+
+//   return store
+
+// }
+
+function toStore(quadStream) {
 
   const store = new Store();
-  store.import(quadStream);  
 
-  store.add(quad(
-      namedNode('http://ex.org/Pluto'),
-      namedNode('http://ex.org/type'),
-      namedNode('http://ex.org/Dog'))
-  );
-
-  for (const quad of store)
-    console.log(quad);
-
-  return store
+  return new Promise((resolve, reject) => {
+    store
+      .import(quadStream)
+      .on('error', function (error) {
+        reject(error);})
+      .on('end', function () {
+        resolve(store);})
+      })
 
 }
 
-async function calcPropertysAndObjects(store) {
+export async function calcPropertysAndObjects(quadStream) {
 
-
-
+  let store = await toStore(quadStream)
 
   // create LD+Json Stream  
   let textStream = rdfSerializer.serialize(store.match(undefined, undefined, undefined, undefined), { contentType: 'application/ld+json' });

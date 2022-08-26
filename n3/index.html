@@ -5,22 +5,22 @@
     <meta charset="utf-8">
     <title>RDF 2 JsonLD</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>    
+    <!-- <script type = "text/javascript" src="bundle.js"></script> -->
+    <script type = "text/javascript" src="bundle2.js"></script>
 </head>
 
 <body>
-
+    
     
     Schema.org: https://www.imdb.com/title/tt1751634/ <br>
     DBpedia: http://dbpedia.org/resource/Berlin <br>
     Hash URL: <br>
 
 
-    <button id="turtleTestButton">Test Turtle Sample</button><br><br>
+    <button id="turtleTestButton" onclick="fetchTurtle()">Test Turtle Sample</button><br><br>
 
     Fetch your URL: <br>
     <input type="text" id="myUrl"><br>
-    <button id="myButton">Fetch</button>
-
-    <script type = "text/javascript" src="bundle.js"></script>
+    <button id="myButton" onclick="fetchRDF()">Fetch</button>
 </body>
 </html>

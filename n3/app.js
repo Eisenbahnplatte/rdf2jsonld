@@ -1,22 +1,24 @@
 import { fetchURL, turtleTest } from './url2rdf';
-import { toStore } from './store';
+import { calcPropertysAndObjects } from './store';
 
-document.getElementById('turtleTestButton').addEventListener('click', fetchTurtle);
+// document.getElementById('turtleTestButton').addEventListener('click', fetchTurtle);
 
-let button = document.getElementById('myButton'); // add id="my-button" into html
-button.addEventListener('click', fetchRDF);
+// let button = document.getElementById('myButton'); // add id="my-button" into html
+// button.addEventListener('click', fetchRDF);
 
-export async function fetchTurtle() {
-    let quadstream = await turtleTest();
+module.exports = async function fetchTurtle() {
+    let quadstream = turtleTest();
     console.log(quadstream);
-    toStore(quadstream);
+    await calcPropertysAndObjects(quadstream);
 }
 
 
-export async function fetchRDF() {
+module.exports = async function fetchRDF() {
     let url = document.getElementById('myUrl').value
 
     let quadstream = await fetchURL(url);
 
-    toStore(quadstream);
+    await calcPropertysAndObjects(quadstream);
 }
+
+

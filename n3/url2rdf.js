@@ -1,6 +1,6 @@
 import rdfParser from 'rdf-parse';
   
-  export async function turtleTest(){
+  export function turtleTest(){
     let turtleStr= `@prefix schema: <http://schema.org/> .
     <http://example.com/jane>
       schema:address [
@@ -22,7 +22,7 @@ import rdfParser from 'rdf-parse';
   
       console.log(turtleStr);
   
-      rdf2jsonld(turtleStr, 'text/turtle', "example.org");
+      return rdf2jsonld(turtleStr, 'text/turtle', "example.org");
   }
   
   export async function fetchURL(url){
@@ -35,15 +35,15 @@ import rdfParser from 'rdf-parse';
               } 
           })
 
-          var data = await response.text()
-          var contentType = response.headers.get("Content-Type")
+          let data = await response.text()
+          let contentType = response.headers.get("Content-Type")
       
           if (contentType.includes("text/html")){
               data = $($($.parseHTML( data )).filter("script")).filter('[type="application/ld+json"]');
               contentType = "application/ld+json"
           } 
-          
-          return await rdf2jsonld(data, contentType, url)
+
+          return rdf2jsonld(data, contentType, url)
 
       }catch(err){
           console.log(err)
@@ -51,9 +51,11 @@ import rdfParser from 'rdf-parse';
       }
   }
 
-  async function rdf2jsonld(rdfStr, contType, baseURI) {
+  function rdf2jsonld(rdfStr, contType, baseURI) {
 
     if (rdfStr == undefined) return
     // We convert the rdf to an N-Quads string.
-    return rdfParser.parse(require('streamify-string')(rdfStr), {contentType: contType, baseIRI: baseURI})
+    let parsed = rdfParser.parse(require('streamify-string')(rdfStr), {contentType: contType, baseIRI: baseURI})
+    console.log(parsed )
+    return parsed
   }  
