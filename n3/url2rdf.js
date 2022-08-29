@@ -1,6 +1,7 @@
 import rdfParser from 'rdf-parse';
   
   export function turtleTest(){
+    console.log("turtleTest")
     let turtleStr= `@prefix schema: <http://schema.org/> .
     <http://example.com/jane>
       schema:address [
@@ -55,7 +56,5 @@ import rdfParser from 'rdf-parse';
 
     if (rdfStr == undefined) return
     // We convert the rdf to an N-Quads string.
-    let parsed = rdfParser.parse(require('streamify-string')(rdfStr), {contentType: contType, baseIRI: baseURI})
-    console.log(parsed )
-    return parsed
+    return rdfParser.parse(require('streamify-string')(rdfStr), {contentType: contType, baseIRI: baseURI})
   }  

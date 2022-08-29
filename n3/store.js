@@ -28,30 +28,32 @@ import rdfSerializer from 'rdf-serialize';
 
 function toStore(quadStream) {
 
-  const store = new Store();
-
-  return new Promise((resolve, reject) => {
-    store
-      .import(quadStream)
-      .on('error', function (error) {
-        reject(error);})
-      .on('end', function () {
-        resolve(store);})
-      })
+  
 
 }
 
 export async function calcPropertysAndObjects(quadStream) {
 
-  let store = await toStore(quadStream)
+  // let store = toStore(quadStream)
 
-  // create LD+Json Stream  
-  let textStream = rdfSerializer.serialize(store.match(undefined, undefined, undefined, undefined), { contentType: 'application/ld+json' });
+  const store = new Store();
+  
+  let stream = store.import(quadStream)
 
-  // convert stream to string
-  let nQuadsString = await streamToString(textStream);
+  console.log(stream);
 
-  console.log(nQuadsString)
+  stream.on('end', () => {
+    console.log("jetzt2")
+    // // create LD+Json Stream  
+    // let textStream = rdfSerializer.serialize(store.match(undefined, undefined, undefined, undefined), { contentType: 'application/ld+json' });
+  
+    // // convert stream to string
+    // let nQuadsString = await streamToString(textStream);
+  
+    // console.log(nQuadsString)
+  });
+
+
 
 
   // // We convert the RDF JSON-LD, which is JSON with semantics embedded.

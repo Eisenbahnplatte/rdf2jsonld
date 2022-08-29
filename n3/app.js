@@ -7,8 +7,9 @@ import { calcPropertysAndObjects } from './store';
 // button.addEventListener('click', fetchRDF);
 
 module.exports = async function fetchTurtle() {
+    console.log("fetchTurtle");
     let quadstream = turtleTest();
-    console.log(quadstream);
+    console.log("quadstream")
     await calcPropertysAndObjects(quadstream);
 }
 
