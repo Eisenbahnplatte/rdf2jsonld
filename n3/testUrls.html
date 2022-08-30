@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>RDF 2 JsonLD</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>    
+    <script type = "text/javascript" src="bundle.js"></script>
+</head>
+
+<body>
+    
+    
+    Schema.org: https://www.imdb.com/title/tt1751634/ <br>
+    DBpedia: http://dbpedia.org/resource/Berlin <br>
+    
+    no CORS Header set:
+    <ul>
+        <li>http://www.wikidata.org/entity/Q64</li>
+        <li>http://es.dbpedia.org/resource/Berlín</li>
+        <li>http://id.dbpedia.org/resource/Berlin</li>
+        <li>http://ja.dbpedia.org/resource/ベルリン</li>
+        <li>http://el.dbpedia.org/resource/Βερολίνο</li>
+        <li> https://d-nb.info/gnd/4005728-8
+            http://sws.geonames.org/2950159/
+            http://viaf.org/viaf/122530980
+            http://www.wikidata.org/entity/Q27453085
+            http://d-nb.info/gnd/1140180746
+            http://viaf.org/viaf/306098425
+            https://orcid.org/0000-0002-0698-2864
+            https://dblp.org/pid/05/6406
+            https://aksw.org/SoerenAuer
+            https://de.linkedin.com/in/soerenauer
+            https://www.tib.eu/de/forschung-entwicklung/forschungsgruppen-und-labs/data-science-digital-libraries/mitarbeiterinnen-und-mitarbeiter/soeren-auer</li>
+    </ul>
+
+    wrong syntax:
+    <ul>
+        <li>https://musicbrainz.org/area/c9ac1239-e832-41bc-9930-e252a1fd1105</li>
+    </ul>
+
+    empty data set
+    <ul>
+        <li>http://de.dbpedia.org/resource/Sören_Auer</li>
+        <li>http://nl.dbpedia.org/resource/Berlijn</li>
+    </ul>
+    
+    works:
+    <ul>
+        <li>http://fr.dbpedia.org/resource/Berlin</li>
+    </ul>
+
+    <button id="turtleTestButton" onclick="rdfjs.fetchTurtle()">Test Turtle Sample</button><br><br>
+
+    Fetch your URL: <br>
+    <input type="text" id="myUrl"><br>
+    <button id="myButton" onclick="rdfjs.fetchRDF()">Fetch</button>
+
+    <br><br>
+
+    <div id="predicateObjects">
+        <ul id="list"></ul>
+    </div>
+</body>
+</html>
