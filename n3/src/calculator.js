@@ -17,7 +17,6 @@ export async function calcPropertysAndObjects(store){
         
         graph[quad.subject.id][quad.predicate.id].push(quad.object.id)
         
-        console.log(quad)
     }
 
     console.log(graph)

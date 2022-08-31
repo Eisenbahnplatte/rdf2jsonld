@@ -1,0 +1,10 @@
+{
+  "type": "module",
+  "scripts": {
+    "bundle": "node test.js"
+  },
+  "dependencies": {
+    "rdf-parse": "^2.1.0",
+    "streamify-string": "^1.0.1"
+  }
+}
