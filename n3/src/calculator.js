@@ -1,8 +1,6 @@
 import { DataFactory } from 'n3';
 import { encode } from 'html-entities';
 
-
-
 export async function calcPropertysAndObjects(store, url){
 
     const list = document.getElementById("list");

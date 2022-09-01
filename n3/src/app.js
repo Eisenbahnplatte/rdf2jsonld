@@ -1,6 +1,19 @@
-import { fetchURL, jsonldTest, turtleTest } from './url2rdf';
+import { fetchUrl, jsonldTest, turtleTest } from './fetchUrl';
 import { feedStore } from './store';
 import { calcPropertysAndObjects } from './calculator'
+
+/**
+ * 
+ * @param {string} url Url to fetch 
+ * @returns n3.store containing all quads of url
+ */
+ async function fetchUrl2Store(url){
+    let rdfData = await fetchUrl(url);
+    console.log("Quadstream")
+    console.log(rdfData)
+
+    return await feedStore(rdfData);
+}
 
 async function fetchTurtle() {
     let quadstream = turtleTest();
@@ -21,7 +34,7 @@ async function fetchJsonLD() {
 async function fetchRDF() {
     let url = document.getElementById('myUrl').value
 
-    let rdfData = await fetchURL(url);
+    let rdfData = await fetchUrl(url);
     console.log("Quadstream")
     console.log(rdfData)
 
@@ -32,8 +45,10 @@ async function fetchRDF() {
     await calcPropertysAndObjects(store, url);
 }
 
+
 module.exports = { 
     'fetchTurtle':fetchTurtle, 
     'fetchJsonLD': fetchJsonLD,
-    'fetchRDF':fetchRDF 
+    'fetchRDF':fetchRDF, 
+    'fetchUrl2Store': fetchUrl2Store
 };
