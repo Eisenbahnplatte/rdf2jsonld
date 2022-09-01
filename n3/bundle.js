@@ -44761,7 +44761,7 @@ function _fetchTurtle() {
             quads = _context.sent;
             console.log(quads);
             _context.next = 8;
-            return (0, _calculator.calcPropertysAndObjects)(quads);
+            return (0, _calculator.calcPropertysAndObjects)(quads, "http://example.com/jane");
 
           case 8:
           case "end":
@@ -44793,7 +44793,7 @@ function _fetchJsonLD() {
             quads = _context2.sent;
             console.log(quads);
             _context2.next = 8;
-            return (0, _calculator.calcPropertysAndObjects)(quads);
+            return (0, _calculator.calcPropertysAndObjects)(quads, "http://musicbrainz.org/area/c9ac1239-e832-41bc-9930-e252a1fd1105");
 
           case 8:
           case "end":
@@ -44811,7 +44811,7 @@ function fetchRDF() {
 
 function _fetchRDF() {
   _fetchRDF = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
-    var url, quadstream, store;
+    var url, rdfData, store;
     return _regeneratorRuntime().wrap(function _callee3$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
@@ -44821,18 +44821,18 @@ function _fetchRDF() {
             return (0, _url2rdf.fetchURL)(url);
 
           case 3:
-            quadstream = _context3.sent;
+            rdfData = _context3.sent;
             console.log("Quadstream");
-            console.log(quadstream);
+            console.log(rdfData);
             _context3.next = 8;
-            return (0, _store.feedStore)(quadstream);
+            return (0, _store.feedStore)(rdfData);
 
           case 8:
             store = _context3.sent;
             console.log("Store");
             console.log(store);
             _context3.next = 13;
-            return (0, _calculator.calcPropertysAndObjects)(store);
+            return (0, _calculator.calcPropertysAndObjects)(store, url);
 
           case 13:
           case "end":
@@ -44853,6 +44853,8 @@ module.exports = {
 },{"./calculator":397,"./store":398,"./url2rdf":399}],397:[function(require,module,exports){
 "use strict";
 
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -44870,36 +44872,78 @@ function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o =
 
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
-function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
-
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
-var div = document.getElementById('predicateObjects');
-
-function calcPropertysAndObjects(_x) {
+function calcPropertysAndObjects(_x, _x2) {
   return _calcPropertysAndObjects.apply(this, arguments);
-}
+} // const div = document.getElementById('predicateObjects');
+// export async function calcPropertysAndObjects(store){
+//     let quadstream = store.match(undefined, undefined, undefined, undefined)
+//     let graph = {}
+//     for (const quad of quadstream) {
+//         if (graph[quad.subject.id]===undefined) graph[quad.subject.id] = {}
+//         if (graph[quad.subject.id][quad.predicate.id]===undefined) graph[quad.subject.id][quad.predicate.id] = []
+//         graph[quad.subject.id][quad.predicate.id].push(quad.object.id)
+//     }
+//     console.log(graph)
+//     console.log(createHtmlList(graph))
+// }
+// function createHtmlList(obj){
+//     let ul = document.getElementById("list");
+//     let output = "";
+//     Object.keys(obj).forEach(function(k) {
+//         if (typeof obj[k] == "object" && obj[k] !== null){
+//             output += "<li>" + encode(k) + "<ul>";
+//             output += createHtmlList(obj[k]);
+//             output += "</ul></li>";
+//         } else {
+//             output += "<li>" + k + " : " + obj[k] + "</li>"; 
+//         }
+//     });
+//     ul.innerHTML = output
+//     return output;
+// }
+
 
 function _calcPropertysAndObjects() {
-  _calcPropertysAndObjects = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(store) {
-    var quadstream, graph, _iterator, _step, quad;
+  _calcPropertysAndObjects = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(store, url) {
+    var list, quadstream, _iterator, _step, quad, liPredicate, liObject, objectList, i, _iterator2, _step2, element;
 
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
-            quadstream = store.match(undefined, undefined, undefined, undefined);
-            graph = {};
+            list = document.getElementById("list");
+            quadstream = store.match(_n.DataFactory.namedNode(url), undefined, undefined, undefined);
             _iterator = _createForOfIteratorHelper(quadstream);
 
             try {
               for (_iterator.s(); !(_step = _iterator.n()).done;) {
                 quad = _step.value;
-                if (graph[quad.subject.id] === undefined) graph[quad.subject.id] = {};
-                if (graph[quad.subject.id][quad.predicate.id] === undefined) graph[quad.subject.id][quad.predicate.id] = [];
-                graph[quad.subject.id][quad.predicate.id].push(quad.object.id);
+                liPredicate = document.getElementById(quad.predicate.id);
+
+                if (liPredicate === null) {
+                  liPredicate = document.createElement('li');
+                  liPredicate.id = quad.predicate.id;
+                  liPredicate.innerHTML = (0, _htmlEntities.encode)(quad.predicate.id) + "<ul> </ul>";
+                  list.appendChild(liPredicate);
+                }
+
+                liObject = document.getElementById(quad.object.id);
+
+                if (liObject === null) {
+                  liObject = document.createElement('li');
+                  liObject.id = quad.object.id;
+                  liObject.innerHTML = (0, _htmlEntities.encode)(quad.object.id) + " &nbsp;&nbsp; <-- Provenance: " + (0, _htmlEntities.encode)(url);
+                  objectList = liPredicate.lastChild;
+                  objectList.appendChild(liObject);
+                } // console.log(list)
+                // if (graph[quad.subject.id]===undefined) graph[quad.subject.id] = {}
+                // if (graph[quad.subject.id][quad.predicate.id]===undefined) graph[quad.subject.id][quad.predicate.id] = []
+                // graph[quad.subject.id][quad.predicate.id].push(quad.object.id)
+
               }
             } catch (err) {
               _iterator.e(err);
@@ -44907,10 +44951,25 @@ function _calcPropertysAndObjects() {
               _iterator.f();
             }
 
-            console.log(graph);
-            console.log(createHtmlList(graph));
+            i = 0;
+            _iterator2 = _createForOfIteratorHelper($("#list").children());
 
-          case 6:
+            try {
+              for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+                element = _step2.value;
+                i += element.children[0].children.length;
+              }
+            } catch (err) {
+              _iterator2.e(err);
+            } finally {
+              _iterator2.f();
+            }
+
+            console.log(i);
+            document.getElementById("triplesCount").innerHTML = "Number of Triples " + i; // console.log(graph)
+            // console.log(createHtmlList(graph))
+
+          case 9:
           case "end":
             return _context.stop();
         }
@@ -44918,22 +44977,6 @@ function _calcPropertysAndObjects() {
     }, _callee);
   }));
   return _calcPropertysAndObjects.apply(this, arguments);
-}
-
-function createHtmlList(obj) {
-  var ul = document.getElementById("list");
-  var output = "";
-  Object.keys(obj).forEach(function (k) {
-    if (_typeof(obj[k]) == "object" && obj[k] !== null) {
-      output += "<li>" + (0, _htmlEntities.encode)(k) + "<ul>";
-      output += createHtmlList(obj[k]);
-      output += "</ul></li>";
-    } else {
-      output += "<li>" + k + " : " + obj[k] + "</li>";
-    }
-  });
-  ul.innerHTML = output;
-  return output;
 }
 
 },{"html-entities":142,"n3":256}],398:[function(require,module,exports){
@@ -45057,7 +45100,7 @@ function turtleTest() {
   return {
     "data": turtleStr,
     "contentType": 'text/turtle',
-    "base": "example.org"
+    "base": "test.org"
   };
 }
 

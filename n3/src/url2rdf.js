@@ -26,7 +26,7 @@ import streamifyString from 'streamify-string';
       return {
         "data": turtleStr,
         "contentType": 'text/turtle',
-        "base": "example.org"};
+        "base": "test.org"};
   }
 
   export function jsonldTest(){

@@ -7,7 +7,7 @@ async function fetchTurtle() {
     console.log(quadstream)
     let quads = await feedStore(quadstream);
     console.log(quads)
-    await calcPropertysAndObjects(quads);
+    await calcPropertysAndObjects(quads, "http://example.com/jane");
 }
 
 async function fetchJsonLD() {
@@ -15,21 +15,21 @@ async function fetchJsonLD() {
     console.log(quadstream)
     let quads = await feedStore(quadstream);
     console.log(quads)
-    await calcPropertysAndObjects(quads);
+    await calcPropertysAndObjects(quads, "http://musicbrainz.org/area/c9ac1239-e832-41bc-9930-e252a1fd1105")
 }
 
 async function fetchRDF() {
     let url = document.getElementById('myUrl').value
 
-    let quadstream = await fetchURL(url);
+    let rdfData = await fetchURL(url);
     console.log("Quadstream")
-    console.log(quadstream)
+    console.log(rdfData)
 
-    let store = await feedStore(quadstream);
+    let store = await feedStore(rdfData);
     console.log("Store")
     console.log(store)
 
-    await calcPropertysAndObjects(store);
+    await calcPropertysAndObjects(store, url);
 }
 
 module.exports = { 
